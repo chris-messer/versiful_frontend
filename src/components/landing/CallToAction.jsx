@@ -9,10 +9,13 @@ export default function CallToAction() {
     return (
         <div className="flex items-center justify-center ">
             <div className="text-center ">
-                {/*<h2 className="text-2xl font-bold text-brown">Get Guidance Instantly</h2>*/}
                 <p className="mt-2">
-                    Text <span className="font-semibold text-blue-700">{phoneNumber}</span> for
-                    receive personalized Bible verses and parables right away.
+                    Text <a
+                    href={`sms:${phoneNumber}`}
+                    className="font-semibold text-blue-700 underline"
+                >
+                    {phoneNumber}
+                </a> for personalized Bible verses and parables right away.
                 </p>
             </div>
         </div>
