@@ -9,7 +9,7 @@ export default function App() {
     return (
         <Router>
             <div className="min-h-screen bg-black">
-                {/*<Navbar />*/}
+                <Navbar />
                 <Routes>
                     <Route path="/" element={<LandingPage />} />
                     {/*<Route path="/features" element={<FeaturesPage />} />*/}
