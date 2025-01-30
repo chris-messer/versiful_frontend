@@ -11,7 +11,7 @@ export default function CallToAction() {
             <div className="text-center ">
                 {/*<h2 className="text-2xl font-bold text-brown">Get Guidance Instantly</h2>*/}
                 <p className="mt-2">
-                    Text <span className="font-semibold text-blue-700">{phoneNumber}</span> with your situation to
+                    Text <span className="font-semibold text-blue-700">{phoneNumber}</span> for
                     receive personalized Bible verses and parables right away.
                 </p>
             </div>
