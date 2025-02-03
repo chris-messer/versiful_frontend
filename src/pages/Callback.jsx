@@ -5,28 +5,53 @@ import { useNavigate } from "react-router-dom";
 const Callback = () => {
     const navigate = useNavigate();
 
-    const getUrlHashParams = () => {
-        const hash = window.location.hash.substring(1);
-        return hash.split("&").reduce((params, param) => {
-            const [key, value] = param.split("=");
-            params[key] = decodeURIComponent(value);
-            return params;
-        }, {});
-    };
+    const exchangeCodeForTokens = async (code) => {
+        const clientId = "15hdo10jc5i2hcqtl2dk2ar8n3";
+        const redirectUri = "https://dev.versiful.io/callback";
+        const tokenEndpoint = "https://auth.dev.versiful.io/oauth2/token";
 
-    useEffect(() => {
-        const params = getUrlHashParams();
+        const body = new URLSearchParams({
+            grant_type: "authorization_code",
+            client_id: clientId,
+            redirect_uri: redirectUri,
+            code: code,
+        });
 
-        if (params.id_token && params.access_token && params.refresh_token) {
-            // Store tokens securely (use cookies in a production app for better security)
-            localStorage.setItem("id_token", params.id_token);
-            localStorage.setItem("access_token", params.access_token);
-            localStorage.setItem("refresh_token", params.refresh_token);
+        try {
+            const response = await fetch(tokenEndpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: body.toString(),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to exchange code for tokens.");
+            }
+
+            const data = await response.json();
+
+            // Store tokens securely (use cookies in production for better security)
+            localStorage.setItem("id_token", data.id_token);
+            localStorage.setItem("access_token", data.access_token);
+            localStorage.setItem("refresh_token", data.refresh_token);
 
             // Redirect to home page
             navigate("/home");
+        } catch (error) {
+            console.error("Error exchanging code for tokens:", error);
+        }
+    };
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get("code");
+
+        if (code) {
+            exchangeCodeForTokens(code);
         } else {
-            console.error("Authentication failed or tokens missing.");
+            console.error("No authorization code found in the URL.");
         }
     }, [navigate]);
 
