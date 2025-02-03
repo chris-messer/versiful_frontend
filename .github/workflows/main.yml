@@ -1,0 +1,69 @@
+name: Deploy React Frontend to S3 (Multi-Env)
+
+on:
+  push:
+    branches:
+      - main    # Production
+      # - staging # Staging
+      - dev # Development
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1  # Fetch only the latest commit for efficiency
+
+      - name: Set Environment Variables
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "ENV=prod" >> $GITHUB_ENV
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_S3_IAM_SECRET }}" >> $GITHUB_ENV
+            echo "S3_BUCKET=${{ vars.S3_BUCKET_PROD }}" >> $GITHUB_ENV
+            echo "CF_DISTRIBUTION=${{ vars.CF_DISTRIBUTION_PROD }}" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+          #   echo "ENV=staging" >> $GITHUB_ENV
+          #   echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+          #   echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_S3_IAM_SECRET }}" >> $GITHUB_ENV
+          #   echo "S3_BUCKET=${{ vars.S3_BUCKET_STAGING }}" >> $GITHUB_ENV
+          #   echo "CF_DISTRIBUTION=${{ vars.CF_DISTRIBUTION_STAGING }}" >> $GITHUB_ENV
+          else
+            echo "ENV=dev" >> $GITHUB_ENV
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_S3_IAM_SECRET }}" >> $GITHUB_ENV
+            echo "S3_BUCKET=${{ vars.S3_BUCKET_DEV }}" >> $GITHUB_ENV
+            echo "CF_DISTRIBUTION=${{ vars.CF_DISTRIBUTION_DEV }}" >> $GITHUB_ENV
+          fi
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  # Change if needed
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18  # Ensure correct Node.js version for your build
+
+      - name: Install Dependencies & Build React App
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy `dist/` Folder to S3
+        run: |
+          aws s3 sync dist/ s3://${{ env.S3_BUCKET }} --delete --exact-timestamps --metadata-directive REPLACE
+
+      - name: Ensure `index.html` is uploaded with correct content-type
+        run: |
+          aws s3 cp dist/index.html s3://${{ env.S3_BUCKET }}/index.html --content-type "text/html"
+
+      - name: Invalidate CloudFront Cache (Optional)
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ env.CF_DISTRIBUTION }} --paths "/*"
