@@ -1,27 +1,9 @@
-import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const { isLoggedIn, setIsLoggedIn } = useAuth();
     const navigate = useNavigate();
-
-    const updateLoginState = () => {
-        const idToken = localStorage.getItem("id_token");
-        setIsLoggedIn(!!idToken);
-    };
-
-    useEffect(() => {
-        // Check login state on mount
-        updateLoginState();
-
-        // Add an event listener for login state changes
-        window.addEventListener("loginStateChange", updateLoginState);
-
-        return () => {
-            // Clean up the event listener
-            window.removeEventListener("loginStateChange", updateLoginState);
-        };
-    }, []);
 
     const handleLogin = () => {
         window.location.href =
@@ -34,8 +16,8 @@ export default function Navbar() {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
 
-        // Notify other components of login state change
-        window.dispatchEvent(new Event("loginStateChange"));
+        // Update state
+        setIsLoggedIn(false);
 
         // Redirect to root domain
         navigate("/");
@@ -50,9 +32,7 @@ export default function Navbar() {
                 </div>
                 <nav>
                     <ul className="flex space-x-6">
-                        {/*<li><a href="#features" className="hover:text-blue-600">Features</a></li>*/}
-                        {/*<li><a href="#about" className="hover:text-blue-600">About</a></li>*/}
-                        {/*<li><a href="#contact" className="hover:text-blue-600">Contact</a></li>*/}
+                        {/* Add other navigation links here */}
                     </ul>
                 </nav>
                 {isLoggedIn ? (
