@@ -14,11 +14,11 @@ export default function Navbar() {
         // Check login state on mount
         updateLoginState();
 
-        // Add an event listener to listen for login state changes
+        // Add an event listener for login state changes
         window.addEventListener("loginStateChange", updateLoginState);
 
         return () => {
-            // Clean up event listener
+            // Clean up the event listener
             window.removeEventListener("loginStateChange", updateLoginState);
         };
     }, []);
@@ -42,7 +42,7 @@ export default function Navbar() {
     };
 
     return (
-        <header className="bg-white shadow fixed top-0 left-0 w-full z-50 opacity-95">
+        <header className="bg-white shadow fixed top-0 left-0 w-full">
             <div className="container mx-auto flex items-center justify-between p-4">
                 <div className="flex items-center space-x-2">
                     <img src="/logo.svg" alt="Logo" className="h-10" />
