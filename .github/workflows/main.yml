@@ -1,15 +1,15 @@
-name: Deploy React Frontend to S3 (Main & Develop Only)
+name: Deploy React Frontend to S3 (Main & Dev Only)
 
 on:
   push:
     branches:
       - main    # Deploy to Prod
-      - dev # Deploy to Dev
+      - dev     # Deploy to Dev
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+    environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}  # Dynamically bind to prod or dev environment
 
     steps:
       - name: Checkout Repository
@@ -17,20 +17,12 @@ jobs:
         with:
           fetch-depth: 1  # Fetch only the latest commit for efficiency
 
-      - name: Set Environment Variables
+      - name: Debug Branch and Environment
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "ENV=prod" >> $GITHUB_ENV
-            echo "S3_BUCKET=${{ env.S3_BUCKET_NAME }}" >> $GITHUB_ENV
-            echo "CF_DISTRIBUTION=${{ env.CF_DISTRIBUTION }}" >> $GITHUB_ENV
-          elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
-            echo "ENV=dev" >> $GITHUB_ENV
-            echo "S3_BUCKET=${{ env.S3_BUCKET_NAME }}" >> $GITHUB_ENV
-            echo "CF_DISTRIBUTION=${{ env.CF_DISTRIBUTION }}" >> $GITHUB_ENV
-          else
-            echo "Skipping deployment for non-deployment branches."
-            exit 0  # Exit if not `main` or `develop`
-          fi
+          echo "Branch: ${{ github.ref }}"
+          echo "Environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
+          echo "S3_BUCKET: ${{ env.S3_BUCKET }}"
+          echo "CF_DISTRIBUTION: ${{ env.CF_DISTRIBUTION }}"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
