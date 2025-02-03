@@ -11,30 +11,28 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
 
+    env:
+      S3_BUCKET: ${{ vars.S3_BUCKET }}
+      CF_DISTRIBUTION: ${{ vars.CF_DISTRIBUTION }}
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Debug Environment and Secrets
+      - name: Debug Environment Variables
         run: |
           echo "Branch: ${{ github.ref }}"
           echo "Environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
-          echo "S3_BUCKET: ${{ env.S3_BUCKET }}"
-          echo "CF_DISTRIBUTION: ${{ env.CF_DISTRIBUTION }}"
-          if [[ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" || -z "${{ secrets.AWS_S3_IAM_SECRET }}" ]]; then
-            echo "🚨 AWS credentials are missing!"
-            exit 1
-          else
-            echo "✅ AWS credentials are set."
-          fi
+          echo "S3_BUCKET: $S3_BUCKET"
+          echo "CF_DISTRIBUTION: $CF_DISTRIBUTION"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_S3_IAM_SECRET }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
       - name: Install Node.js
@@ -49,12 +47,12 @@ jobs:
 
       - name: Deploy `dist/` Folder to S3
         run: |
-          aws s3 sync dist/ s3://${{ env.S3_BUCKET }} --delete --exact-timestamps --metadata-directive REPLACE
+          aws s3 sync dist/ s3://$S3_BUCKET --delete --exact-timestamps --metadata-directive REPLACE
 
       - name: Ensure `index.html` is uploaded with correct content-type
         run: |
-          aws s3 cp dist/index.html s3://${{ env.S3_BUCKET }}/index.html --content-type "text/html"
+          aws s3 cp dist/index.html s3://$S3_BUCKET/index.html --content-type "text/html"
 
       - name: Invalidate CloudFront Cache
         run: |
-          aws cloudfront create-invalidation --distribution-id ${{ env.CF_DISTRIBUTION }} --paths "/*"
+          aws cloudfront create-invalidation --distribution-id $CF_DISTRIBUTION --paths "/*"
