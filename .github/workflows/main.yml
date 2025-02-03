@@ -12,8 +12,8 @@ jobs:
     environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
 
     env:
-      S3_BUCKET: ${{ vars.S3_BUCKET }}
-      CF_DISTRIBUTION: ${{ vars.CF_DISTRIBUTION }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      CF_DISTRIBUTION: ${{ secrets.CF_DISTRIBUTION }}
 
     steps:
       - name: Checkout Repository
@@ -21,12 +21,30 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Debug Environment Variables
+      - name: Debug Environment and Secrets
         run: |
           echo "Branch: ${{ github.ref }}"
           echo "Environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
           echo "S3_BUCKET: $S3_BUCKET"
           echo "CF_DISTRIBUTION: $CF_DISTRIBUTION"
+
+          if [ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ]; then
+            echo "🚨 AWS_ACCESS_KEY_ID is missing!"
+          else
+            echo "✅ AWS_ACCESS_KEY_ID is set."
+          fi
+
+          if [ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
+            echo "🚨 AWS_SECRET_ACCESS_KEY is missing!"
+          else
+            echo "✅ AWS_SECRET_ACCESS_KEY is set."
+          fi
+
+          if [ -z "$S3_BUCKET" ]; then
+            echo "🚨 S3_BUCKET is missing!"
+          else
+            echo "✅ S3_BUCKET is set."
+          fi
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
