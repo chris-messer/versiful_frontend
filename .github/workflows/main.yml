@@ -25,7 +25,7 @@ jobs:
             echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_S3_IAM_SECRET }}" >> $GITHUB_ENV
             echo "S3_BUCKET=${{ vars.S3_BUCKET_PROD }}" >> $GITHUB_ENV
             echo "CF_DISTRIBUTION=${{ vars.CF_DISTRIBUTION_PROD }}" >> $GITHUB_ENV
-          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+          # elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
           #   echo "ENV=staging" >> $GITHUB_ENV
           #   echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
           #   echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_S3_IAM_SECRET }}" >> $GITHUB_ENV
