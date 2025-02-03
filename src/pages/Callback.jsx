@@ -1,38 +1,38 @@
-import React, { useEffect } from "react";
+// src/pages/Callback.jsx
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Callback = () => {
     const navigate = useNavigate();
 
+    const getUrlHashParams = () => {
+        const hash = window.location.hash.substring(1);
+        return hash.split("&").reduce((params, param) => {
+            const [key, value] = param.split("=");
+            params[key] = decodeURIComponent(value);
+            return params;
+        }, {});
+    };
+
     useEffect(() => {
-        const handleRedirect = () => {
-            const params = new URLSearchParams(window.location.search);
-            const code = params.get("code");
-            const error = params.get("error");
+        const params = getUrlHashParams();
 
-            if (error) {
-                console.error("Authentication error:", error);
-                navigate("/error"); // Navigate to an error page (optional)
-                return;
-            }
+        if (params.id_token && params.access_token && params.refresh_token) {
+            // Store tokens securely (use cookies in a production app for better security)
+            localStorage.setItem("id_token", params.id_token);
+            localStorage.setItem("access_token", params.access_token);
+            localStorage.setItem("refresh_token", params.refresh_token);
 
-            if (code) {
-                console.log("Authorization code received:", code);
-                // Perform token exchange or any other logic here
-                // Example: send the `code` to your backend
-            } else {
-                console.warn("No code or error found in the URL.");
-            }
-
-            navigate("/"); // Redirect to the home or desired page
-        };
-
-        handleRedirect();
+            // Redirect to home page
+            navigate("/home");
+        } else {
+            console.error("Authentication failed or tokens missing.");
+        }
     }, [navigate]);
 
     return (
-        <div className="callback-page">
-            <h1>Processing your authentication...</h1>
+        <div className="flex flex-col items-center justify-center h-screen">
+            <h2>Processing login...</h2>
         </div>
     );
 };
