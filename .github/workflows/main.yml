@@ -1,55 +1,62 @@
-name: Deploy React Frontend to S3 (Multi-Env)
+name: Deploy React Frontend to S3 (Environment-Specific)
 
 on:
   push:
     branches:
-      - main    # Production
-      # - staging # Staging
-      - dev # Development
+      - main      # Deploy to Prod
+      - dev       # Deploy to Dev
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+
+    env:
+      S3_BUCKET: ${{ vars.S3_BUCKET }}
+      CF_DISTRIBUTION: ${{ vars.CF_DISTRIBUTION }}
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1  # Fetch only the latest commit for efficiency
+          fetch-depth: 1
 
-      - name: Set Environment Variables
+      - name: Debug Environment and Secrets
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "ENV=prod" >> $GITHUB_ENV
-            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
-            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_S3_IAM_SECRET }}" >> $GITHUB_ENV
-            echo "S3_BUCKET=${{ vars.S3_BUCKET_PROD }}" >> $GITHUB_ENV
-            echo "CF_DISTRIBUTION=${{ vars.CF_DISTRIBUTION_PROD }}" >> $GITHUB_ENV
-          # elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
-          #   echo "ENV=staging" >> $GITHUB_ENV
-          #   echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
-          #   echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_S3_IAM_SECRET }}" >> $GITHUB_ENV
-          #   echo "S3_BUCKET=${{ vars.S3_BUCKET_STAGING }}" >> $GITHUB_ENV
-          #   echo "CF_DISTRIBUTION=${{ vars.CF_DISTRIBUTION_STAGING }}" >> $GITHUB_ENV
+          echo "Branch: ${{ github.ref }}"
+          echo "Environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
+          echo "S3_BUCKET: $S3_BUCKET"
+          echo "CF_DISTRIBUTION: $CF_DISTRIBUTION"
+
+          if [ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ]; then
+            echo "🚨 AWS_ACCESS_KEY_ID is missing!"
           else
-            echo "ENV=dev" >> $GITHUB_ENV
-            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
-            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_S3_IAM_SECRET }}" >> $GITHUB_ENV
-            echo "S3_BUCKET=${{ vars.S3_BUCKET_DEV }}" >> $GITHUB_ENV
-            echo "CF_DISTRIBUTION=${{ vars.CF_DISTRIBUTION_DEV }}" >> $GITHUB_ENV
+            echo "✅ AWS_ACCESS_KEY_ID is set."
+          fi
+
+          if [ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
+            echo "🚨 AWS_SECRET_ACCESS_KEY is missing!"
+          else
+            echo "✅ AWS_SECRET_ACCESS_KEY is set."
+          fi
+
+          if [ -z "$S3_BUCKET" ]; then
+            echo "🚨 S3_BUCKET is missing!"
+          else
+            echo "✅ S3_BUCKET is set."
           fi
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1  # Change if needed
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18  # Ensure correct Node.js version for your build
+          node-version: 18
 
       - name: Install Dependencies & Build React App
         run: |
@@ -58,12 +65,12 @@ jobs:
 
       - name: Deploy `dist/` Folder to S3
         run: |
-          aws s3 sync dist/ s3://${{ env.S3_BUCKET }} --delete --exact-timestamps --metadata-directive REPLACE
+          aws s3 sync dist/ s3://$S3_BUCKET --delete --exact-timestamps --metadata-directive REPLACE
 
       - name: Ensure `index.html` is uploaded with correct content-type
         run: |
-          aws s3 cp dist/index.html s3://${{ env.S3_BUCKET }}/index.html --content-type "text/html"
+          aws s3 cp dist/index.html s3://$S3_BUCKET/index.html --content-type "text/html"
 
-      - name: Invalidate CloudFront Cache (Optional)
+      - name: Invalidate CloudFront Cache
         run: |
-          aws cloudfront create-invalidation --distribution-id ${{ env.CF_DISTRIBUTION }} --paths "/*"
+          aws cloudfront create-invalidation --distribution-id $CF_DISTRIBUTION --paths "/*"
