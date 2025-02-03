@@ -1,4 +1,3 @@
-// src/components/Navbar.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -6,13 +5,27 @@ export default function Navbar() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
+    const updateLoginState = () => {
         const idToken = localStorage.getItem("id_token");
         setIsLoggedIn(!!idToken);
+    };
+
+    useEffect(() => {
+        // Check login state on mount
+        updateLoginState();
+
+        // Add an event listener to listen for login state changes
+        window.addEventListener("loginStateChange", updateLoginState);
+
+        return () => {
+            // Clean up event listener
+            window.removeEventListener("loginStateChange", updateLoginState);
+        };
     }, []);
 
     const handleLogin = () => {
-        window.location.href = "https://auth.dev.versiful.io/login?client_id=15hdo10jc5i2hcqtl2dk2ar8n3&response_type=code&scope=email+openid+profile&redirect_uri=https%3A%2F%2Fdev.versiful.io%2Fcallback";
+        window.location.href =
+            "https://auth.dev.versiful.io/login?client_id=15hdo10jc5i2hcqtl2dk2ar8n3&response_type=code&scope=email+openid+profile&redirect_uri=https%3A%2F%2Fdev.versiful.io%2Fcallback";
     };
 
     const handleLogout = () => {
@@ -21,8 +34,8 @@ export default function Navbar() {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
 
-        // Update state
-        setIsLoggedIn(false);
+        // Notify other components of login state change
+        window.dispatchEvent(new Event("loginStateChange"));
 
         // Redirect to root domain
         navigate("/");
