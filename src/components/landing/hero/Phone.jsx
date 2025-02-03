@@ -3,7 +3,20 @@ export default function Phone() {
         <div className="mockup-phone">
             <div className="camera"></div>
             <div className="display">
-                <div className="artboard bg-white py-10 px-2 phone-1">
+                <div className="bg-gray-200 w-full h-24 flex flex-col items-center justify-end ">
+                    {/* Circle with Image */}
+                    <div className="bg-white rounded-full w-10 h-10 p-1 flex items-center justify-center">
+                        <img
+                            src="/logo.svg"
+                            alt="Avatar"
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
+                    {/* Centered Text */}
+                    <p className="text-xs text-gray-600">Versiful</p>
+                </div>
+                <div className="artboard bg-white py-3 px-2 phone-1">
+
                     <div className="chat chat-end text-right text-sm">
                         <div className="chat-image avatar">
                             <div className="w-10 rounded-full">
@@ -20,7 +33,7 @@ export default function Phone() {
                     <div className="chat chat-start text-left text-sm whitespace-pre-line">
                         <div className="chat-image avatar">
                             <div className="w-10 rounded-full">
-                                <img alt="Logo" src="/logo.svg" />
+                                <img alt="Logo" src="/logo.svg"/>
                             </div>
                         </div>
                         <div className="chat-bubble bg-gray-200 text-black">
