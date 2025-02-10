@@ -4,10 +4,14 @@ import { useNavigate } from "react-router-dom";
 export default function Navbar() {
     const { isLoggedIn, setIsLoggedIn } = useAuth();
     const navigate = useNavigate();
+    console.log("Vite ENV Variables:", import.meta.env);
 
     const handleLogin = () => {
-        window.location.href =
-            "https://auth.dev.versiful.io/login?client_id=15hdo10jc5i2hcqtl2dk2ar8n3&response_type=code&scope=email+openid+profile&redirect_uri=https%3A%2F%2Fdev.versiful.io%2Fcallback";
+        const authDomain = import.meta.env.VITE_DOMAIN;
+        const clientId = import.meta.env.VITE_COGNITO_CLIENT_ID;
+        const redirectUri = encodeURIComponent(import.meta.env.VITE_CALLBACK_URL);
+
+        window.location.href = `https://auth.${authDomain}/login?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=${redirectUri}`;
     };
 
     const handleLogout = () => {
@@ -20,7 +24,7 @@ export default function Navbar() {
         setIsLoggedIn(false);
 
         // Redirect to root domain
-        navigate("/");
+        navigate("/home");
     };
 
     return (

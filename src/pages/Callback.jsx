@@ -6,9 +6,11 @@ const Callback = () => {
     const navigate = useNavigate();
     const { setIsLoggedIn } = useAuth();
 
+
+
     const exchangeCodeForTokens = async (code) => {
         const clientId = "15hdo10jc5i2hcqtl2dk2ar8n3";
-        const redirectUri = "https://dev.versiful.io/callback";
+        const redirectUri = import.meta.env.VITE_CALLBACK_URL;
         const tokenEndpoint = "https://auth.dev.versiful.io/oauth2/token";
 
         const body = new URLSearchParams({
