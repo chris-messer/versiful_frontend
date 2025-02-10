@@ -6,6 +6,7 @@ import LandingPage from "./pages/LandingPage";
 import Callback from "./pages/Callback";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
+import Subscription from "./pages/Subscription";
 import { useEffect, useState } from "react";
 
 export default function App() {
@@ -43,6 +44,7 @@ export default function App() {
                         <Route path="/callback" element={<Callback />} />
                         <Route path="/home" element={<Home />} />
                         <Route path="/settings" element={<Settings />} />
+                        <Route path="/subscription" element={<Subscription />} />
                     </Routes>
                     <Footer />
                 </div>
