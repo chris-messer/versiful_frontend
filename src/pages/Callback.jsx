@@ -42,7 +42,7 @@ const Callback = () => {
             setIsLoggedIn(true);
 
             // Redirect to home page
-            navigate("/home");
+            navigate("/settings");
         } catch (error) {
             console.error("Error exchanging code for tokens:", error);
         }

@@ -5,21 +5,44 @@ import Footer from "./components/Footer";
 import LandingPage from "./pages/LandingPage";
 import Callback from "./pages/Callback";
 import Home from "./pages/Home";
-// import FeaturesPage from "./pages/FeaturesPage";  // Example additional page
-// import NotFoundPage from "./pages/NotFoundPage";  // 404 page (optional)
+import Settings from "./pages/Settings";
+import { useEffect, useState } from "react";
 
 export default function App() {
+    const [isDarkMode, setIsDarkMode] = useState(
+        () => localStorage.getItem("theme") === "dark" // Retrieve saved preference
+    );
+
+    // Toggle dark mode and save preference
+    const toggleDarkMode = () => {
+        setIsDarkMode((prevMode) => {
+            const newMode = !prevMode;
+            localStorage.setItem("theme", newMode ? "dark" : "light");
+            return newMode;
+        });
+    };
+
+    useEffect(() => {
+        // Apply or remove the dark class on the root element
+        const root = document.documentElement;
+        if (isDarkMode) {
+            root.classList.add("dark");
+        } else {
+            root.classList.remove("dark");
+        }
+    }, [isDarkMode]);
+
     return (
         <AuthProvider>
             <Router>
-                <div className="min-h-screen bg-black">
-                    <Navbar />
+                {/* Default background for light and dark mode */}
+                <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors text-gray-900 dark:text-gray-100">
+                    <Navbar toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
                     <Routes>
                         <Route path="/" element={<LandingPage />} />
                         <Route path="/callback" element={<Callback />} />
                         <Route path="/home" element={<Home />} />
-                        {/*<Route path="/features" element={<FeaturesPage />} />*/}
-                        {/*<Route path="*" element={<NotFoundPage />} />  /!* Catch-all for unknown routes *!/*/}
+                        <Route path="/settings" element={<Settings />} />
                     </Routes>
                     <Footer />
                 </div>
