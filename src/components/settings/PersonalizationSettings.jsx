@@ -1,7 +1,10 @@
+import { bibleVersions } from "../../constants/bibleVersions";
+
 const PersonalizationSettings = ({ preferences, setPreferences }) => {
     const handleInputChange = (key, value) => {
         setPreferences({ ...preferences, [key]: value });
-    };
+    }
+
 
     return (
         <div className="card bg-base-100 shadow-xl p-4">
@@ -11,15 +14,21 @@ const PersonalizationSettings = ({ preferences, setPreferences }) => {
                     <span className="label-text">Preferred Bible Version:</span>
                 </label>
                 <select
-                    className="select select-bordered"
+                    className="select select-bordered w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     value={preferences.bibleVersion}
                     onChange={(e) => handleInputChange("bibleVersion", e.target.value)}
                 >
-                    <option value="NIV">NIV</option>
-                    <option value="KJV">KJV</option>
-                    <option value="ESV">ESV</option>
+                    <option value="" disabled>Select a version</option>
+                    {bibleVersions.map((group, groupIndex) => (
+                        <optgroup key={groupIndex} label={group.label}>
+                            {group.versions.map((version, versionIndex) => (
+                                <option key={versionIndex} value={version}>{version}</option>
+                            ))}
+                        </optgroup>
+                    ))}
                 </select>
             </div>
+
             <div className="form-control mb-4">
                 <label className="label">
                     <span className="label-text">Response Style:</span>

@@ -21,51 +21,67 @@ const Callback = () => {
         });
 
         try {
+            console.log("Sending token request:", body.toString());
+
             const response = await fetch(tokenEndpoint, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
+                    "Accept": "application/json"
                 },
                 body: body.toString(),
             });
 
+            // Debugging: Log raw response
+            const responseText = await response.text();
+            console.log("Raw response from Cognito:", responseText);
+
             if (!response.ok) {
-                throw new Error("Failed to exchange code for tokens.");
+                throw new Error(`Failed to exchange code for tokens: ${responseText}`);
             }
 
-            const data = await response.json();
+            // Parse JSON only after ensuring the response is valid
+            const data = JSON.parse(responseText);
+
+            console.log("Token response:", data);
+
+            if (data.error) {
+                throw new Error(`Cognito error: ${data.error} - ${data.error_description}`);
+            }
 
             // Store tokens securely
             localStorage.setItem("id_token", data.id_token);
             localStorage.setItem("access_token", data.access_token);
             localStorage.setItem("refresh_token", data.refresh_token);
 
-            // Update the global auth state
             setIsLoggedIn(true);
-
-            // Redirect to home page
-            navigate("/settings");
+            navigate("/home");
         } catch (error) {
             console.error("Error exchanging code for tokens:", error);
         }
     };
+
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get("code");
 
         if (code) {
+            console.log("Authorization Code:", code);
+
+            // Check if the code was already used
+            if (sessionStorage.getItem("used_code") === code) {
+                console.warn("Authorization code has already been used. Ignoring duplicate request.");
+                return;
+            }
+
+            sessionStorage.setItem("used_code", code); // Mark the code as used
             exchangeCodeForTokens(code);
         } else {
             console.error("No authorization code found in the URL.");
         }
     }, [navigate, setIsLoggedIn]);
 
-    return (
-        <div className="flex flex-col items-center justify-center h-screen">
-            <h2>Processing login...</h2>
-        </div>
-    );
 };
 
 export default Callback;
