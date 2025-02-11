@@ -24,7 +24,7 @@ export default function Navbar() {
         setIsLoggedIn(false);
 
         // Redirect to root domain
-        navigate("/home");
+        navigate("/");
     };
 
     return (

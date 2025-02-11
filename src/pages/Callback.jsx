@@ -6,7 +6,7 @@ const Callback = () => {
     const navigate = useNavigate();
     const { setIsLoggedIn } = useAuth();
 
-
+    const lambdaEndpoint = `https://api.${import.meta.env.VITE_DOMAIN}/users`;
 
     const exchangeCodeForTokens = async (code) => {
         const clientId = "15hdo10jc5i2hcqtl2dk2ar8n3";
@@ -27,14 +27,14 @@ const Callback = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
-                    "Accept": "application/json"
+                    "Accept": "application/json",
                 },
                 body: body.toString(),
             });
 
             // Debugging: Log raw response
             const responseText = await response.text();
-            console.log("Raw response from Cognito:", responseText);
+            // console.log("Raw response from Cognito:", responseText);
 
             if (!response.ok) {
                 throw new Error(`Failed to exchange code for tokens: ${responseText}`);
@@ -42,7 +42,6 @@ const Callback = () => {
 
             // Parse JSON only after ensuring the response is valid
             const data = JSON.parse(responseText);
-
             console.log("Token response:", data);
 
             if (data.error) {
@@ -55,12 +54,45 @@ const Callback = () => {
             localStorage.setItem("refresh_token", data.refresh_token);
 
             setIsLoggedIn(true);
-            navigate("/home");
+
+            // Extract Cognito User ID from ID Token
+            const decodedToken = JSON.parse(atob(data.id_token.split(".")[1]));
+            const userId = decodedToken.sub;
+            console.log("Extracted User ID:", userId);
+
+            // Check if the user exists, and create if not
+            await checkAndCreateUser(userId, data.access_token);
         } catch (error) {
             console.error("Error exchanging code for tokens:", error);
         }
     };
 
+    // Function to check if the user exists, and create them if not
+    const checkAndCreateUser = async (userId, token) => {
+        try {
+            const response = await fetch(lambdaEndpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({ userId }),
+            });
+
+            if (!response.ok) throw new Error("Failed to check/create user");
+
+            const data = await response.json();
+            console.log("User API Response:", data);
+
+            if (data.exists) {
+                navigate("/settings");
+            } else {
+                navigate("/welcome");
+            }
+        } catch (error) {
+            console.error("Error checking or creating user:", error);
+        }
+    };
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -82,6 +114,11 @@ const Callback = () => {
         }
     }, [navigate, setIsLoggedIn]);
 
+    return (
+        <div className="flex flex-col items-center justify-center h-screen">
+            <h2>Processing login...</h2>
+        </div>
+    );
 };
 
 export default Callback;
