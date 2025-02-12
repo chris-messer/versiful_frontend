@@ -9,7 +9,7 @@ const Callback = () => {
     const lambdaEndpoint = `https://api.${import.meta.env.VITE_DOMAIN}/users`;
 
     const exchangeCodeForTokens = async (code) => {
-        const clientId = "15hdo10jc5i2hcqtl2dk2ar8n3";
+        const clientId = import.meta.env.VITE_COGNITO_CLIENT_ID;
         const redirectUri = import.meta.env.VITE_CALLBACK_URL;
         const tokenEndpoint = "https://auth.dev.versiful.io/oauth2/token";
 
