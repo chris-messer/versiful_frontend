@@ -14,17 +14,25 @@ export default function Navbar() {
         window.location.href = `https://auth.${authDomain}/login?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=${redirectUri}`;
     };
 
-    const handleLogout = () => {
-        // Clear tokens
-        localStorage.removeItem("id_token");
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
+    const handleLogout = async () => {
+        try {
+            // Hit the logout API route
+            await fetch(`https://api.${import.meta.env.VITE_DOMAIN}/auth/logout`, {
+                method: "POST", // Use POST if your API expects it
+                credentials: "include", // 🔥 Ensures cookies are sent
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
 
-        // Update state
-        setIsLoggedIn(false);
+            // Update state
+            setIsLoggedIn(false);
 
-        // Redirect to root domain
-        navigate("/");
+            // Redirect to root domain
+            navigate("/");
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
     };
 
     return (

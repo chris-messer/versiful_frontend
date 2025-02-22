@@ -30,7 +30,7 @@ const Callback = () => {
 
             // Now check if user exists
             const userCheckResponse = await fetch(userCheckEndpoint, {
-                method: "GET",
+                method: "POST",
                 credentials: "include", // Includes auth cookies
                 headers: {
                     "Content-Type": "application/json",
@@ -43,10 +43,14 @@ const Callback = () => {
 
             const userData = await userCheckResponse.json();
 
-            if (userData.exists) {
-                navigate("/settings");
-            } else {
+            if (!userData.isRegistered) {
+                console.log("User is registered", userData);
                 navigate("/welcome");
+            } else if (!userData.isSubscribed) {
+                console.log("User is registered", userData);
+                navigate("/subscription");
+            } else {
+                navigate("/settings");
             }
         } catch (error) {
             console.error("Error during authentication:", error);
