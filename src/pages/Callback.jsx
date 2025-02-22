@@ -6,91 +6,50 @@ const Callback = () => {
     const navigate = useNavigate();
     const { setIsLoggedIn } = useAuth();
 
-    const lambdaEndpoint = `https://api.${import.meta.env.VITE_DOMAIN}/users`;
+    const backendAuthEndpoint = `https://api.${import.meta.env.VITE_DOMAIN}/auth/callback`;
+    const userCheckEndpoint = `https://api.${import.meta.env.VITE_DOMAIN}/users`;
 
-    const exchangeCodeForTokens = async (code) => {
-        const clientId = import.meta.env.VITE_COGNITO_CLIENT_ID;
-        const redirectUri = import.meta.env.VITE_CALLBACK_URL;
-        const tokenEndpoint = "https://auth.dev.versiful.io/oauth2/token";
-
-        const body = new URLSearchParams({
-            grant_type: "authorization_code",
-            client_id: clientId,
-            redirect_uri: redirectUri,
-            code: code,
-        });
-
+    const handleAuth = async (code) => {
         try {
-            console.log("Sending token request:", body.toString());
-
-            const response = await fetch(tokenEndpoint, {
+            // Send authorization code to backend
+            const authResponse = await fetch(backendAuthEndpoint, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Accept": "application/json",
-                },
-                body: body.toString(),
-            });
-
-            // Debugging: Log raw response
-            const responseText = await response.text();
-            // console.log("Raw response from Cognito:", responseText);
-
-            if (!response.ok) {
-                throw new Error(`Failed to exchange code for tokens: ${responseText}`);
-            }
-
-            // Parse JSON only after ensuring the response is valid
-            const data = JSON.parse(responseText);
-            console.log("Token response:", data);
-
-            if (data.error) {
-                throw new Error(`Cognito error: ${data.error} - ${data.error_description}`);
-            }
-
-            // Store tokens securely
-            localStorage.setItem("id_token", data.id_token);
-            localStorage.setItem("access_token", data.access_token);
-            localStorage.setItem("refresh_token", data.refresh_token);
-
-            setIsLoggedIn(true);
-
-            // Extract Cognito User ID from ID Token
-            const decodedToken = JSON.parse(atob(data.id_token.split(".")[1]));
-            const userId = decodedToken.sub;
-            console.log("Extracted User ID:", userId);
-
-            // Check if the user exists, and create if not
-            await checkAndCreateUser(userId, data.access_token);
-        } catch (error) {
-            console.error("Error exchanging code for tokens:", error);
-        }
-    };
-
-    // Function to check if the user exists, and create them if not
-    const checkAndCreateUser = async (userId, token) => {
-        try {
-            const response = await fetch(lambdaEndpoint, {
-                method: "POST",
+                credentials: "include",  // Ensures cookies are included in future requests
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
                 },
-                body: JSON.stringify({ userId }),
+                body: JSON.stringify({ code, redirectUri: import.meta.env.VITE_CALLBACK_URL}),
             });
 
-            if (!response.ok) throw new Error("Failed to check/create user");
+            if (!authResponse.ok) {
+                throw new Error("Authentication failed");
+            }
 
-            const data = await response.json();
-            console.log("User API Response:", data);
+            // User is now authenticated, set login state
+            setIsLoggedIn(true);
 
-            if (data.exists) {
+            // Now check if user exists
+            const userCheckResponse = await fetch(userCheckEndpoint, {
+                method: "GET",
+                credentials: "include", // Includes auth cookies
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!userCheckResponse.ok) {
+                throw new Error("Failed to check user registration");
+            }
+
+            const userData = await userCheckResponse.json();
+
+            if (userData.exists) {
                 navigate("/settings");
             } else {
                 navigate("/welcome");
             }
         } catch (error) {
-            console.error("Error checking or creating user:", error);
+            console.error("Error during authentication:", error);
         }
     };
 
@@ -99,16 +58,7 @@ const Callback = () => {
         const code = urlParams.get("code");
 
         if (code) {
-            console.log("Authorization Code:", code);
-
-            // Check if the code was already used
-            if (sessionStorage.getItem("used_code") === code) {
-                console.warn("Authorization code has already been used. Ignoring duplicate request.");
-                return;
-            }
-
-            sessionStorage.setItem("used_code", code); // Mark the code as used
-            exchangeCodeForTokens(code);
+            handleAuth(code);
         } else {
             console.error("No authorization code found in the URL.");
         }
