@@ -1,21 +1,67 @@
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 export default function Navbar() {
+    const { isLoggedIn, setIsLoggedIn } = useAuth();
+    const navigate = useNavigate();
+    console.log("Vite ENV Variables:", import.meta.env);
+
+    const handleLogin = () => {
+        const authDomain = import.meta.env.VITE_DOMAIN;
+        const clientId = import.meta.env.VITE_COGNITO_CLIENT_ID;
+        const redirectUri = encodeURIComponent(import.meta.env.VITE_CALLBACK_URL);
+
+        window.location.href = `https://auth.${authDomain}/login?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=${redirectUri}`;
+    };
+
+    const handleLogout = async () => {
+        try {
+            // Hit the logout API route
+            await fetch(`https://api.${import.meta.env.VITE_DOMAIN}/auth/logout`, {
+                method: "POST", // Use POST if your API expects it
+                credentials: "include", // 🔥 Ensures cookies are sent
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            // Update state
+            setIsLoggedIn(false);
+
+            // Redirect to root domain
+            navigate("/");
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    };
+
     return (
-        <header className="bg-white shadow fixed top-0 left-0 w-full">
+        <header className="bg-white shadow fixed top-0 left-0 w-full z-50">
             <div className="container mx-auto flex items-center justify-between p-4">
                 <div className="flex items-center space-x-2">
                     <img src="/logo.svg" alt="Logo" className="h-10" />
-                    <span className="text-xl font-bold text-gray-800">Versiful</span>
+                    <span className="text-xl font-bold text-gray-800">Versiful-dev</span>
                 </div>
                 <nav>
                     <ul className="flex space-x-6">
-                        {/*<li><a href="#features" className="hover:text-blue-600">Features</a></li>*/}
-                        <li><a href="#about" className="hover:text-blue-600">About</a></li>
-                        <li><a href="#contact" className="hover:text-blue-600">Contact</a></li>
+                        {/* Add other navigation links here */}
                     </ul>
                 </nav>
-                <button className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
-                    Get Started
-                </button>
+                {isLoggedIn ? (
+                    <button
+                        onClick={handleLogout}
+                        className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700"
+                    >
+                        Logout
+                    </button>
+                ) : (
+                    <button
+                        onClick={handleLogin}
+                        className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                    >
+                        Get Started
+                    </button>
+                )}
             </div>
         </header>
     );

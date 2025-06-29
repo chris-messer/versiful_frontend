@@ -14,6 +14,9 @@ jobs:
     env:
       S3_BUCKET: ${{ vars.S3_BUCKET }}
       CF_DISTRIBUTION: ${{ vars.CF_DISTRIBUTION }}
+      VITE_DOMAIN: ${{ vars.VITE_DOMAIN }}
+      VITE_COGNITO_CLIENT_ID: ${{ vars.VITE_COGNITO_CLIENT_ID }}
+      VITE_CALLBACK_URL: ${{ vars.VITE_CALLBACK_URL }}
 
     steps:
       - name: Checkout Repository
@@ -46,31 +49,34 @@ jobs:
             echo "✅ S3_BUCKET is set."
           fi
 
-      # - name: Configure AWS Credentials
-      #   uses: aws-actions/configure-aws-credentials@v2
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws-region: us-east-1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-      # - name: Install Node.js
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 18
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
-      # - name: Install Dependencies & Build React App
-      #   run: |
-      #     npm install
-      #     npm run build
+      - name: Install Dependencies & Build React App
+        run: |
+          npm install
+          VITE_AUTH_DOMAIN=$VITE_DOMAIN \
+          VITE_CLIENT_ID=$VITE_CLIENT_ID \
+          VITE_REDIRECT_URI=$VITE_REDIRECT_URI \
+          npm run build
 
-      # - name: Deploy `dist/` Folder to S3
-      #   run: |
-      #     aws s3 sync dist/ s3://$S3_BUCKET --delete --exact-timestamps --metadata-directive REPLACE
+      - name: Deploy `dist/` Folder to S3
+        run: |
+          aws s3 sync dist/ s3://$S3_BUCKET --delete --exact-timestamps --metadata-directive REPLACE
 
-      # - name: Ensure `index.html` is uploaded with correct content-type
-      #   run: |
-      #     aws s3 cp dist/index.html s3://$S3_BUCKET/index.html --content-type "text/html"
+      - name: Ensure `index.html` is uploaded with correct content-type
+        run: |
+          aws s3 cp dist/index.html s3://$S3_BUCKET/index.html --content-type "text/html"
 
-      # - name: Invalidate CloudFront Cache
-      #   run: |
-      #     aws cloudfront create-invalidation --distribution-id $CF_DISTRIBUTION --paths "/*"
+      - name: Invalidate CloudFront Cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id $CF_DISTRIBUTION --paths "/*"
