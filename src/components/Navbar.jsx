@@ -40,7 +40,7 @@ export default function Navbar() {
             <div className="container mx-auto flex items-center justify-between p-4">
                 <div className="flex items-center space-x-2">
                     <img src="/logo.svg" alt="Logo" className="h-10" />
-                    <span className="text-xl font-bold text-gray-800">Versiful-dev</span>
+                    <span className="text-xl font-bold text-gray-800">Versiful</span>
                 </div>
                 <nav>
                     <ul className="flex space-x-6">
