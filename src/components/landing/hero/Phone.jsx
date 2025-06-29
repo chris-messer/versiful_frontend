@@ -27,7 +27,7 @@ export default function Phone() {
                             </div>
                         </div>
                         <div className="chat-bubble text-white bg-blue-500">
-                            My friend has been very rude to me and hurt my feelings
+                            What would jesus say about betrayal?
                         </div>
                     </div>
                     <div className="chat chat-start text-left text-sm whitespace-pre-line">
