@@ -1,0 +1,72 @@
+/* Versiful Cognito Hosted UI branding */
+body, html {
+  background: linear-gradient(135deg, #f5f7fb, #e8eef9);
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #1c2541;
+}
+
+.logo-customizable {
+  max-height: 56px;
+  margin: 24px auto 12px;
+}
+
+.banner-customizable {
+  display: none; /* Hide default blue banner */
+}
+
+#login-form, #signup-form, .modal-body {
+  background: #ffffff;
+  border: 1px solid #e2e8f5;
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(15, 61, 145, 0.08);
+  padding: 24px 28px;
+}
+
+.btn, .idp_button {
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: 0 8px 20px rgba(15, 61, 145, 0.15);
+}
+
+.btn-primary, .btn-submit {
+  background-color: #0f3d91;
+  border-color: #0f3d91;
+}
+
+.btn-primary:hover, .btn-submit:hover {
+  background-color: #234ea0;
+  border-color: #234ea0;
+}
+
+.form-control,
+input[type=email],
+input[type=password],
+input[type=text] {
+  border: 1px solid #d6dce8;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 15px;
+}
+
+.form-control:focus {
+  border-color: #0f3d91;
+  box-shadow: 0 0 0 3px rgba(15, 61, 145, 0.15);
+}
+
+.idp_button {
+  border: 1px solid #d6dce8;
+  color: #1c2541;
+  background: #ffffff;
+}
+
+.idp_button:hover {
+  border-color: #0f3d91;
+  box-shadow: 0 6px 16px rgba(15, 61, 145, 0.12);
+}
+
+#login-form a,
+#signup-form a {
+  color: #0f3d91;
+  font-weight: 600;
+}
+
