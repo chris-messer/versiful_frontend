@@ -3,6 +3,8 @@ import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import LandingPage from "./pages/LandingPage";
+import FeaturesPage from "./pages/FeaturesPage";
+import HowItWorksPage from "./pages/HowItWorksPage";
 import Callback from "./pages/Callback";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
@@ -38,10 +40,12 @@ export default function App() {
         <AuthProvider>
             <Router>
                 {/* Default background for light and dark mode */}
-                <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors text-gray-900 dark:text-gray-100">
+                <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors text-gray-900 dark:text-gray-100 pt-14 md:pt-18">
                     <Navbar toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
                     <Routes>
                         <Route path="/" element={<LandingPage />} />
+                        <Route path="/features" element={<FeaturesPage />} />
+                        <Route path="/how-it-works" element={<HowItWorksPage />} />
                         <Route path="/callback" element={<Callback />} />
                         <Route path="/home" element={<Home />} />
                         <Route path="/settings" element={<Settings />} />

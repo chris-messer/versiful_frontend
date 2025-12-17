@@ -1,10 +1,9 @@
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
     const { isLoggedIn, setIsLoggedIn } = useAuth();
     const navigate = useNavigate();
-    console.log("Vite ENV Variables:", import.meta.env);
 
     const handleLogin = () => {
         const authDomain = import.meta.env.VITE_DOMAIN;
@@ -36,28 +35,39 @@ export default function Navbar() {
     };
 
     return (
-        <header className="bg-white shadow fixed top-0 left-0 w-full z-50">
-            <div className="container mx-auto flex items-center justify-between p-4">
-                <div className="flex items-center space-x-2">
-                    <img src="/logo.svg" alt="Logo" className="h-10" />
-                    <span className="text-xl font-bold text-gray-800">Versiful</span>
-                </div>
-                <nav>
-                    <ul className="flex space-x-6">
-                        {/* Add other navigation links here */}
+        <header className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur border-b border-gray-100 shadow-sm">
+            <div className="container mx-auto flex items-center justify-between px-4 py-3">
+                <Link to="/" className="flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2 focus:ring-offset-white rounded-lg">
+                    <img src="/logo.svg" alt="Versiful logo" className="h-9 w-9" />
+                    <span className="text-lg md:text-xl font-semibold text-gray-900">Versiful</span>
+                </Link>
+
+                <nav aria-label="Primary navigation">
+                    <ul className="flex items-center space-x-4 text-sm text-gray-700">
+                        <li>
+                            <Link to="/features" className="hover:text-blue-800 transition-colors">
+                                Features
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/how-it-works" className="hover:text-blue-800 transition-colors">
+                                How it works
+                            </Link>
+                        </li>
                     </ul>
                 </nav>
+
                 {isLoggedIn ? (
                     <button
                         onClick={handleLogout}
-                        className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700"
+                        className="px-4 py-2 rounded-lg text-white bg-red-600 hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-white"
                     >
                         Logout
                     </button>
                 ) : (
                     <button
                         onClick={handleLogin}
-                        className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                        className="px-4 py-2 rounded-lg text-white bg-blue-900 hover:bg-blue-950 transition-colors shadow focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-2 focus:ring-offset-white"
                     >
                         Get Started
                     </button>
