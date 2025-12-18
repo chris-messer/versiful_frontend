@@ -10,8 +10,6 @@ const WelcomeForm = () => {
         phone: "",
         confirmPhone: "",
         bibleVersion: "KJV",
-        dailyInspiration: false,
-        inspirationTime: "morning",
     });
 
     const [errors, setErrors] = useState({
@@ -69,19 +67,26 @@ const WelcomeForm = () => {
         }
 
         try {
-            const response = await fetch(`https://api.${import.meta.env.VITE_DOMAIN}/users`, {
+            const apiUrl = `https://api.${import.meta.env.VITE_DOMAIN}/users`;
+
+            // Ensure the user record exists before updating
+            await fetch(apiUrl, {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            const response = await fetch(apiUrl, {
                 method: "PUT",
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
-                    phone: formData.phone,
+                    firstName: formData.firstName || undefined,
+                    lastName: formData.lastName || undefined,
+                    phoneNumber: formData.phone,
                     bibleVersion: formData.bibleVersion,
-                    dailyInspiration: formData.dailyInspiration,
-                    inspirationTime: formData.dailyInspiration ? formData.inspirationTime : null,
                     isRegistered: true,
                 })
             });
@@ -103,37 +108,40 @@ const WelcomeForm = () => {
 
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white shadow-lg rounded-xl max-w-lg mx-auto">
-            <h2 className="text-xl font-semibold text-gray-800 text-center">Register</h2>
-
-            {/* First Name */}
-            <div className="form-control">
-                <label className="label">
-                    <span className="label-text font-medium">First Name</span>
-                </label>
-                <input
-                    type="text"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
-                    required
-                />
+        <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="text-center space-y-1">
+                <p className="text-xs uppercase tracking-wide text-blue-700 font-semibold">Verify your number</p>
+                <h2 className="text-xl font-semibold text-gray-900">So we can text you back</h2>
             </div>
 
-            {/* Last Name */}
-            <div className="form-control">
-                <label className="label">
-                    <span className="label-text font-medium">Last Name</span>
-                </label>
-                <input
-                    type="text"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    className="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
-                    required
-                />
+            {/* Name (optional) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="form-control">
+                    <label className="label">
+                        <span className="label-text font-medium">First Name (optional)</span>
+                    </label>
+                    <input
+                        type="text"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        className="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
+                        placeholder="Pat"
+                    />
+                </div>
+                <div className="form-control">
+                    <label className="label">
+                        <span className="label-text font-medium">Last Name (optional)</span>
+                    </label>
+                    <input
+                        type="text"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        className="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
+                        placeholder="Smith"
+                    />
+                </div>
             </div>
 
             {/* Phone Number with Masking */}
@@ -151,6 +159,7 @@ const WelcomeForm = () => {
                     className="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
                     required
                 />
+                <p className="text-xs text-gray-500 mt-1">We’ll send messages to this number only.</p>
                 {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
             </div>
 
@@ -183,7 +192,6 @@ const WelcomeForm = () => {
                     value={formData.bibleVersion}
                     onChange={handleChange}
                 >
-                    <option value="" disabled></option>
                     {bibleVersions.map((group, groupIndex) => (
                         <optgroup key={groupIndex} label={group.label}>
                             {group.versions.map((version, versionIndex) => (
@@ -194,40 +202,12 @@ const WelcomeForm = () => {
                 </select>
             </div>
 
-            {/* Receive Daily Inspiration Toggle */}
-            <div className="form-control flex flex-row justify-between items-center">
-                <span className="label-text font-medium">Receive Daily Inspiration?</span>
-                <input
-                    type="checkbox"
-                    name="dailyInspiration"
-                    checked={formData.dailyInspiration}
-                    onChange={handleChange}
-                    className="toggle"
-                />
-            </div>
-
-            {/* Preferred Time Selection (if daily inspiration is checked) */}
-            {formData.dailyInspiration && (
-                <div className="form-control">
-                    <label className="label">
-                        <span className="label-text font-medium">Preferred Time</span>
-                    </label>
-                    <select
-                        name="inspirationTime"
-                        value={formData.inspirationTime}
-                        onChange={handleChange}
-                        className="select select-bordered w-full"
-                    >
-                        <option value="morning">Morning</option>
-                        <option value="afternoon">Afternoon</option>
-                        <option value="evening">Evening</option>
-                    </select>
-                </div>
-            )}
-
             {/* Submit Button */}
-            <button type="submit" className="btn btn-primary w-full text-white bg-blue-600 hover:bg-blue-700 transition duration-200">
-                Get Started
+            <button
+                type="submit"
+                className="btn btn-primary w-full text-white bg-blue-900 hover:bg-blue-950 transition duration-200"
+            >
+                Continue
             </button>
         </form>
     );

@@ -58,12 +58,20 @@ export default function Navbar() {
                 </nav>
 
                 {isLoggedIn ? (
-                    <button
-                        onClick={handleLogout}
-                        className="px-4 py-2 rounded-lg text-white bg-red-600 hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-white"
-                    >
-                        Logout
-                    </button>
+                    <div className="flex items-center space-x-3">
+                        <Link
+                            to="/settings"
+                            className="px-4 py-2 rounded-lg border border-blue-900 text-blue-900 hover:bg-blue-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-2 focus:ring-offset-white"
+                        >
+                            Settings
+                        </Link>
+                        <button
+                            onClick={handleLogout}
+                            className="px-4 py-2 rounded-lg text-white bg-red-600 hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-white"
+                        >
+                            Logout
+                        </button>
+                    </div>
                 ) : (
                     <button
                         onClick={handleLogin}
