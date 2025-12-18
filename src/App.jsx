@@ -11,6 +11,7 @@ import Settings from "./pages/Settings";
 import Subscription from "./pages/Subscription";
 import Welcome from "./pages/Welcome";
 import { useEffect, useState } from "react";
+import SignIn from "./pages/SignIn";
 
 export default function App() {
     const [isDarkMode, setIsDarkMode] = useState(
@@ -51,6 +52,7 @@ export default function App() {
                         <Route path="/settings" element={<Settings />} />
                         <Route path="/subscription" element={<Subscription />} />
                         <Route path="/welcome" element={<Welcome />} />
+                        <Route path="/signin" element={<SignIn />} />
                     </Routes>
                     <Footer />
                 </div>

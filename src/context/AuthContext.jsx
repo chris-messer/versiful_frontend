@@ -18,10 +18,7 @@ export const AuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const login = () => {
-        const authDomain = import.meta.env.VITE_DOMAIN;
-        const clientId = import.meta.env.VITE_COGNITO_CLIENT_ID;
-        const redirectUri = encodeURIComponent(import.meta.env.VITE_CALLBACK_URL);
-        window.location.href = `https://auth.${authDomain}/login?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=${redirectUri}`;
+        window.location.href = "/signin";
     };
 
     const refreshToken = () => {
