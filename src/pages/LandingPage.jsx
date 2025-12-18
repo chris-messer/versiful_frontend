@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import Phone from "../components/landing/hero/Phone.jsx";
 
 const phoneNumber = "833-681-1158";
@@ -56,6 +57,8 @@ const reassurances = [
 ];
 
 export default function LandingPage() {
+    const { login } = useAuth();
+
     return (
         <div className="bg-gradient-to-b from-white via-blue-50/60 to-white text-gray-900">
             <section className="py-16">
@@ -72,18 +75,12 @@ export default function LandingPage() {
                             reflection—delivered right back to your phone.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-3">
-                            <a
-                                href={`sms:${phoneNumber}`}
+                            <button
+                                onClick={login}
                                 className="inline-flex items-center justify-center rounded-xl bg-blue-900 px-5 py-3 text-white font-semibold shadow-lg shadow-blue-200 hover:bg-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2"
                             >
-                                Text {phoneNumber}
-                            </a>
-                            <Link
-                                to="/subscription"
-                                className="inline-flex items-center justify-center rounded-xl border border-blue-900 px-5 py-3 text-blue-900 font-semibold bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2"
-                            >
-                                Create an account
-                            </Link>
+                                Get started
+                            </button>
                         </div>
                         <div className="flex flex-wrap gap-4 text-sm text-gray-700">
                             <div className="flex items-center gap-2">
@@ -102,6 +99,13 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </div>
+                <p className="text-sm text-gray-500 text-center mt-6 px-6">
+                    Prefer to try first?{" "}
+                    <a href={`sms:${phoneNumber}`} className="font-semibold text-blue-700 hover:underline">
+                        Text {phoneNumber}
+                    </a>{" "}
+                    for a quick reply before you set up your account.
+                </p>
             </section>
 
             <section className="bg-white py-14 shadow-inner">
@@ -199,19 +203,16 @@ export default function LandingPage() {
                         history of every conversation.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                        <a
-                            href={`sms:${phoneNumber}`}
+                        <button
+                            onClick={login}
                             className="inline-flex items-center justify-center rounded-xl bg-white px-5 py-3 text-blue-900 font-semibold shadow-lg hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-900"
                         >
-                            Text {phoneNumber}
-                        </a>
-                        <Link
-                            to="/subscription"
-                            className="inline-flex items-center justify-center rounded-xl border border-white px-5 py-3 text-white font-semibold hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-900"
-                        >
-                            Create an account
-                        </Link>
+                            Get started
+                        </button>
                     </div>
+                    <p className="text-sm text-blue-100 text-center max-w-2xl mx-auto mt-4">
+                        Want to try first? <a href={`sms:${phoneNumber}`} className="font-semibold underline">Text {phoneNumber}</a> for a quick reply.
+                    </p>
                 </div>
             </section>
         </div>

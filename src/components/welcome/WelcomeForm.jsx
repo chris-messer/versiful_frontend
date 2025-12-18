@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
-import InputMask from "react-input-mask";
 import { bibleVersions } from "../../constants/bibleVersions";
 
 const WelcomeForm = () => {
@@ -8,22 +7,14 @@ const WelcomeForm = () => {
         firstName: "",
         lastName: "",
         phone: "",
-        confirmPhone: "",
         bibleVersion: "KJV",
     });
 
     const [errors, setErrors] = useState({
         phone: "",
-        confirmPhone: ""
     });
 
     const navigate = useNavigate();
-
-    const validatePhoneNumber = (phone) => {
-        // Ensure correct phone format (XXX) XXX-XXXX
-        const phonePattern = /^\(\d{3}\) \d{3}-\d{4}$/;
-        return phonePattern.test(phone);
-    };
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -31,40 +22,22 @@ const WelcomeForm = () => {
             ...formData,
             [name]: type === "checkbox" ? checked : value,
         });
-
-        if (name === "phone" || name === "confirmPhone") {
-            if (!validatePhoneNumber(value)) {
-                setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    [name]: "Invalid phone format. Use (123) 456-7890.",
-                }));
-            } else {
-                setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    [name]: "",
-                }));
-            }
-        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!validatePhoneNumber(formData.phone)) {
+        const digitsOnly = formData.phone.replace(/\D/g, "");
+
+        if (digitsOnly.length !== 10) {
             setErrors((prevErrors) => ({
                 ...prevErrors,
-                phone: "Please enter a valid phone number in (123) 456-7890 format.",
+                phone: "Enter a 10-digit US number (we format it for you).",
             }));
             return;
         }
 
-        if (formData.phone !== formData.confirmPhone) {
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                confirmPhone: "Phone numbers do not match.",
-            }));
-            return;
-        }
+        const normalizedPhone = `+1${digitsOnly}`;
 
         try {
             const apiUrl = `https://api.${import.meta.env.VITE_DOMAIN}/users`;
@@ -85,7 +58,7 @@ const WelcomeForm = () => {
                 body: JSON.stringify({
                     firstName: formData.firstName || undefined,
                     lastName: formData.lastName || undefined,
-                    phoneNumber: formData.phone,
+                    phoneNumber: normalizedPhone,
                     bibleVersion: formData.bibleVersion,
                     isRegistered: true,
                 })
@@ -149,36 +122,18 @@ const WelcomeForm = () => {
                 <label className="label">
                     <span className="label-text font-medium">Phone Number</span>
                 </label>
-                <InputMask
-                    mask="(999) 999-9999"
+                <input
                     type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="(123) 456-7890"
+                    placeholder="1234567890 or (123) 456-7890"
                     className="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
+                    inputMode="tel"
                     required
                 />
-                <p className="text-xs text-gray-500 mt-1">We’ll send messages to this number only.</p>
+                <p className="text-xs text-gray-500 mt-1">Any 10-digit US number works. No app needed.</p>
                 {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
-            </div>
-
-            {/* Confirm Phone Number */}
-            <div className="form-control">
-                <label className="label">
-                    <span className="label-text font-medium">Confirm Phone Number</span>
-                </label>
-                <InputMask
-                    mask="(999) 999-9999"
-                    type="tel"
-                    name="confirmPhone"
-                    value={formData.confirmPhone}
-                    onChange={handleChange}
-                    placeholder="(123) 456-7890"
-                    className="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
-                    required
-                />
-                {errors.confirmPhone && <p className="text-red-500 text-sm mt-1">{errors.confirmPhone}</p>}
             </div>
 
             {/* Preferred Bible Version */}

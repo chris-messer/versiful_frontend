@@ -23,26 +23,48 @@ export default function SettingsPage() {
     const [isPhoneSaving, setIsPhoneSaving] = useState(false);
 
     useEffect(() => {
-        // Mock API call to fetch user settings
         const fetchSettings = async () => {
-            const mockApiResponse = {
-                subscription: {
-                    status: "Active",
-                    nextBillingDate: "2025-03-01",
-                    plan: "Premium",
-                },
-                preferences: {
-                    bibleVersion: "NIV",
-                    responseStyle: "Expanded",
-                    dailyInspiration: true,
-                    dailyInspirationTime: "morning",
-                },
-                account: {
-                    email: "user@example.com",
-                    phoneNumber: "+1 (555) 555-1234",
-                },
-            };
-            setSettings(mockApiResponse);
+            try {
+                const apiUrl = `https://api.${import.meta.env.VITE_DOMAIN}/users`;
+                const resp = await fetch(apiUrl, {
+                    method: "GET",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                });
+
+                if (!resp.ok) {
+                    throw new Error(`HTTP error ${resp.status}`);
+                }
+
+                const data = await resp.json();
+
+                const subscription = {
+                    status: data.isSubscribed ? "Active" : "Free",
+                    nextBillingDate: data.nextBillingDate || skeleton.subscription.nextBillingDate,
+                    plan: data.plan
+                        ? data.plan.charAt(0).toUpperCase() + data.plan.slice(1)
+                        : data.isSubscribed
+                            ? "Premium"
+                            : "Free",
+                };
+
+                const preferences = {
+                    bibleVersion: data.bibleVersion || skeleton.preferences.bibleVersion,
+                    responseStyle: skeleton.preferences.responseStyle,
+                    dailyInspiration: skeleton.preferences.dailyInspiration,
+                    dailyInspirationTime: skeleton.preferences.dailyInspirationTime,
+                };
+
+                const account = {
+                    email: data.email || "",
+                    phoneNumber: data.phoneNumber || "",
+                };
+
+                setSettings({ subscription, preferences, account });
+            } catch (err) {
+                console.error("Failed to load settings", err);
+                setSettings(skeleton);
+            }
         };
 
         fetchSettings();
@@ -58,7 +80,12 @@ export default function SettingsPage() {
     };
 
     const handleUpdatePhoneNumber = async (phoneNumber) => {
-        if (!phoneNumber || phoneNumber.length < 7) return;
+        const digits = (phoneNumber || "").replace(/\D/g, "");
+        if (digits.length !== 10) {
+            alert("Please enter a 10-digit US phone number.");
+            return;
+        }
+        const normalized = `+1${digits}`;
         setIsPhoneSaving(true);
         try {
             const apiUrl = `https://api.${import.meta.env.VITE_DOMAIN}/users`;
@@ -66,14 +93,14 @@ export default function SettingsPage() {
                 method: "PUT",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ phoneNumber }),
+                body: JSON.stringify({ phoneNumber: normalized }),
             });
             if (!resp.ok) {
                 throw new Error(`HTTP error ${resp.status}`);
             }
             setSettings((prev) =>
                 prev
-                    ? { ...prev, account: { ...prev.account, phoneNumber } }
+                    ? { ...prev, account: { ...prev.account, phoneNumber: normalized } }
                     : prev
             );
         } catch (err) {

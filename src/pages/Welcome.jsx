@@ -1,9 +1,20 @@
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import WelcomeForm from "../components/welcome/WelcomeForm";
 import Testimonials from "../components/Testimonials";
 import PrivacyNotice from "../components/welcome/PrivacyNotice";
-import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const WelcomePage = () => {
+    const { isLoggedIn, login } = useAuth();
+
+    useEffect(() => {
+        // Require auth before phone capture
+        if (!isLoggedIn) {
+            login();
+        }
+    }, [isLoggedIn, login]);
+
     return (
         <main className="min-h-screen bg-gray-50 text-gray-900 pt-14 md:pt-18 px-4">
             <div className="max-w-5xl mx-auto py-10 grid lg:grid-cols-[1.1fr,1fr] gap-8 items-start">

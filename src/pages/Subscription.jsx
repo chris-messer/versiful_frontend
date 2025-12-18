@@ -1,5 +1,7 @@
-import SubscriptionCard from "../components/subscription/SubscriptionCard.jsx";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import SubscriptionCard from "../components/subscription/SubscriptionCard.jsx";
+import { useAuth } from "../context/AuthContext";
 
 const plans = [
     {
@@ -44,7 +46,16 @@ const plans = [
 ];
 
 export default function SubscriptionPage() {
+    const { isLoggedIn, login } = useAuth();
     const navigate = useNavigate();
+    const [message, setMessage] = useState("");
+
+    useEffect(() => {
+        // Require auth before plan selection
+        if (!isLoggedIn) {
+            login();
+        }
+    }, [isLoggedIn, login]);
 
     const handleSubscribe = async (plan) => {
         const apiUrl = `https://api.${import.meta.env.VITE_DOMAIN}/users`;
@@ -68,17 +79,17 @@ export default function SubscriptionPage() {
                     }
 
                     await response.json();
-                    navigate("/settings");
+                    setMessage("You’re on the Free Plan. You can start texting right away or adjust your settings.");
                 } catch (error) {
                     console.error("Error updating subscription:", error);
                     alert("Failed to subscribe. Please try again.");
                 }
                 break;
             case "monthly":
-                alert("Redirecting to checkout for the Premium Plan...");
+                setMessage("Premium checkout is coming soon. Please start on the Free Plan today.");
                 break;
             case "annual":
-                alert("Redirecting to checkout for the Annual Premium Plan...");
+                setMessage("Annual checkout is coming soon. Please start on the Free Plan today.");
                 break;
             default:
                 alert("Something went wrong. Please try again.");
@@ -88,6 +99,27 @@ export default function SubscriptionPage() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-white via-blue-50/40 to-white text-gray-900 py-14 px-6">
             <div className="max-w-5xl mx-auto space-y-10">
+                {message && (
+                    <div className="rounded-xl border border-blue-200 bg-blue-50 text-blue-900 px-4 py-3">
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                            <span>{message}</span>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => navigate("/settings")}
+                                    className="rounded-lg px-4 py-2 text-sm font-semibold bg-blue-900 text-white hover:bg-blue-950"
+                                >
+                                    Go to settings
+                                </button>
+                                <a
+                                    href="sms:833-681-1158"
+                                    className="rounded-lg px-4 py-2 text-sm font-semibold border border-blue-900 text-blue-900 hover:bg-blue-100"
+                                >
+                                    Text now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                )}
                 <div className="text-center space-y-3">
                     <p className="text-sm font-semibold uppercase tracking-wide text-blue-800">Plans for every pace</p>
                     <h1 className="text-4xl font-bold leading-tight">Choose the guidance that fits you</h1>

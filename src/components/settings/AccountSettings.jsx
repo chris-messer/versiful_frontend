@@ -7,8 +7,15 @@ export default function AccountSettings({ account, loading, onSavePhone }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const formatForDisplay = (value) => {
+    const digits = (value || "").replace(/\D/g, "");
+    const trimmed = digits.length === 11 && digits.startsWith("1") ? digits.slice(1) : digits;
+    if (trimmed.length < 10) return trimmed;
+    return `(${trimmed.slice(0, 3)}) ${trimmed.slice(3, 6)}-${trimmed.slice(6, 10)}`;
+  };
+
   useEffect(() => {
-    setPhone(account?.phoneNumber || "");
+    setPhone(formatForDisplay(account?.phoneNumber || ""));
     setDirty(false);
     setError("");
     setSuccess("");
@@ -23,7 +30,8 @@ export default function AccountSettings({ account, loading, onSavePhone }) {
       return;
     }
     setError("");
-    onSavePhone(phone);
+    const normalized = `+1${digits}`;
+    onSavePhone(normalized);
     setSuccess("Saved.");
     setDirty(false);
   };

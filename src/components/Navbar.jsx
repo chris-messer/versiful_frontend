@@ -2,16 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-    const { isLoggedIn, setIsLoggedIn } = useAuth();
+    const { isLoggedIn, setIsLoggedIn, login } = useAuth();
     const navigate = useNavigate();
-
-    const handleLogin = () => {
-        const authDomain = import.meta.env.VITE_DOMAIN;
-        const clientId = import.meta.env.VITE_COGNITO_CLIENT_ID;
-        const redirectUri = encodeURIComponent(import.meta.env.VITE_CALLBACK_URL);
-
-        window.location.href = `https://auth.${authDomain}/login?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=${redirectUri}`;
-    };
 
     const handleLogout = async () => {
         try {
@@ -74,7 +66,7 @@ export default function Navbar() {
                     </div>
                 ) : (
                     <button
-                        onClick={handleLogin}
+                        onClick={login}
                         className="px-4 py-2 rounded-lg text-white bg-blue-900 hover:bg-blue-950 transition-colors shadow focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-2 focus:ring-offset-white"
                     >
                         Get Started

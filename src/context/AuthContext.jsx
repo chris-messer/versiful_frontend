@@ -17,6 +17,13 @@ const userPool = new CognitoUserPool(poolData);
 export const AuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+    const login = () => {
+        const authDomain = import.meta.env.VITE_DOMAIN;
+        const clientId = import.meta.env.VITE_COGNITO_CLIENT_ID;
+        const redirectUri = encodeURIComponent(import.meta.env.VITE_CALLBACK_URL);
+        window.location.href = `https://auth.${authDomain}/login?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=${redirectUri}`;
+    };
+
     const refreshToken = () => {
         const user = userPool.getCurrentUser();
 
@@ -58,7 +65,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, refreshToken }}>
+        <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, refreshToken, login }}>
             {children}
         </AuthContext.Provider>
     );

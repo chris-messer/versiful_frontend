@@ -39,13 +39,14 @@ export default function SubscriptionCard({ plan, onSubscribe }) {
             plan.highlighted
               ? "bg-blue-900 text-white hover:bg-blue-950 shadow"
               : "border border-blue-900 text-blue-900 hover:bg-blue-50"
-          }`}
-          onClick={() => onSubscribe(plan)}
+          } ${plan.id !== "free" ? "opacity-70 cursor-not-allowed" : ""}`}
+          onClick={() => plan.id === "free" ? onSubscribe(plan) : onSubscribe(plan)}
+          disabled={plan.id !== "free"}
         >
-          {plan.id === "free" ? "Start for free" : "Choose plan"}
+          {plan.id === "free" ? "Start for free" : "Coming soon"}
         </button>
         {plan.id !== "free" && (
-          <p className="text-xs text-gray-600 mt-2 text-center">Cancel anytime.</p>
+          <p className="text-xs text-gray-600 mt-2 text-center">Checkout opens soon.</p>
         )}
       </div>
     </div>
