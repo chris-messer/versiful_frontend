@@ -91,8 +91,8 @@ export default function ChatCard() {
 
     return (
         <div className="flex justify-center items-center py-10">
-            <div className="w-full max-w-md bg-white bg-opacity-80 p-4 rounded-lg shadow-lg">
-                <div className="text-center text-gray-700 mb-4">
+            <div className="w-full max-w-md bg-white bg-opacity-80 dark:bg-gray-800/80 p-4 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700">
+                <div className="text-center text-gray-700 dark:text-gray-200 mb-4">
                     <h2 className="text-lg font-semibold">Try it now!</h2>
                     {usageCount >= usageLimit ? (
                         <p className="text-red-500">You’ve reached the usage limit. Please sign up to continue.</p>
@@ -101,13 +101,17 @@ export default function ChatCard() {
                     )}
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex items-center space-x-2" disabled={usageCount >= usageLimit}>
+                <form
+                    onSubmit={handleSubmit}
+                    className="flex flex-col sm:flex-row sm:items-center gap-2"
+                    disabled={usageCount >= usageLimit}
+                >
                     <input
                         type="text"
                         placeholder="I am struggling with the loss of a loved one"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        className="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full sm:flex-grow p-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
                         disabled={usageCount >= usageLimit}
                     />
                     <button
@@ -128,7 +132,7 @@ export default function ChatCard() {
                         <select
                             value={TextSource}
                             onChange={(e) => setTextSource(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full p-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                             disabled={usageCount >= usageLimit}
                         >
                             <option value="" disabled>Select a version</option>

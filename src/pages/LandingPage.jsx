@@ -61,20 +61,20 @@ export default function LandingPage() {
 
     return (
         <div className="bg-gradient-to-b from-white via-blue-50/60 to-white text-gray-900">
-            <section className="py-16">
-                <div className="container mx-auto max-w-6xl px-6 lg:px-10 grid lg:grid-cols-2 gap-10 items-center">
+            <section className="pt-14 pb-12 sm:pt-16 sm:pb-14">
+                <div className="container mx-auto max-w-6xl px-6 lg:px-10 grid lg:grid-cols-2 gap-12 items-center">
                     <div className="space-y-6 text-left">
                         <p className="text-sm font-semibold uppercase tracking-wide text-blue-800">
                             Text-based Scripture guidance
                         </p>
-                        <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight">
                             Guidance from the Word, Right When You Need It
                         </h1>
-                        <p className="text-lg text-gray-700">
+                        <p className="text-base sm:text-lg text-gray-700 leading-relaxed max-w-2xl">
                             Tell us what you’re walking through and receive a short Bible passage with a gentle
                             reflection—delivered right back to your phone.
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                             <button
                                 onClick={login}
                                 className="inline-flex items-center justify-center rounded-xl bg-blue-900 px-5 py-3 text-white font-semibold shadow-lg shadow-blue-200 hover:bg-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2"
@@ -82,7 +82,7 @@ export default function LandingPage() {
                                 Get started
                             </button>
                         </div>
-                        <div className="flex flex-wrap gap-4 text-sm text-gray-700">
+                        <div className="flex flex-wrap gap-3 text-sm text-gray-700">
                             <div className="flex items-center gap-2">
                                 <span className="h-2 w-2 rounded-full bg-green-500"></span>
                                 <span>No app to install—just text.</span>
@@ -94,12 +94,12 @@ export default function LandingPage() {
                         </div>
                     </div>
                     <div className="flex justify-center">
-                        <div className="scale-90 md:scale-100">
+                        <div className="w-full max-w-[320px] sm:max-w-[360px] md:max-w-[400px]">
                             <Phone />
                         </div>
                     </div>
                 </div>
-                <p className="text-sm text-gray-500 text-center mt-6 px-6">
+                <p className="text-sm text-gray-500 text-center mt-6 px-6 leading-relaxed">
                     Prefer to try first?{" "}
                     <a href={`sms:${phoneNumber}`} className="font-semibold text-blue-700 hover:underline">
                         Text {phoneNumber}
@@ -108,14 +108,14 @@ export default function LandingPage() {
                 </p>
             </section>
 
-            <section className="bg-white py-14 shadow-inner">
+            <section className="bg-white py-12 sm:py-14 shadow-inner">
                 <div className="container mx-auto max-w-5xl px-6 lg:px-10 space-y-8 text-center">
                     <h2 className="text-3xl font-bold text-gray-900">How it works</h2>
-                    <div className="grid md:grid-cols-3 gap-6">
+                    <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
                         {steps.map((step, index) => (
                             <div
                                 key={step.title}
-                                className="h-full rounded-2xl border border-gray-100 bg-gray-50 px-6 py-6 text-left shadow-sm"
+                                className="h-full rounded-2xl border border-gray-100 bg-gray-50 px-6 py-6 text-left shadow-sm space-y-3"
                             >
                                 <div className="mb-4 flex items-center gap-3">
                                     <span className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-900 text-white font-semibold">
@@ -130,15 +130,15 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            <section className="bg-blue-50 py-14">
+            <section className="bg-blue-50 py-12 sm:py-14">
                 <div className="container mx-auto max-w-5xl px-6 lg:px-10 grid md:grid-cols-2 gap-10 items-start">
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                         <h2 className="text-3xl font-bold text-gray-900">What you can text</h2>
-                        <p className="text-gray-700">
+                        <p className="text-gray-700 leading-relaxed">
                             Use your own words. Share the situation, a feeling, or a question—Versiful will respond with
                             Scripture and a brief reflection tailored to it.
                         </p>
-                        <div className="grid sm:grid-cols-2 gap-3">
+                        <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                             {samplePrompts.map((prompt) => (
                                 <div
                                     key={prompt}
@@ -173,11 +173,11 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            <section className="bg-white py-14">
+            <section className="bg-white py-12 sm:py-14">
                 <div className="container mx-auto max-w-6xl px-6 lg:px-10 space-y-8">
                     <div className="text-center space-y-3">
                         <h2 className="text-3xl font-bold text-gray-900">Why people trust Versiful</h2>
-                        <p className="text-gray-700">
+                        <p className="text-gray-700 leading-relaxed">
                             Built for older and less technical users who want straightforward help grounded in Scripture.
                         </p>
                     </div>
@@ -195,10 +195,10 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            <section className="bg-blue-900 text-white py-14">
+            <section className="bg-blue-900 text-white py-12 sm:py-14">
                 <div className="container mx-auto max-w-4xl px-6 lg:px-10 text-center space-y-6">
                     <h3 className="text-3xl font-bold">Ready when you are</h3>
-                    <p className="text-lg text-blue-100">
+                    <p className="text-lg text-blue-100 leading-relaxed">
                         Text us now for a Scripture response, or create an account for unlimited guidance and a saved
                         history of every conversation.
                     </p>
