@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import Subscription from "./pages/Subscription";
 import Welcome from "./pages/Welcome";
+import Chat from "./pages/Chat";
 import { useEffect } from "react";
 import SignIn from "./pages/SignIn";
 
@@ -38,6 +39,7 @@ export default function App() {
                         <Route path="/how-it-works" element={<HowItWorksPage />} />
                         <Route path="/callback" element={<Callback />} />
                         <Route path="/home" element={<Home />} />
+                        <Route path="/chat" element={<Chat />} />
                         <Route path="/settings" element={<Settings />} />
                         <Route path="/subscription" element={<Subscription />} />
                         <Route path="/welcome" element={<Welcome />} />

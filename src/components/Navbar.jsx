@@ -7,6 +7,12 @@ const navLinks = [
     { to: "/how-it-works", label: "How it works" },
 ];
 
+const loggedInNavLinks = [
+    { to: "/chat", label: "Chat" },
+    { to: "/features", label: "Features" },
+    { to: "/how-it-works", label: "How it works" },
+];
+
 export default function Navbar() {
     const { isLoggedIn, setIsLoggedIn, login } = useAuth();
     const navigate = useNavigate();
@@ -71,7 +77,7 @@ export default function Navbar() {
                     </Link>
 
                     <nav className="hidden lg:flex items-center gap-8 text-sm text-gray-700" aria-label="Primary navigation">
-                        {navLinks.map((link) => (
+                        {(isLoggedIn ? loggedInNavLinks : navLinks).map((link) => (
                             <Link key={link.to} to={link.to} className="hover:text-blue-800 transition-colors">
                                 {link.label}
                             </Link>
@@ -104,7 +110,7 @@ export default function Navbar() {
                         className="lg:hidden mt-2 rounded-2xl border border-gray-100 bg-white shadow-lg ring-1 ring-gray-100"
                     >
                         <nav className="flex flex-col divide-y divide-gray-100" aria-label="Mobile navigation">
-                            {navLinks.map((link) => (
+                            {(isLoggedIn ? loggedInNavLinks : navLinks).map((link) => (
                                 <Link
                                     key={link.to}
                                     to={link.to}
