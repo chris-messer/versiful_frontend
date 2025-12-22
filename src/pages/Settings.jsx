@@ -48,10 +48,28 @@ export default function SettingsPage() {
                 }
 
                 const data = await resp.json();
+                
+                console.log("Raw user data from backend:", data);
+                console.log("isSubscribed:", data.isSubscribed);
+                console.log("plan:", data.plan);
+                console.log("currentPeriodEnd:", data.currentPeriodEnd);
+
+                // Convert currentPeriodEnd timestamp to readable date
+                let nextBillingDate = skeleton.subscription.nextBillingDate;
+                if (data.currentPeriodEnd) {
+                    const timestamp = parseInt(data.currentPeriodEnd);
+                    const date = new Date(timestamp * 1000); // Convert from Unix timestamp to milliseconds
+                    nextBillingDate = date.toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+                    console.log("Formatted next billing date:", nextBillingDate);
+                }
 
                 const subscription = {
                     status: data.isSubscribed ? "Active" : "Free",
-                    nextBillingDate: data.nextBillingDate || skeleton.subscription.nextBillingDate,
+                    nextBillingDate: nextBillingDate,
                     plan: data.plan
                         ? data.plan.charAt(0).toUpperCase() + data.plan.slice(1)
                         : data.isSubscribed
@@ -59,7 +77,10 @@ export default function SettingsPage() {
                             : "Free",
                     isSubscribed: data.isSubscribed,
                     plan_monthly_cap: data.plan_monthly_cap,
+                    cancelAtPeriodEnd: data.cancelAtPeriodEnd || false,
                 };
+                
+                console.log("Formatted subscription object:", subscription);
 
                 const preferences = {
                     bibleVersion: data.bibleVersion || skeleton.preferences.bibleVersion,
