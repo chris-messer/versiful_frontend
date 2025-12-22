@@ -21,6 +21,17 @@ export default function SettingsPage() {
     const [settings, setSettings] = useState(null);
     const [isSaving, setIsSaving] = useState(false);
     const [isPhoneSaving, setIsPhoneSaving] = useState(false);
+    const [subscriptionSuccess, setSubscriptionSuccess] = useState(false);
+
+    useEffect(() => {
+        // Check for subscription success from URL params
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('subscription') === 'success') {
+            setSubscriptionSuccess(true);
+            // Clean up URL
+            window.history.replaceState({}, '', window.location.pathname);
+        }
+    }, []);
 
     useEffect(() => {
         const fetchSettings = async () => {
@@ -46,6 +57,8 @@ export default function SettingsPage() {
                         : data.isSubscribed
                             ? "Premium"
                             : "Free",
+                    isSubscribed: data.isSubscribed,
+                    plan_monthly_cap: data.plan_monthly_cap,
                 };
 
                 const preferences = {
@@ -125,7 +138,26 @@ export default function SettingsPage() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                {subscriptionSuccess && (
+                    <div className="rounded-xl border border-green-200 bg-green-50 text-green-900 px-4 py-3">
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <p className="font-semibold">🎉 Subscription Activated!</p>
+                                <p className="text-sm mt-1">
+                                    Welcome to Premium! You now have unlimited messages. Your subscription details will appear below.
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => setSubscriptionSuccess(false)}
+                                className="text-green-900 hover:text-green-950"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">{/* Rest of the content */}
                     <div className="lg:col-span-2 space-y-6">
                         <SubscriptionManagement subscription={data.subscription} loading={!settings} />
                         <PersonalizationSettings

@@ -1,4 +1,6 @@
-export default function SubscriptionCard({ plan, onSubscribe }) {
+export default function SubscriptionCard({ plan, onSubscribe, loading = false, disabled = false }) {
+  const isDisabled = loading || disabled;
+  
   return (
     <div
       className={`rounded-2xl border ${
@@ -21,7 +23,7 @@ export default function SubscriptionCard({ plan, onSubscribe }) {
         {plan.features.length === 0 ? (
           <li className="flex items-start gap-2">
             <span className="mt-1 h-2 w-2 rounded-full bg-blue-900"></span>
-            <span>Includes up to three guided responses per week.</span>
+            <span>Includes up to 5 guided responses per month.</span>
           </li>
         ) : (
           plan.features.map((feature, index) => (
@@ -39,15 +41,12 @@ export default function SubscriptionCard({ plan, onSubscribe }) {
             plan.highlighted
               ? "bg-blue-900 text-white hover:bg-blue-950 shadow"
               : "border border-blue-900 text-blue-900 hover:bg-blue-50"
-          } ${plan.id !== "free" ? "opacity-70 cursor-not-allowed" : ""}`}
-          onClick={() => plan.id === "free" ? onSubscribe(plan) : onSubscribe(plan)}
-          disabled={plan.id !== "free"}
+          } ${isDisabled ? "opacity-70 cursor-not-allowed" : ""}`}
+          onClick={() => onSubscribe(plan)}
+          disabled={isDisabled}
         >
-          {plan.id === "free" ? "Start for free" : "Coming soon"}
+          {loading ? "Processing..." : plan.id === "free" ? "Start for free" : "Subscribe now"}
         </button>
-        {plan.id !== "free" && (
-          <p className="text-xs text-gray-600 mt-2 text-center">Checkout opens soon.</p>
-        )}
       </div>
     </div>
   );
