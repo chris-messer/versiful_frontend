@@ -19,15 +19,15 @@ export const AuthProvider = ({ children }) => {
                 method: 'GET',
                 credentials: 'include'
             });
-            
+
             if (response.ok) {
                 setIsLoggedIn(true);
             } else {
-                setIsLoggedIn(false);
+                    setIsLoggedIn(false);
             }
         } catch (error) {
             console.error("Error checking login state:", error);
-            setIsLoggedIn(false);
+                        setIsLoggedIn(false);
         } finally {
             setLoading(false);
         }
