@@ -71,8 +71,7 @@ export default function LandingPage() {
                             Guidance from the Word, Right When You Need It
                         </h1>
                         <p className="text-base sm:text-lg text-gray-700 leading-relaxed max-w-2xl">
-                            Tell us what you’re walking through and receive a short Bible passage with a gentle
-                            reflection—delivered right back to your phone.
+                            Share what you're facing and receive a Bible passage with a gentle reflection—delivered to your phone.
                         </p>
                         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                             <button

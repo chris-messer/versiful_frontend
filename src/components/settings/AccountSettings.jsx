@@ -30,8 +30,7 @@ export default function AccountSettings({ account, loading, onSavePhone }) {
       return;
     }
     setError("");
-    const normalized = `+1${digits}`;
-    onSavePhone(normalized);
+    onSavePhone(phone);
     setSuccess("Saved.");
     setDirty(false);
   };

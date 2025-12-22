@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 
 const navLinks = [
@@ -17,6 +17,8 @@ export default function Navbar() {
     const { isLoggedIn, setIsLoggedIn, login } = useAuth();
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const profileRef = useRef(null);
 
     useEffect(() => {
         document.body.style.overflow = isMenuOpen ? "hidden" : "";
@@ -24,6 +26,20 @@ export default function Navbar() {
             document.body.style.overflow = "";
         };
     }, [isMenuOpen]);
+
+    useEffect(() => {
+        // Close profile dropdown when clicking outside
+        const handleClickOutside = (event) => {
+            if (profileRef.current && !profileRef.current.contains(event.target)) {
+                setIsProfileOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const handleLogout = async () => {
         try {
@@ -42,18 +58,54 @@ export default function Navbar() {
     const NavButtons = ({ isMobile = false }) =>
         isLoggedIn ? (
             <div className={`flex ${isMobile ? "flex-col gap-3 w-full" : "items-center gap-3"}`}>
-                <Link
-                    to="/settings"
-                    className={`px-4 py-2 rounded-xl border border-blue-900 text-blue-900 hover:bg-blue-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-2 focus:ring-offset-white ${isMobile ? "w-full text-center" : ""}`}
-                >
-                    Settings
-                </Link>
-                <button
-                    onClick={handleLogout}
-                    className={`px-4 py-2 rounded-xl text-white bg-red-600 hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-white ${isMobile ? "w-full" : ""}`}
-                >
-                    Logout
-                </button>
+                {isMobile ? (
+                    <>
+                        <Link
+                            to="/settings"
+                            className="px-4 py-2 rounded-xl border border-blue-900 text-blue-900 hover:bg-blue-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-2 focus:ring-offset-white w-full text-center"
+                        >
+                            Account
+                        </Link>
+                        <button
+                            onClick={handleLogout}
+                            className="px-4 py-2 rounded-xl text-white bg-red-600 hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-white w-full"
+                        >
+                            Logout
+                        </button>
+                    </>
+                ) : (
+                    <div ref={profileRef} className="relative">
+                        <button
+                            onClick={() => setIsProfileOpen(!isProfileOpen)}
+                            className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-900 text-white font-semibold hover:bg-blue-950 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-2"
+                            aria-label="Profile menu"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </button>
+                        {isProfileOpen && (
+                            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
+                                <Link
+                                    to="/settings"
+                                    onClick={() => setIsProfileOpen(false)}
+                                    className="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                                >
+                                    Account
+                                </Link>
+                                <button
+                                    onClick={() => {
+                                        setIsProfileOpen(false);
+                                        handleLogout();
+                                    }}
+                                    className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         ) : (
             <button

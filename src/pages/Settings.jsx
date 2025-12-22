@@ -7,9 +7,6 @@ const skeleton = {
     subscription: { status: "...", nextBillingDate: "..." },
     preferences: {
         bibleVersion: "",
-        responseStyle: "Expanded",
-        dailyInspiration: false,
-        dailyInspirationTime: "morning",
     },
     account: {
         email: "",
@@ -84,9 +81,6 @@ export default function SettingsPage() {
 
                 const preferences = {
                     bibleVersion: data.bibleVersion || skeleton.preferences.bibleVersion,
-                    responseStyle: skeleton.preferences.responseStyle,
-                    dailyInspiration: skeleton.preferences.dailyInspiration,
-                    dailyInspirationTime: skeleton.preferences.dailyInspirationTime,
                 };
 
                 const account = {
@@ -152,10 +146,9 @@ export default function SettingsPage() {
             <div className="max-w-5xl mx-auto space-y-8">
                 <div className="text-center space-y-2">
                     <p className="text-sm font-semibold uppercase tracking-wide text-blue-800">Your account</p>
-                    <h1 className="text-3xl md:text-4xl font-bold">Manage your guidance settings</h1>
+                    <h1 className="text-3xl md:text-4xl font-bold">Manage your account</h1>
                     <p className="text-gray-700 max-w-3xl mx-auto">
-                        Update your plan, preferences, and contact info. Changes save instantly—no need to re-enter
-                        them later.
+                        Update your plan, preferences, and contact info. Changes save instantly.
                     </p>
                 </div>
 
