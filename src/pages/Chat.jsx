@@ -189,8 +189,9 @@ export default function Chat() {
             {/* Sidebar - Can be toggled on all screen sizes */}
             <aside className={`
                 ${showSidebar ? 'translate-x-0' : '-translate-x-full'} 
-                fixed md:relative
+                fixed
                 inset-y-0 left-0
+                top-14 sm:top-16
                 z-40
                 w-64
                 transition-transform duration-300 ease-in-out
@@ -284,7 +285,7 @@ export default function Chat() {
             )}
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+            <div className={`flex-1 flex flex-col min-w-0 overflow-hidden transition-all duration-300 ease-in-out ${showSidebar ? 'md:ml-64' : 'ml-0'}`}>
                 {/* Top Bar */}
                 <header className="border-b border-gray-200 dark:border-gray-800 px-3 md:px-4 h-14 flex items-center justify-between bg-white dark:bg-gray-950 flex-shrink-0">
                     <button

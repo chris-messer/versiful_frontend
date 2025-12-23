@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 
@@ -16,9 +16,12 @@ const loggedInNavLinks = [
 export default function Navbar() {
     const { isLoggedIn, setIsLoggedIn, login } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
+
+    const isFullWidth = location.pathname === '/chat';
 
     useEffect(() => {
         document.body.style.overflow = isMenuOpen ? "hidden" : "";
@@ -118,7 +121,7 @@ export default function Navbar() {
 
     return (
         <header className="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur border-b border-gray-100 shadow-sm">
-            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div className={`mx-auto px-4 sm:px-6 lg:px-8 ${isFullWidth ? 'max-w-full' : 'max-w-6xl'}`}>
                 <div className="flex h-14 sm:h-16 items-center justify-between">
                     <Link
                         to="/"
