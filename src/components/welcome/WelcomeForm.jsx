@@ -9,11 +9,13 @@ const WelcomeForm = () => {
         phone: "",
         email: "",
         bibleVersion: "KJV",
+        smsConsent: false,
     });
 
     const [errors, setErrors] = useState({
         phone: "",
         email: "",
+        smsConsent: "",
     });
 
     const [hasEmail, setHasEmail] = useState(false);
@@ -81,6 +83,15 @@ const WelcomeForm = () => {
             setErrors((prevErrors) => ({
                 ...prevErrors,
                 email: "Please enter your email address.",
+            }));
+            return;
+        }
+
+        // Validate SMS consent
+        if (!formData.smsConsent) {
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                smsConsent: "Please consent to receive SMS messages to continue.",
             }));
             return;
         }
@@ -235,6 +246,34 @@ const WelcomeForm = () => {
                                 </optgroup>
                             ))}
                         </select>
+                    </div>
+
+                    {/* SMS Consent Checkbox */}
+                    <div className="form-control">
+                        <label className="label cursor-pointer justify-start space-x-3">
+                            <input
+                                type="checkbox"
+                                name="smsConsent"
+                                checked={formData.smsConsent}
+                                onChange={handleChange}
+                                className="checkbox checkbox-primary"
+                                required
+                            />
+                            <span className="label-text text-sm">
+                                I consent to receive text messages from Versiful at the phone number provided. 
+                                I acknowledge that standard SMS/MMS message and data rates charged by my mobile 
+                                carrier will apply, and I am responsible for all carrier charges. 
+                                Reply STOP to unsubscribe at any time.
+                            </span>
+                        </label>
+                        {errors.smsConsent && <p className="text-red-500 text-sm mt-1">{errors.smsConsent}</p>}
+                        <p className="text-xs text-gray-500 mt-2">
+                            By checking this box, you agree to our{" "}
+                            <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">
+                                Terms of Service
+                            </a>{" "}
+                            and acknowledge that carrier charges may apply for text messages.
+                        </p>
                     </div>
 
                     {/* Submit Button */}

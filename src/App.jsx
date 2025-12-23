@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import CookieConsent from "./components/CookieConsent";
 import LandingPage from "./pages/LandingPage";
 import FeaturesPage from "./pages/FeaturesPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
@@ -11,6 +12,8 @@ import Settings from "./pages/Settings";
 import Subscription from "./pages/Subscription";
 import Welcome from "./pages/Welcome";
 import Chat from "./pages/Chat";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 import { useEffect } from "react";
 import SignIn from "./pages/SignIn";
 
@@ -44,8 +47,11 @@ export default function App() {
                         <Route path="/subscription" element={<Subscription />} />
                         <Route path="/welcome" element={<Welcome />} />
                         <Route path="/signin" element={<SignIn />} />
+                        <Route path="/privacy" element={<PrivacyPolicy />} />
+                        <Route path="/terms" element={<TermsOfService />} />
                     </Routes>
                     <Footer />
+                    <CookieConsent />
                 </div>
             </Router>
         </AuthProvider>
