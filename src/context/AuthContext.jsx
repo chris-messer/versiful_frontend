@@ -1,64 +1,48 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import * as AmazonCognitoIdentity from "amazon-cognito-identity-js";
 
 const AuthContext = createContext();
 
-// Cognito Configuration (Replace with your actual values)
-const poolData = {
-    UserPoolId: "us-east-1_XXXXXXX",  // Replace with your Cognito User Pool ID
-    ClientId: "XXXXXXXXXXXXX"         // Replace with your Cognito App Client ID
-};
-
-const CognitoUserPool = AmazonCognitoIdentity.CognitoUserPool;
-const CognitoUser = AmazonCognitoIdentity.CognitoUser;
-
-const userPool = new CognitoUserPool(poolData);
+const API_BASE = import.meta.env.VITE_API_URL || 'https://api.dev.versiful.io';
 
 export const AuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [loading, setLoading] = useState(true);
 
-    const refreshToken = () => {
-        const user = userPool.getCurrentUser();
-
-        if (user) {
-            user.getSession((err, session) => {
-                if (err || !session.isValid()) {
-                    console.error("Session is invalid or expired", err);
-                    setIsLoggedIn(false);
-                    return;
-                }
-
-                user.refreshSession(session.getRefreshToken(), (err, newSession) => {
-                    if (err) {
-                        console.error("Error refreshing token", err);
-                        setIsLoggedIn(false);
-                        return;
-                    }
-
-                    localStorage.setItem("id_token", newSession.getIdToken().getJwtToken());
-                    localStorage.setItem("access_token", newSession.getAccessToken().getJwtToken());
-                    setIsLoggedIn(true);
-                });
-            });
-        }
+    const login = () => {
+        window.location.href = "/signin";
     };
 
-    const checkLoginState = () => {
-        const idToken = localStorage.getItem("id_token");
-        setIsLoggedIn(!!idToken);
+    const checkLoginState = async () => {
+        try {
+            // Check if we have valid auth cookies by trying to fetch user data
+            const response = await fetch(`${API_BASE}/users`, {
+                method: 'GET',
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                setIsLoggedIn(true);
+            } else {
+                    setIsLoggedIn(false);
+            }
+        } catch (error) {
+            console.error("Error checking login state:", error);
+                        setIsLoggedIn(false);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
         checkLoginState();
-
-        // Refresh token periodically (every 5 minutes)
-        const interval = setInterval(refreshToken, 1000 * 60 * 5);
-
-        return () => clearInterval(interval); // Cleanup interval on unmount
     }, []);
 
+    if (loading) {
+        return null; // or a loading spinner
+    }
+
     return (
-        <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, refreshToken }}>
+        <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, login, checkLoginState }}>
             {children}
         </AuthContext.Provider>
     );

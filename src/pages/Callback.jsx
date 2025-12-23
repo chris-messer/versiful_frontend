@@ -50,7 +50,7 @@ const Callback = () => {
                 console.log("User is registered", userData);
                 navigate("/subscription");
             } else {
-                navigate("/settings");
+                navigate("/chat");
             }
         } catch (error) {
             console.error("Error during authentication:", error);

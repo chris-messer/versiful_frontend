@@ -1,40 +1,99 @@
-const SubscriptionManagement = ({ subscription }) => {
-    const handleManageSubscription = () => {
-        // Mock logic for managing subscription
-        alert("Redirecting to subscription management...");
-    };
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-    const handleChangePaymentMethod = () => {
-        // Mock logic for changing payment method
-        alert("Redirecting to payment method update...");
-    };
+export default function SubscriptionManagement({ subscription, loading }) {
+  const [redirecting, setRedirecting] = useState(false);
+  const navigate = useNavigate();
 
-    const handleCancelSubscription = () => {
-        // Mock logic for cancellation
-        const confirmed = window.confirm("Are you sure you want to cancel your subscription?");
-        if (confirmed) {
-            alert("Subscription cancelled.");
-        }
-    };
+  const handleManagePlan = async () => {
+    setRedirecting(true);
+    try {
+      const apiUrl = `https://api.${import.meta.env.VITE_DOMAIN}`;
+      const response = await fetch(`${apiUrl}/subscription/portal`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          returnUrl: window.location.href,
+        }),
+      });
 
-    return (
-        <div className="card bg-base-100 shadow-xl p-4">
-            <h2 className="text-xl font-semibold mb-4">Subscription Management</h2>
-            <p className="mb-2">Status: <span className="font-bold">{subscription.status}</span></p>
-            <p className="mb-4">Next Billing Date: <span className="font-bold">{subscription.nextBillingDate}</span></p>
-            <div className="space-x-2">
-                <button className="btn btn-primary btn-sm" onClick={handleManageSubscription}>
-                    Manage Subscription
-                </button>
-                {/*<button className="btn btn-secondary btn-sm" onClick={handleChangePaymentMethod}>*/}
-                {/*    Change Payment Method*/}
-                {/*</button>*/}
-                {/*<button className="btn btn-error btn-sm" onClick={handleCancelSubscription}>*/}
-                {/*    Cancel Subscription*/}
-                {/*</button>*/}
-            </div>
+      if (!response.ok) {
+        throw new Error("Failed to create portal session");
+      }
+
+      const { url } = await response.json();
+      window.location.href = url;
+    } catch (error) {
+      console.error("Error opening customer portal:", error);
+      alert("Failed to open subscription management. Please try again.");
+      setRedirecting(false);
+    }
+  };
+
+  const displayStatus = subscription?.isSubscribed ? "Premium" : "Free";
+  const displayPlan = subscription?.isSubscribed 
+    ? (subscription.plan || "Premium") 
+    : "Free Plan (5 messages/month)";
+  
+  const isCanceling = subscription?.cancelAtPeriodEnd === true;
+
+  return (
+    <div className="rounded-2xl bg-white border border-gray-100 shadow-sm p-5 space-y-3">
+      <div className="flex items-start justify-between">
+        <h2 className="text-xl font-semibold text-gray-900">Subscription</h2>
+        <span className={`text-xs font-semibold px-2 py-1 rounded-full ${isCanceling ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800'}`}>
+          {loading ? "..." : isCanceling ? "Canceling" : displayStatus}
+        </span>
+      </div>
+      <p className="text-sm text-gray-700">
+        Plan: <span className="font-semibold">{loading ? "Loading..." : displayPlan}</span>
+      </p>
+      {subscription?.isSubscribed && subscription?.nextBillingDate && (
+        <p className="text-sm text-gray-700">
+          {isCanceling ? "Access until:" : "Next billing:"} <span className="font-semibold">{subscription.nextBillingDate}</span>
+        </p>
+      )}
+      {isCanceling && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+          <p className="text-sm text-yellow-800">
+            ⚠️ Your subscription will end on {subscription.nextBillingDate}. You'll still have access to Premium features until then.
+          </p>
         </div>
-    );
-};
-
-export default SubscriptionManagement;
+      )}
+      {subscription?.isSubscribed && (
+        <p className="text-sm text-gray-700">
+          Messages: <span className="font-semibold">Unlimited</span>
+        </p>
+      )}
+      {!subscription?.isSubscribed && (
+        <p className="text-sm text-gray-700">
+          Messages remaining: <span className="font-semibold">
+            {subscription?.plan_monthly_cap || 5} this month
+          </span>
+        </p>
+      )}
+      <div className="flex flex-col sm:flex-row gap-2 pt-2">
+        {subscription?.isSubscribed ? (
+          <button
+            className="flex-1 rounded-lg bg-blue-900 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-950 transition disabled:opacity-70"
+            onClick={handleManagePlan}
+            disabled={loading || redirecting}
+          >
+            {redirecting ? "Opening portal..." : "Manage subscription"}
+          </button>
+        ) : (
+          <button
+            className="flex-1 rounded-lg bg-blue-900 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-950 transition"
+            onClick={() => navigate("/subscription")}
+            disabled={loading}
+          >
+            Upgrade to Premium
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
