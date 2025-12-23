@@ -68,9 +68,9 @@ jobs:
       - name: Install Dependencies & Build React App
         run: |
           npm install
-          VITE_AUTH_DOMAIN=$VITE_DOMAIN \
-          VITE_CLIENT_ID=$VITE_CLIENT_ID \
-          VITE_REDIRECT_URI=$VITE_REDIRECT_URI \
+          VITE_DOMAIN=$VITE_DOMAIN \
+          VITE_COGNITO_CLIENT_ID=$VITE_COGNITO_CLIENT_ID \
+          VITE_CALLBACK_URL=$VITE_CALLBACK_URL \
           npm run build
 
       - name: Deploy `dist/` Folder to S3
