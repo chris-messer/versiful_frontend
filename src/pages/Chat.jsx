@@ -11,7 +11,8 @@ export default function Chat() {
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [loadingSessions, setLoadingSessions] = useState(true);
-    const [showSidebar, setShowSidebar] = useState(false);
+    // Start with sidebar open on desktop (will be overridden to false on mobile in useEffect)
+    const [showSidebar, setShowSidebar] = useState(true);
     const messagesEndRef = useRef(null);
     const textareaRef = useRef(null);
     const { isLoggedIn } = useAuth();
@@ -24,6 +25,25 @@ export default function Chat() {
         }
         loadSessions();
     }, [isLoggedIn, navigate]);
+
+    useEffect(() => {
+        // Set initial sidebar state based on screen size
+        const handleResize = () => {
+            if (window.innerWidth < 768) {
+                setShowSidebar(false);
+            } else {
+                setShowSidebar(true);
+            }
+        };
+        
+        // Set initial state
+        handleResize();
+        
+        // Add event listener for window resize
+        window.addEventListener('resize', handleResize);
+        
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         scrollToBottom();
@@ -166,9 +186,9 @@ export default function Chat() {
 
     return (
         <div className="fixed inset-0 flex overflow-hidden bg-white dark:bg-gray-950 pt-14 sm:pt-16">
-            {/* Sidebar - Hidden on mobile by default, slides in from left */}
+            {/* Sidebar - Can be toggled on all screen sizes */}
             <aside className={`
-                ${showSidebar ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} 
+                ${showSidebar ? 'translate-x-0' : '-translate-x-full'} 
                 fixed md:relative
                 inset-y-0 left-0
                 z-40
@@ -254,7 +274,7 @@ export default function Chat() {
                 </div>
             </aside>
 
-            {/* Mobile Overlay */}
+            {/* Mobile Overlay - Only show on mobile when sidebar is open */}
             {showSidebar && (
                 <div
                     className="fixed inset-0 bg-black/50 z-30 md:hidden backdrop-blur-sm"
