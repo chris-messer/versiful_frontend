@@ -10,12 +10,14 @@ const WelcomeForm = () => {
         email: "",
         bibleVersion: "KJV",
         smsConsent: false,
+        ageConsent: false,
     });
 
     const [errors, setErrors] = useState({
         phone: "",
         email: "",
         smsConsent: "",
+        ageConsent: "",
     });
 
     const [hasEmail, setHasEmail] = useState(false);
@@ -92,6 +94,15 @@ const WelcomeForm = () => {
             setErrors((prevErrors) => ({
                 ...prevErrors,
                 smsConsent: "Please consent to receive SMS messages to continue.",
+            }));
+            return;
+        }
+
+        // Validate age consent (18+)
+        if (!formData.ageConsent) {
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                ageConsent: "You must be 18 or older to use this service.",
             }));
             return;
         }
@@ -273,6 +284,27 @@ const WelcomeForm = () => {
                                 Terms of Service
                             </a>{" "}
                             and acknowledge that carrier charges may apply for text messages.
+                        </p>
+                    </div>
+
+                    {/* Age Consent Checkbox (18+) */}
+                    <div className="form-control">
+                        <label className="label cursor-pointer justify-start space-x-3">
+                            <input
+                                type="checkbox"
+                                name="ageConsent"
+                                checked={formData.ageConsent}
+                                onChange={handleChange}
+                                className="checkbox checkbox-primary"
+                                required
+                            />
+                            <span className="label-text text-sm font-medium">
+                                I certify that I am 18 years of age or older.
+                            </span>
+                        </label>
+                        {errors.ageConsent && <p className="text-red-500 text-sm mt-1">{errors.ageConsent}</p>}
+                        <p className="text-xs text-gray-500 mt-1">
+                            You must be at least 18 years old to register for and use Versiful's SMS service.
                         </p>
                     </div>
 

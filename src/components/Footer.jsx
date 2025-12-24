@@ -51,6 +51,16 @@ export default function Footer() {
                                 </Link>
                             </li>
                             <li>
+                                <Link to="/sms-consent" className="text-gray-400 hover:text-white transition-colors">
+                                    SMS Consent
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/traceback-compliance" className="text-gray-400 hover:text-white transition-colors">
+                                    Traceback Compliance
+                                </Link>
+                            </li>
+                            <li>
                                 <a href="mailto:support@versiful.com" className="text-gray-400 hover:text-white transition-colors">
                                     Contact Support
                                 </a>
