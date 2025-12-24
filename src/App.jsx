@@ -15,6 +15,7 @@ import Chat from "./pages/Chat";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import SmsConsent from "./pages/SmsConsent";
+import OptInForm from "./pages/OptInForm";
 import TracebackCompliance from "./pages/TracebackCompliance";
 import { useEffect } from "react";
 import SignIn from "./pages/SignIn";
@@ -52,6 +53,7 @@ export default function App() {
                         <Route path="/privacy" element={<PrivacyPolicy />} />
                         <Route path="/terms" element={<TermsOfService />} />
                         <Route path="/sms-consent" element={<SmsConsent />} />
+                        <Route path="/opt-in-form" element={<OptInForm />} />
                         <Route path="/traceback-compliance" element={<TracebackCompliance />} />
                     </Routes>
                     <Footer />
