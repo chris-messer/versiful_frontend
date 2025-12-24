@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
+import { useConfig } from "../hooks/useConfig";
 
 const SmsConsent = () => {
+  const { config } = useConfig();
+  const phoneNumber = config?.phone?.sms || "833-681-1158";
+  
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900 px-4 py-12">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-8 md:p-12">
@@ -51,7 +55,7 @@ const SmsConsent = () => {
             </p>
             <ul className="list-disc pl-6 mb-4 text-gray-700">
               <li>
-                <strong>Text "STOP"</strong> to our phone number (833-681-1158) - This will 
+                <strong>Text "STOP"</strong> to our phone number ({phoneNumber}) - This will 
                 immediately unsubscribe you from messages AND cancel your subscription
               </li>
               <li>
@@ -73,7 +77,7 @@ const SmsConsent = () => {
             </h3>
             <p className="text-gray-700 mb-4">
               If you previously opted out and wish to receive messages again, text{" "}
-              <strong>"START"</strong> to 833-681-1158. Note: This will only restore your 
+              <strong>"START"</strong> to {phoneNumber}. Note: This will only restore your 
               ability to receive messages; it will NOT automatically restore a paid subscription. 
               You must re-subscribe via the website.
             </p>
@@ -84,7 +88,7 @@ const SmsConsent = () => {
               Help & Support
             </h3>
             <p className="text-gray-700 mb-4">
-              For help, text <strong>"HELP"</strong> to 833-681-1158 or contact us at:
+              For help, text <strong>"HELP"</strong> to {phoneNumber} or contact us at:
             </p>
             <ul className="list-disc pl-6 mb-4 text-gray-700">
               <li>Email: support@versiful.io</li>

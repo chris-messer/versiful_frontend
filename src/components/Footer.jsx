@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
+import { useConfig } from "../hooks/useConfig";
 
 export default function Footer() {
+    const { config } = useConfig();
+    const phoneNumber = config?.phone?.sms || "833-681-1158";
+    
     return (
         <footer className="center-bottom bg-black text-white py-10">
             <div className="container mx-auto px-6 max-w-6xl">
@@ -29,7 +33,7 @@ export default function Footer() {
                                 </Link>
                             </li>
                             <li>
-                                <a href="sms:833-681-1158" className="text-gray-400 hover:text-white transition-colors">
+                                <a href={`sms:${phoneNumber}`} className="text-gray-400 hover:text-white transition-colors">
                                     Try It Now
                                 </a>
                             </li>

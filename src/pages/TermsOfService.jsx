@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
+import { useConfig } from "../hooks/useConfig";
 
 export default function TermsOfService() {
+    const { config } = useConfig();
+    const phoneNumber = config?.phone?.sms || "833-681-1158";
+    
     return (
         <div className="min-h-screen bg-white">
             <div className="container mx-auto max-w-4xl px-6 py-12 lg:px-10">
@@ -235,7 +239,7 @@ export default function TermsOfService() {
                             If you have questions about these Terms, please contact us:
                         </p>
                         <ul className="list-none space-y-2 text-gray-700">
-                            <li><strong>By SMS:</strong> Text "HELP" to 833-681-1158</li>
+                            <li><strong>By SMS:</strong> Text "HELP" to {phoneNumber}</li>
                             <li><strong>By email:</strong> support@versiful.com</li>
                         </ul>
                     </section>

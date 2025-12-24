@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SubscriptionCard from "../components/subscription/SubscriptionCard.jsx";
 import { useAuth } from "../context/AuthContext";
+import { useConfig } from "../hooks/useConfig";
 
 const plans = [
     {
@@ -36,8 +37,10 @@ const plans = [
 
 export default function SubscriptionPage() {
     const { isLoggedIn, login } = useAuth();
+    const { config } = useConfig();
     const navigate = useNavigate();
     const [message, setMessage] = useState("");
+    const phoneNumber = config?.phone?.sms || "833-681-1158";
     const [loading, setLoading] = useState(false);
     const [priceIds, setPriceIds] = useState(null);
     const [fetchingPrices, setFetchingPrices] = useState(true);
@@ -146,7 +149,7 @@ export default function SubscriptionPage() {
                                     Go to settings
                                 </button>
                                 <a
-                                    href="sms:833-681-1158"
+                                    href={`sms:${phoneNumber}`}
                                     className="rounded-lg px-4 py-2 text-sm font-semibold border border-blue-900 text-blue-900 hover:bg-blue-100"
                                 >
                                     Text now

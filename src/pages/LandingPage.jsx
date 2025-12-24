@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Phone from "../components/landing/hero/Phone.jsx";
-
-const phoneNumber = "833-681-1158";
+import { useConfig } from "../hooks/useConfig";
 
 const steps = [
     {
@@ -58,6 +57,10 @@ const reassurances = [
 
 export default function LandingPage() {
     const { login } = useAuth();
+    const { config } = useConfig();
+    
+    // Use config phone number or fallback
+    const phoneNumber = config?.phone?.sms || "833-681-1158";
 
     return (
         <div className="bg-gradient-to-b from-white via-blue-50/60 to-white text-gray-900">

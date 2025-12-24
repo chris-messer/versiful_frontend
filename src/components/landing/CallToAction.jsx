@@ -1,5 +1,8 @@
+import { useConfig } from "../../hooks/useConfig";
+
 export default function CallToAction() {
-    const phoneNumber = "833-681-1158";
+    const { config } = useConfig();
+    const phoneNumber = config?.phone?.sms || "833-681-1158";
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(phoneNumber);

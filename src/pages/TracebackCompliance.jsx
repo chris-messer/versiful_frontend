@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
+import { useConfig } from "../hooks/useConfig";
 
 const TracebackCompliance = () => {
+  const { config } = useConfig();
+  const phoneNumber = config?.phone?.sms || "833-681-1158";
+  
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900 px-4 py-12">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-8 md:p-12">
@@ -131,7 +135,7 @@ const TracebackCompliance = () => {
               </li>
               <li>
                 <strong>Never spoofs caller ID:</strong> All messages originate from our registered 
-                toll-free number (833-681-1158)
+                toll-free number ({phoneNumber})
               </li>
               <li>
                 <strong>Maintains detailed records:</strong> We log all message sends, user consent, 
@@ -191,7 +195,7 @@ const TracebackCompliance = () => {
             </p>
             <ul className="list-disc pl-6 mb-4 text-gray-700">
               <li><strong>Email:</strong> support@versiful.io</li>
-              <li><strong>Phone:</strong> Text HELP to 833-681-1158</li>
+              <li><strong>Phone:</strong> Text HELP to {phoneNumber}</li>
               <li><strong>Website:</strong> <Link to="/" className="text-blue-600 hover:underline">https://versiful.io</Link></li>
             </ul>
             <p className="text-gray-700">
