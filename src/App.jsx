@@ -14,6 +14,7 @@ import Welcome from "./pages/Welcome";
 import Chat from "./pages/Chat";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
+import SmsConsent from "./pages/SmsConsent";
 import { useEffect } from "react";
 import SignIn from "./pages/SignIn";
 
@@ -49,6 +50,7 @@ export default function App() {
                         <Route path="/signin" element={<SignIn />} />
                         <Route path="/privacy" element={<PrivacyPolicy />} />
                         <Route path="/terms" element={<TermsOfService />} />
+                        <Route path="/sms-consent" element={<SmsConsent />} />
                     </Routes>
                     <Footer />
                     <CookieConsent />
