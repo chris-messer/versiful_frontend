@@ -75,7 +75,7 @@ jobs:
 
       - name: Deploy `dist/` Folder to S3
         run: |
-          aws s3 sync dist/ s3://$S3_BUCKET --delete --exact-timestamps --metadata-directive REPLACE
+          aws s3 sync dist/ s3://$S3_BUCKET --delete --exact-timestamps --metadata-directive REPLACE --exclude "config.json"
 
       - name: Ensure `index.html` is uploaded with correct content-type
         run: |
