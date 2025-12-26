@@ -75,44 +75,44 @@ export default function SignIn() {
     };
 
     return (
-        <main className="min-h-screen bg-gray-50 text-gray-900 pt-14 md:pt-18 px-4">
+        <main className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 pt-14 md:pt-18 px-4">
             <div className="max-w-xl mx-auto py-12 space-y-8">
                 <div className="space-y-2 text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-blue-800">
+                    <p className="text-sm font-semibold uppercase tracking-wide text-blue-800 dark:text-blue-400">
                         {mode === "signup" ? "Create account" : "Sign in"}
                     </p>
                     <h1 className="text-3xl font-bold">
                         {mode === "signup" ? "Start with a Versiful account" : "Welcome back to Versiful"}
                     </h1>
-                    <p className="text-gray-700">
+                    <p className="text-gray-700 dark:text-gray-300">
                         {mode === "signup"
                             ? "Takes under a minute. You can also continue with Google."
                             : "Use your email and password to continue."}
                     </p>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
                     <form className="space-y-4" onSubmit={handleSubmit}>
                         <div>
-                            <label className="block text-sm font-semibold text-gray-900">Email</label>
+                            <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100">Email</label>
                             <input
                                 type="email"
                                 name="email"
                                 value={form.email}
                                 onChange={handleChange}
-                                className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="mt-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="you@example.com"
                                 required
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-semibold text-gray-900">Password</label>
+                            <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100">Password</label>
                             <input
                                 type="password"
                                 name="password"
                                 value={form.password}
                                 onChange={handleChange}
-                                className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="mt-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Your password"
                                 required
                             />
@@ -135,21 +135,21 @@ export default function SignIn() {
                         </button>
                         <div className="relative pt-2">
                             <div className="absolute inset-0 flex items-center">
-                                <span className="w-full border-t border-gray-200"></span>
+                                <span className="w-full border-t border-gray-200 dark:border-gray-600"></span>
                             </div>
                             <div className="relative flex justify-center text-xs uppercase">
-                                <span className="bg-white px-2 text-gray-500">or</span>
+                                <span className="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400">or</span>
                             </div>
                         </div>
                         <button
                             type="button"
                             onClick={handleGoogle}
-                            className="w-full rounded-lg border border-gray-300 bg-white text-gray-900 px-4 py-2 text-sm font-semibold hover:bg-gray-50 transition"
+                            className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-4 py-2 text-sm font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 transition"
                         >
                             Continue with Google
                         </button>
                     </form>
-                    <div className="text-sm text-gray-600 mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <div className="text-sm text-gray-600 dark:text-gray-400 mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                         <span>
                             {mode === "signup"
                                 ? "Already have an account?"
@@ -159,14 +159,14 @@ export default function SignIn() {
                             <button
                                 type="button"
                                 onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
-                                className="text-blue-800 font-semibold hover:underline underline-offset-2"
+                                className="text-blue-800 dark:text-blue-400 font-semibold hover:underline underline-offset-2"
                             >
                                 {mode === "signup" ? "Switch to Sign in" : "Create an account"}
                             </button>
                             <button
                                 type="button"
                                 onClick={handleGoogle}
-                                className="text-blue-800 font-semibold hover:underline underline-offset-2"
+                                className="text-blue-800 dark:text-blue-400 font-semibold hover:underline underline-offset-2"
                             >
                                 Continue with Google
                             </button>

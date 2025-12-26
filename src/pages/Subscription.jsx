@@ -135,22 +135,22 @@ export default function SubscriptionPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-white via-blue-50/40 to-white text-gray-900 py-14 px-6">
+        <div className="min-h-screen bg-gradient-to-b from-white via-blue-50/40 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 text-gray-900 dark:text-gray-100 py-14 px-6">
             <div className="max-w-5xl mx-auto space-y-10">
                 {message && (
-                    <div className="rounded-xl border border-blue-200 bg-blue-50 text-blue-900 px-4 py-3">
+                    <div className="rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/30 text-blue-900 dark:text-blue-100 px-4 py-3">
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                             <span>{message}</span>
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => navigate("/settings")}
-                                    className="rounded-lg px-4 py-2 text-sm font-semibold bg-blue-900 text-white hover:bg-blue-950"
+                                    className="rounded-lg px-4 py-2 text-sm font-semibold bg-blue-900 dark:bg-blue-700 text-white hover:bg-blue-950 dark:hover:bg-blue-800"
                                 >
                                     Go to settings
                                 </button>
                                 <a
                                     href={`sms:${phoneNumber}`}
-                                    className="rounded-lg px-4 py-2 text-sm font-semibold border border-blue-900 text-blue-900 hover:bg-blue-100"
+                                    className="rounded-lg px-4 py-2 text-sm font-semibold border border-blue-900 dark:border-blue-700 text-blue-900 dark:text-blue-100 hover:bg-blue-100 dark:hover:bg-blue-900/50"
                                 >
                                     Text now
                                 </a>
@@ -160,15 +160,15 @@ export default function SubscriptionPage() {
                 )}
 
                 {new URLSearchParams(window.location.search).get("canceled") && (
-                    <div className="rounded-xl border border-yellow-200 bg-yellow-50 text-yellow-900 px-4 py-3">
+                    <div className="rounded-xl border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-900 dark:text-yellow-100 px-4 py-3">
                         <p>Checkout was canceled. You can try again anytime.</p>
                     </div>
                 )}
 
                 <div className="text-center space-y-3">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-blue-800">Plans for every pace</p>
-                    <h1 className="text-4xl font-bold leading-tight">Choose the guidance that fits you</h1>
-                    <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+                    <p className="text-sm font-semibold uppercase tracking-wide text-blue-800 dark:text-blue-400">Plans for every pace</p>
+                    <h1 className="text-4xl font-bold leading-tight text-gray-900 dark:text-white">Choose the guidance that fits you</h1>
+                    <p className="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
                         Unlimited guidance through simple text messages—no apps to install, no tech learning curve.
                     </p>
                 </div>
@@ -176,8 +176,8 @@ export default function SubscriptionPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                     {fetchingPrices ? (
                         <div className="col-span-full text-center py-8">
-                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900"></div>
-                            <p className="mt-4 text-gray-600">Loading subscription options...</p>
+                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900 dark:border-blue-500"></div>
+                            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading subscription options...</p>
                         </div>
                     ) : (
                         plans.map((plan) => (
@@ -192,16 +192,16 @@ export default function SubscriptionPage() {
                     )}
                 </div>
 
-                <div className="rounded-2xl border border-gray-100 bg-white shadow-sm p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="rounded-2xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
-                        <p className="text-lg font-semibold text-gray-900">Need help choosing?</p>
-                        <p className="text-gray-700">
+                        <p className="text-lg font-semibold text-gray-900 dark:text-white">Need help choosing?</p>
+                        <p className="text-gray-700 dark:text-gray-300">
                             Choose the plan that fits your needs. You can change or cancel whenever you like.
                         </p>
                     </div>
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
                         For questions, email{" "}
-                        <a href="mailto:support@versiful.io" className="text-blue-800 font-semibold hover:underline">
+                        <a href="mailto:support@versiful.io" className="text-blue-800 dark:text-blue-400 font-semibold hover:underline">
                             support@versiful.io
                         </a>
                     </div>

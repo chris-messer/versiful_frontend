@@ -6,12 +6,12 @@ export default function PrivacyPolicy() {
     const phoneNumber = config?.phone?.sms || "833-681-1158";
     
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-white dark:bg-gray-900">
             <div className="container mx-auto max-w-4xl px-6 py-12 lg:px-10">
                 <div className="mb-8">
                     <Link
                         to="/"
-                        className="inline-flex items-center text-blue-700 hover:text-blue-900 transition-colors"
+                        className="inline-flex items-center text-blue-700 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 transition-colors"
                     >
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -20,9 +20,9 @@ export default function PrivacyPolicy() {
                     </Link>
                 </div>
 
-                <article className="prose prose-lg max-w-none">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">Privacy Policy</h1>
-                    <p className="text-gray-600 mb-8">Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                <article className="prose prose-lg dark:prose-invert max-w-none [&_h1]:dark:text-white [&_h2]:dark:text-white [&_h3]:dark:text-gray-200 [&_p]:dark:text-gray-300 [&_li]:dark:text-gray-300 [&_strong]:dark:text-white">
+                    <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Privacy Policy</h1>
+                    <p className="text-gray-600 dark:text-gray-400 mb-8">Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
 
                     <section className="mb-8">
                         <h2 className="text-2xl font-semibold text-gray-900 mb-4">Introduction</h2>

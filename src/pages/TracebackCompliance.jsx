@@ -6,15 +6,15 @@ const TracebackCompliance = () => {
   const phoneNumber = config?.phone?.sms || "833-681-1158";
   
   return (
-    <main className="min-h-screen bg-gray-50 text-gray-900 px-4 py-12">
-      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-8 md:p-12">
-        <h1 className="text-4xl font-bold mb-6 text-gray-900">
+    <main className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 px-4 py-12">
+      <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-xl p-8 md:p-12">
+        <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">
           Robocall Mitigation & Traceback Compliance
         </h1>
         
-        <div className="prose prose-lg max-w-none">
-          <section className="mb-8 bg-blue-50 border-l-4 border-blue-600 p-6 rounded">
-            <h2 className="text-2xl font-semibold mb-4 text-gray-900">
+        <div className="prose prose-lg dark:prose-invert max-w-none [&_h2]:dark:text-white [&_h3]:dark:text-gray-200 [&_p]:dark:text-gray-300 [&_li]:dark:text-gray-300 [&_strong]:dark:text-white [&_ol]:dark:text-gray-300 [&_ul]:dark:text-gray-300">
+          <section className="mb-8 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-600 dark:border-blue-500 p-6 rounded">
+            <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">
               Compliance Certification
             </h2>
             <p className="text-gray-800 font-medium mb-4">
