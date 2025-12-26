@@ -3,7 +3,13 @@ export default function Phone() {
         <div className="mockup-phone">
             <div className="camera"></div>
             <div className="display">
-                <div className="bg-gray-200 w-full h-24 flex flex-col items-center justify-end ">
+                <div className="bg-gray-200 w-full h-24 flex flex-col items-center justify-end pb-2 relative">
+                    {/* Back button - slightly below center */}
+                    <div className="absolute left-3 top-[55%] -translate-y-1/2">
+                        <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </div>
                     {/* Circle with Image */}
                     <div className="bg-white rounded-full w-10 h-10 p-1 flex items-center justify-center">
                         <img
@@ -15,37 +21,63 @@ export default function Phone() {
                     {/* Centered Text */}
                     <p className="text-xs text-gray-600">Versiful</p>
                 </div>
-                <div className="artboard bg-white py-3 px-2 phone-1">
-
-                    <div className="chat chat-end text-right text-sm">
-                        <div className="chat-image avatar">
-                            <div className="w-10 rounded-full">
-                                <img
-                                    alt="Avatar"
-                                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                                />
+                <div className="artboard bg-white py-3 px-2 phone-1 flex flex-col" style={{ height: 'calc(100% - 96px)' }}>
+                    <div className="flex-1 overflow-y-auto space-y-4">
+                        <div className="chat chat-end">
+                            <div className="chat-image avatar">
+                                <div className="w-10 rounded-full">
+                                    <img
+                                        alt="Avatar"
+                                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                                    />
+                                </div>
+                            </div>
+                            <div className="chat-bubble text-white bg-blue-500 text-sm px-3 py-2 max-w-[80%]">
+                                What would jesus say about betrayal?
                             </div>
                         </div>
-                        <div className="chat-bubble text-white bg-blue-500">
-                            What would jesus say about betrayal?
+                        <div className="chat chat-start">
+                            <div className="chat-image avatar">
+                                <div className="w-10 rounded-full">
+                                    <img alt="Logo" src="/logo.svg"/>
+                                </div>
+                            </div>
+                            <div className="chat-bubble bg-gray-200 text-black text-sm px-4 py-3 leading-relaxed max-w-[85%]">
+                                <p className="m-0">
+                                    The Parable of the Unforgiving Servant (Matthew 18:21-35)
+                                </p>
+                                <p className="m-0 mt-3">
+                                    Jesus tells of a king who forgives a servant's enormous debt, but that servant refuses to forgive a smaller debt owed to him. The king punishes the unforgiving servant.
+                                </p>
+                                <p className="m-0 mt-3">
+                                    The lesson: Just as God forgives us, we should forgive others. Holding onto bitterness harms us, but mercy brings peace.
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    <div className="chat chat-start text-left text-sm whitespace-pre-line">
-                        <div className="chat-image avatar">
-                            <div className="w-10 rounded-full">
-                                <img alt="Logo" src="/logo.svg"/>
-                            </div>
-                        </div>
-                        <div className="chat-bubble bg-gray-200 text-black">
-                            <p>The Parable of the Unforgiving Servant (Matthew 18:21-35) <br/><br/>
 
-                                Jesus tells a story about a king who forgives a servant’s enormous debt. However, that
-                                same servant refuses to forgive a much smaller debt owed to him by another person. When
-                                the king hears of this, he is angry and punishes the unforgiving servant.
-                                <br/><br/>
-                                The lesson: Just as God forgives us, we should also forgive others, even when they hurt
-                                us. Holding onto bitterness harms us, but showing mercy brings peace.
-                            </p>
+                    {/* iMessage Input Bar */}
+                    <div className="bg-white border-t border-gray-200 px-2 py-2 mt-2">
+                        <div className="flex items-end gap-2">
+                            {/* Plus button */}
+                            <button className="flex-shrink-0 w-7 h-7 rounded-full bg-transparent border-2 border-gray-300 flex items-center justify-center text-gray-500">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                                </svg>
+                            </button>
+
+                        {/* Message Input */}
+                        <div className="flex-1 bg-[#E9E9EB] rounded-[18px] px-3 py-1.5 min-h-[32px] flex items-center">
+                            <span className="text-[14px] text-gray-400">SMS</span>
+                        </div>
+
+                            {/* Microphone button */}
+                            <button className="flex-shrink-0 w-7 h-7 rounded-full bg-transparent flex items-center justify-center text-gray-500">
+                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>
