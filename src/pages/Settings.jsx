@@ -142,18 +142,18 @@ export default function SettingsPage() {
     const data = settings || skeleton;
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-white via-blue-50/40 to-white text-gray-900 py-14 px-4">
+        <div className="min-h-screen bg-gradient-to-b from-white via-blue-50/40 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 text-gray-900 dark:text-gray-100 py-14 px-4">
             <div className="max-w-5xl mx-auto space-y-8">
                 <div className="text-center space-y-2">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-blue-800">Your account</p>
-                    <h1 className="text-3xl md:text-4xl font-bold">Manage your account</h1>
-                    <p className="text-gray-700 max-w-3xl mx-auto">
+                    <p className="text-sm font-semibold uppercase tracking-wide text-blue-800 dark:text-blue-400">Your account</p>
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Manage your account</h1>
+                    <p className="text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
                         Update your plan, preferences, and contact info. Changes save instantly.
                     </p>
                 </div>
 
                 {subscriptionSuccess && (
-                    <div className="rounded-xl border border-green-200 bg-green-50 text-green-900 px-4 py-3">
+                    <div className="rounded-xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/30 text-green-900 dark:text-green-100 px-4 py-3">
                         <div className="flex items-start justify-between">
                             <div>
                                 <p className="font-semibold">🎉 Subscription Activated!</p>
@@ -163,7 +163,7 @@ export default function SettingsPage() {
                             </div>
                             <button
                                 onClick={() => setSubscriptionSuccess(false)}
-                                className="text-green-900 hover:text-green-950"
+                                className="text-green-900 dark:text-green-100 hover:text-green-950 dark:hover:text-white"
                             >
                                 ✕
                             </button>
@@ -186,13 +186,13 @@ export default function SettingsPage() {
                             loading={!settings || isPhoneSaving}
                             onSavePhone={handleUpdatePhoneNumber}
                         />
-                        <div className="rounded-2xl bg-white border border-gray-100 shadow-sm p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <div>
-                                <p className="text-lg font-semibold text-gray-900">Save your updates</p>
-                                <p className="text-sm text-gray-700">Changes to your plan and preferences save here.</p>
+                                <p className="text-lg font-semibold text-gray-900 dark:text-white">Save your updates</p>
+                                <p className="text-sm text-gray-700 dark:text-gray-300">Changes to your plan and preferences save here.</p>
                             </div>
                             <button
-                                className={`rounded-xl px-4 py-3 font-semibold text-white bg-blue-900 hover:bg-blue-950 transition ${
+                                className={`rounded-xl px-4 py-3 font-semibold text-white bg-blue-900 dark:bg-blue-700 hover:bg-blue-950 dark:hover:bg-blue-800 transition ${
                                     isSaving ? "opacity-80" : ""
                                 }`}
                                 onClick={handleSaveChanges}
@@ -203,16 +203,16 @@ export default function SettingsPage() {
                         </div>
                     </div>
 
-                    <aside className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
-                        <h3 className="text-lg font-semibold text-gray-900">Need a hand?</h3>
-                        <p className="text-sm text-gray-700">
+                    <aside className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-5 space-y-4">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Need a hand?</h3>
+                        <p className="text-sm text-gray-700 dark:text-gray-300">
                             Email{" "}
-                            <a href="mailto:support@versiful.io" className="text-blue-800 font-semibold hover:underline">
+                            <a href="mailto:support@versiful.io" className="text-blue-800 dark:text-blue-400 font-semibold hover:underline">
                                 support@versiful.io
                             </a>{" "}
-                            and we’ll make these changes for you.
+                            and we'll make these changes for you.
                         </p>
-                        <div className="text-xs text-gray-600 space-y-1">
+                        <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
                             <p>• Change or cancel your plan anytime.</p>
                             <p>• Your number stays private—used only to send guidance.</p>
                             <p>• Preferences save automatically.</p>

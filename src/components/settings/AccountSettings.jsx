@@ -36,10 +36,10 @@ export default function AccountSettings({ account, loading, onSavePhone }) {
   };
 
   return (
-    <div className="rounded-2xl bg-white border border-gray-100 shadow-sm p-5 space-y-4">
-      <h2 className="text-xl font-semibold text-gray-900">Account</h2>
+    <div className="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm p-5 space-y-4">
+      <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Account</h2>
       <form className="space-y-3" onSubmit={handleSubmit}>
-        <label className="block text-sm font-semibold text-gray-900">
+        <label className="block text-sm font-semibold text-gray-900 dark:text-white">
           Phone number
           <InputMask
             mask="(999) 999-9999"
@@ -56,20 +56,20 @@ export default function AccountSettings({ account, loading, onSavePhone }) {
               <input
                 {...inputProps}
                 type="tel"
-                className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 dark:bg-gray-800 dark:text-white dark:border-gray-700 dark:disabled:bg-gray-900"
                 placeholder="(555) 555-1234"
               />
             )}
           </InputMask>
         </label>
-        <p className="text-xs text-gray-600">
+        <p className="text-xs text-gray-600 dark:text-gray-400">
           We only use your number to send and receive guidance.
         </p>
-        {error && <p className="text-xs text-red-600">{error}</p>}
-        {success && <p className="text-xs text-green-700">{success}</p>}
+        {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
+        {success && <p className="text-xs text-green-700 dark:text-green-400">{success}</p>}
         <button
           type="submit"
-          className="inline-flex items-center justify-center rounded-lg bg-blue-900 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-950 transition disabled:opacity-70"
+          className="inline-flex items-center justify-center rounded-lg bg-blue-900 dark:bg-blue-700 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-950 dark:hover:bg-blue-800 transition disabled:opacity-70"
           disabled={loading || !dirty}
         >
           Save phone

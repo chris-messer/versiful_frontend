@@ -159,8 +159,8 @@ const WelcomeForm = () => {
     return (
         <form onSubmit={handleSubmit} className="space-y-5">
             <div className="text-center space-y-1">
-                <p className="text-xs uppercase tracking-wide text-blue-700 font-semibold">Verify your number</p>
-                <h2 className="text-xl font-semibold text-gray-900">So we can text you back</h2>
+                <p className="text-xs uppercase tracking-wide text-blue-700 dark:text-blue-400 font-semibold">Verify your number</p>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">So we can text you back</h2>
             </div>
 
             {loading ? (
@@ -173,27 +173,27 @@ const WelcomeForm = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text font-medium">First Name (optional)</span>
+                                <span className="label-text font-medium text-gray-900 dark:text-gray-100">First Name (optional)</span>
                             </label>
                             <input
                                 type="text"
                                 name="firstName"
                                 value={formData.firstName}
                                 onChange={handleChange}
-                                className="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
+                                className="input input-bordered w-full focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-700"
                                 placeholder="Pat"
                             />
                         </div>
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text font-medium">Last Name (optional)</span>
+                                <span className="label-text font-medium text-gray-900 dark:text-gray-100">Last Name (optional)</span>
                             </label>
                             <input
                                 type="text"
                                 name="lastName"
                                 value={formData.lastName}
                                 onChange={handleChange}
-                                className="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
+                                className="input input-bordered w-full focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-700"
                                 placeholder="Smith"
                             />
                         </div>
@@ -203,7 +203,7 @@ const WelcomeForm = () => {
                     {!hasEmail && (
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text font-medium">Email</span>
+                                <span className="label-text font-medium text-gray-900 dark:text-gray-100">Email</span>
                             </label>
                             <input
                                 type="email"
@@ -211,18 +211,18 @@ const WelcomeForm = () => {
                                 value={formData.email}
                                 onChange={handleChange}
                                 placeholder="you@example.com"
-                                className="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
+                                className="input input-bordered w-full focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-700"
                                 required
                             />
-                            <p className="text-xs text-gray-500 mt-1">We'll use this to send you updates about your account.</p>
-                            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">We'll use this to send you updates about your account.</p>
+                            {errors.email && <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.email}</p>}
                         </div>
                     )}
 
                     {/* Phone Number with Masking */}
                     <div className="form-control">
                         <label className="label">
-                            <span className="label-text font-medium">Phone Number</span>
+                            <span className="label-text font-medium text-gray-900 dark:text-gray-100">Phone Number</span>
                         </label>
                         <input
                             type="tel"
@@ -230,22 +230,22 @@ const WelcomeForm = () => {
                             value={formData.phone}
                             onChange={handleChange}
                             placeholder="1234567890 or (123) 456-7890"
-                            className="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
+                            className="input input-bordered w-full focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-700"
                             inputMode="tel"
                             required
                         />
-                        <p className="text-xs text-gray-500 mt-1">Any 10-digit US number works. No app needed.</p>
-                        {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Any 10-digit US number works. No app needed.</p>
+                        {errors.phone && <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.phone}</p>}
                     </div>
 
                     {/* Preferred Bible Version */}
                     <div className="form-control">
                         <label className="label">
-                            <span className="label-text font-medium">Preferred Bible Version</span>
+                            <span className="label-text font-medium text-gray-900 dark:text-gray-100">Preferred Bible Version</span>
                         </label>
                         <select
                             name="bibleVersion"
-                            className="select select-bordered w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                            className="select select-bordered w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-700"
                             value={formData.bibleVersion}
                             onChange={handleChange}
                         >
@@ -270,17 +270,17 @@ const WelcomeForm = () => {
                                 className="checkbox checkbox-primary"
                                 required
                             />
-                            <span className="label-text text-sm">
-                                I consent to receive text messages from Versiful at the phone number provided. 
-                                I acknowledge that standard SMS/MMS message and data rates charged by my mobile 
-                                carrier will apply, and I am responsible for all carrier charges. 
-                                Reply STOP to unsubscribe at any time.
-                            </span>
-                        </label>
-                        {errors.smsConsent && <p className="text-red-500 text-sm mt-1">{errors.smsConsent}</p>}
-                        <p className="text-xs text-gray-500 mt-2">
-                            By checking this box, you agree to our{" "}
-                            <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">
+                                <span className="label-text text-sm">
+                                    I consent to receive text messages from Versiful at the phone number provided. 
+                                    I acknowledge that standard SMS/MMS message and data rates charged by my mobile 
+                                    carrier will apply, and I am responsible for all carrier charges. 
+                                    Reply STOP to unsubscribe at any time.
+                                </span>
+                            </label>
+                            {errors.smsConsent && <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.smsConsent}</p>}
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                By checking this box, you agree to our{" "}
+                                <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-blue-700 dark:text-blue-400 hover:underline">
                                 Terms of Service
                             </a>{" "}
                             and acknowledge that carrier charges may apply for text messages.
@@ -298,12 +298,12 @@ const WelcomeForm = () => {
                                 className="checkbox checkbox-primary"
                                 required
                             />
-                            <span className="label-text text-sm font-medium">
-                                I certify that I am 18 years of age or older.
-                            </span>
-                        </label>
-                        {errors.ageConsent && <p className="text-red-500 text-sm mt-1">{errors.ageConsent}</p>}
-                        <p className="text-xs text-gray-500 mt-1">
+                                <span className="label-text text-sm font-medium">
+                                    I certify that I am 18 years of age or older.
+                                </span>
+                            </label>
+                            {errors.ageConsent && <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.ageConsent}</p>}
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                             You must be at least 18 years old to register for and use Versiful's SMS service.
                         </p>
                     </div>
@@ -311,7 +311,7 @@ const WelcomeForm = () => {
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className="btn btn-primary w-full text-white bg-blue-900 hover:bg-blue-950 transition duration-200"
+                        className="btn btn-primary w-full text-white bg-blue-900 dark:bg-blue-700 hover:bg-blue-950 dark:hover:bg-blue-800 transition duration-200"
                     >
                         Continue
                     </button>
