@@ -22,9 +22,46 @@ export const PostHogProvider = ({ children }) => {
       capture_pageleave: true,
       // Set environment as a super property
       loaded: (posthog) => {
+        // Register environment
         posthog.register({
           environment: config.environment,
         });
+        
+        // Check if user marked themselves as internal
+        const isInternal = localStorage.getItem('versiful_internal') === 'true';
+        
+        // Check if running on localhost
+        const isLocalhost = window.location.hostname === 'localhost' || 
+                           window.location.hostname === '127.0.0.1';
+        
+        if (isInternal) {
+          posthog.register({
+            internal_user: true,
+            user_type: 'internal'
+          });
+          console.log('🔧 Internal user detected - events will be tagged');
+        }
+        
+        if (isLocalhost) {
+          posthog.register({
+            testing_environment: 'localhost'
+          });
+        }
+        
+        // Expose helper to window for easy access in console
+        window.markAsInternal = () => {
+          posthog.register({ internal_user: true, user_type: 'internal' });
+          localStorage.setItem('versiful_internal', 'true');
+          console.log('✅ You are now marked as an internal user');
+        };
+        
+        window.unmarkAsInternal = () => {
+          posthog.unregister('internal_user');
+          posthog.unregister('user_type');
+          localStorage.removeItem('versiful_internal');
+          console.log('✅ Internal user flag removed');
+        };
+        
         setIsInitialized(true);
       },
       // Only enable in production by default
