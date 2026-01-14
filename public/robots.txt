@@ -20,5 +20,5 @@ Allow: /terms
 Allow: /sms-consent
 
 # Sitemap location
-Sitemap: https://versiful.com/sitemap.xml
+Sitemap: https://versiful.io/sitemap.xml
 

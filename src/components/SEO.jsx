@@ -9,12 +9,12 @@ export default function SEO({
     title = "Versiful - Scripture Guidance via Text",
     description = "Share what you're facing and receive personalized Bible verses with gentle reflections delivered to your phone via text or web chat.",
     keywords = "Bible, Scripture, SMS, text messages, spiritual guidance, faith, devotional, Bible verses, Christian app, scripture text",
-    ogImage = "https://versiful.com/hero-image.jpg",
+    ogImage = "https://versiful.io/hero-image.jpg",
     ogType = "website",
     canonical = null,
 }) {
     const location = useLocation();
-    const baseUrl = "https://versiful.com";
+    const baseUrl = "https://versiful.io";
     const currentUrl = canonical || `${baseUrl}${location.pathname}`;
 
     useEffect(() => {
