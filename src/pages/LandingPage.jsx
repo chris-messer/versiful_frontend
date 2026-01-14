@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Phone from "../components/landing/hero/Phone.jsx";
 import { useConfig } from "../hooks/useConfig";
+import SEO, { seoConfig } from "../components/SEO";
 
 const steps = [
     {
@@ -63,7 +64,9 @@ export default function LandingPage() {
     const phoneNumber = config?.phone?.sms || "833-681-1158";
 
     return (
-        <div className="bg-gradient-to-b from-white via-blue-50/60 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 text-gray-900 dark:text-gray-100 -mt-16 md:-mt-20">
+        <>
+            <SEO {...seoConfig.home} />
+            <div className="bg-gradient-to-b from-white via-blue-50/60 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 text-gray-900 dark:text-gray-100 -mt-16 md:-mt-20">
             <section className="pt-20 pb-12 sm:pt-24 sm:pb-14">
                 <div className="container mx-auto max-w-6xl px-6 lg:px-10 grid lg:grid-cols-2 gap-12 items-center">
                     <div className="space-y-6 text-left">
@@ -218,5 +221,6 @@ export default function LandingPage() {
                 </div>
             </section>
         </div>
+        </>
     );
 }

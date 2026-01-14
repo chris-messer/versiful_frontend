@@ -1,0 +1,28 @@
+# robots.txt for Versiful
+# This file should be overwritten based on environment
+# Production (versiful.io): Allow indexing
+# Dev/Staging: Block all indexing
+
+User-agent: *
+Allow: /
+
+# Disallow private/auth pages from being indexed
+Disallow: /callback
+Disallow: /home
+Disallow: /chat
+Disallow: /settings
+Disallow: /subscription
+Disallow: /welcome
+Disallow: /signin
+
+# Allow public pages
+Allow: /
+Allow: /features
+Allow: /how-it-works
+Allow: /privacy
+Allow: /terms
+Allow: /sms-consent
+
+# Sitemap location (production only)
+Sitemap: https://versiful.io/sitemap.xml
+
