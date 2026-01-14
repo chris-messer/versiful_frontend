@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const API_BASE = `https://api.${import.meta.env.VITE_DOMAIN || 'dev.versiful.io'}`;
 
@@ -334,14 +336,43 @@ export default function Chat() {
                                                         You
                                                     </div>
                                                 )}
-                                                <div className={`prose dark:prose-invert max-w-none ${
+                                                <div className={`prose prose-sm md:prose-base dark:prose-invert max-w-none ${
                                                     msg.role === 'user' 
                                                         ? 'bg-gray-100 dark:bg-gray-800 rounded-2xl px-3 md:px-4 py-2 md:py-3 text-gray-900 dark:text-gray-100' 
                                                         : 'text-gray-900 dark:text-gray-100'
                                                 }`}>
-                                                    <p className="whitespace-pre-wrap m-0 text-sm md:text-[15px] leading-relaxed">
-                                                        {msg.content}
-                                                    </p>
+                                                    {msg.role === 'user' ? (
+                                                        <p className="whitespace-pre-wrap m-0 text-sm md:text-[15px] leading-relaxed">
+                                                            {msg.content}
+                                                        </p>
+                                                    ) : (
+                                                        <div className="text-sm md:text-[15px] leading-relaxed">
+                                                            <ReactMarkdown
+                                                                remarkPlugins={[remarkGfm]}
+                                                                components={{
+                                                                    p: ({node, ...props}) => <p className="mb-3 last:mb-0" {...props} />,
+                                                                    ul: ({node, ...props}) => <ul className="mb-3 ml-4 list-disc" {...props} />,
+                                                                    ol: ({node, ...props}) => <ol className="mb-3 ml-4 list-decimal" {...props} />,
+                                                                    li: ({node, ...props}) => <li className="mb-1" {...props} />,
+                                                                    strong: ({node, ...props}) => <strong className="font-semibold" {...props} />,
+                                                                    em: ({node, ...props}) => <em className="italic" {...props} />,
+                                                                    code: ({node, inline, ...props}) => 
+                                                                        inline ? (
+                                                                            <code className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm" {...props} />
+                                                                        ) : (
+                                                                            <code className="block bg-gray-100 dark:bg-gray-800 p-3 rounded-lg text-sm overflow-x-auto" {...props} />
+                                                                        ),
+                                                                    blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-gray-300 dark:border-gray-700 pl-4 italic my-3" {...props} />,
+                                                                    h1: ({node, ...props}) => <h1 className="text-xl font-bold mb-2 mt-4" {...props} />,
+                                                                    h2: ({node, ...props}) => <h2 className="text-lg font-bold mb-2 mt-3" {...props} />,
+                                                                    h3: ({node, ...props}) => <h3 className="text-base font-bold mb-2 mt-2" {...props} />,
+                                                                    a: ({node, ...props}) => <a className="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
+                                                                }}
+                                                            >
+                                                                {msg.content}
+                                                            </ReactMarkdown>
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                                                     {formatTime(msg.timestamp)}
