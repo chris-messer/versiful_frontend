@@ -148,7 +148,7 @@ const WelcomeForm = () => {
             const data = await response.json();
             console.log("User updated successfully:", data);
 
-            navigate("/subscription");
+            navigate("/getting-started");
         } catch (error) {
             console.error("Error updating user:", error);
             alert("Failed to update user information. Please try again.");

@@ -12,6 +12,7 @@ import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import Subscription from "./pages/Subscription";
 import Welcome from "./pages/Welcome";
+import GettingStarted from "./pages/GettingStarted";
 import Chat from "./pages/Chat";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
@@ -51,6 +52,7 @@ export default function App() {
                             <Route path="/settings" element={<Settings />} />
                             <Route path="/subscription" element={<Subscription />} />
                             <Route path="/welcome" element={<Welcome />} />
+                            <Route path="/getting-started" element={<GettingStarted />} />
                             <Route path="/signin" element={<SignIn />} />
                             <Route path="/privacy" element={<PrivacyPolicy />} />
                             <Route path="/terms" element={<TermsOfService />} />

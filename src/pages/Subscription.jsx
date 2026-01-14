@@ -44,6 +44,9 @@ export default function SubscriptionPage() {
     const [loading, setLoading] = useState(false);
     const [priceIds, setPriceIds] = useState(null);
     const [fetchingPrices, setFetchingPrices] = useState(true);
+    
+    // Check if user came here because they exhausted free tier
+    const isExhausted = new URLSearchParams(window.location.search).get("exhausted") === "true";
 
     useEffect(() => {
         // Require auth before plan selection
@@ -137,6 +140,50 @@ export default function SubscriptionPage() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-white via-blue-50/40 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 text-gray-900 dark:text-gray-100 py-14 px-6">
             <div className="max-w-5xl mx-auto space-y-10">
+                {/* Exhausted Free Tier Banner */}
+                {isExhausted && (
+                    <div className="rounded-xl border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-900/30 text-orange-900 dark:text-orange-100 px-6 py-5 shadow-lg">
+                        <div className="flex items-start gap-4">
+                            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-orange-200 dark:bg-orange-800 flex items-center justify-center">
+                                <svg className="w-6 h-6 text-orange-700 dark:text-orange-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                            <div className="flex-1 space-y-2">
+                                <h3 className="text-lg font-bold">You've Used Your 5 Free Messages This Month</h3>
+                                <p className="text-orange-800 dark:text-orange-200">
+                                    Your free tier gives you 5 messages per month. To continue receiving biblical guidance via text, 
+                                    upgrade to unlimited access below. Your free messages will reset next month.
+                                </p>
+                                <div className="flex flex-wrap gap-3 mt-4">
+                                    <a
+                                        href="#plans"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' });
+                                        }}
+                                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-orange-900 dark:bg-orange-700 text-white rounded-lg font-semibold hover:bg-orange-950 dark:hover:bg-orange-800 transition-all shadow"
+                                    >
+                                        View Unlimited Plans
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </a>
+                                    <button
+                                        onClick={() => navigate("/chat")}
+                                        className="inline-flex items-center gap-2 px-5 py-2.5 border-2 border-orange-900 dark:border-orange-700 text-orange-900 dark:text-orange-100 rounded-lg font-semibold hover:bg-orange-100 dark:hover:bg-orange-900/50 transition-all"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                                        </svg>
+                                        Try Web Chat (Free & Unlimited)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {message && (
                     <div className="rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/30 text-blue-900 dark:text-blue-100 px-4 py-3">
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -166,14 +213,21 @@ export default function SubscriptionPage() {
                 )}
 
                 <div className="text-center space-y-3">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-blue-800 dark:text-blue-400">Plans for every pace</p>
-                    <h1 className="text-4xl font-bold leading-tight text-gray-900 dark:text-white">Choose the guidance that fits you</h1>
+                    <p className="text-sm font-semibold uppercase tracking-wide text-blue-800 dark:text-blue-400">
+                        {isExhausted ? "Upgrade for Unlimited Access" : "Plans for every pace"}
+                    </p>
+                    <h1 className="text-4xl font-bold leading-tight text-gray-900 dark:text-white">
+                        {isExhausted ? "Continue Your Journey" : "Choose the guidance that fits you"}
+                    </h1>
                     <p className="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-                        Unlimited guidance through simple text messages—no apps to install, no tech learning curve.
+                        {isExhausted 
+                            ? "Get unlimited biblical guidance through simple text messages—never worry about running out again."
+                            : "Unlimited guidance through simple text messages—no apps to install, no tech learning curve."
+                        }
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                <div id="plans" className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                     {fetchingPrices ? (
                         <div className="col-span-full text-center py-8">
                             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900 dark:border-blue-500"></div>
