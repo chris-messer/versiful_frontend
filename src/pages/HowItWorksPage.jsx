@@ -1,3 +1,5 @@
+import SEO, { seoConfig } from "../components/SEO";
+
 const steps = [
     {
         title: "Text or chat what's on your mind",
@@ -22,7 +24,9 @@ const tips = [
 
 export default function HowItWorksPage() {
     return (
-        <main className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 pt-16 md:pt-20">
+        <>
+            <SEO {...seoConfig.howItWorks} />
+            <main className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 pt-16 md:pt-20">
             <section className="container mx-auto max-w-5xl px-6 lg:px-10 py-14 space-y-10">
                 <header className="space-y-3 text-center">
                     <p className="text-sm font-semibold uppercase tracking-wide text-blue-800 dark:text-blue-400">How it works</p>
@@ -60,6 +64,7 @@ export default function HowItWorksPage() {
                 </div>
             </section>
         </main>
+        </>
     );
 }
 
