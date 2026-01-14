@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 
 export default function CookieConsent() {
     const [showBanner, setShowBanner] = useState(false);
+    const [isMinimized, setIsMinimized] = useState(false);
 
     useEffect(() => {
-        // Check if user has already consented
         const consent = localStorage.getItem("cookieConsent");
         if (!consent) {
             setShowBanner(true);
@@ -14,55 +14,84 @@ export default function CookieConsent() {
     const acceptCookies = () => {
         localStorage.setItem("cookieConsent", "accepted");
         setShowBanner(false);
+        // PostHog tracking will be enabled based on this consent
     };
 
     const declineCookies = () => {
         localStorage.setItem("cookieConsent", "declined");
         setShowBanner(false);
+        // PostHog tracking will remain disabled
+    };
+
+    const minimizeBanner = () => {
+        setIsMinimized(true);
+        // Auto-save as declined after 30 days if user never makes a choice
+        setTimeout(() => {
+            const currentConsent = localStorage.getItem("cookieConsent");
+            if (currentConsent === null) {
+                localStorage.setItem("cookieConsent", "declined");
+                setShowBanner(false);
+            }
+        }, 30 * 24 * 60 * 60 * 1000);
     };
 
     if (!showBanner) return null;
 
     return (
         <div
-            className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900 dark:bg-gray-950 text-white shadow-2xl border-t border-gray-700 dark:border-gray-800"
+            className={`fixed z-50 transition-all duration-300 ${
+                isMinimized 
+                    ? 'bottom-4 right-4 w-auto' 
+                    : 'bottom-4 right-4 max-w-sm'
+            }`}
             role="dialog"
             aria-live="polite"
-            aria-label="Cookie consent banner"
+            aria-label="Cookie consent"
         >
-            <div className="container mx-auto px-4 py-4 sm:py-5">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div className="flex-1 space-y-2">
-                        <h3 className="text-lg font-semibold">We value your privacy</h3>
-                        <p className="text-sm text-gray-300 dark:text-gray-400 leading-relaxed">
-                            We use essential cookies to make our site work. We'd also like to set optional 
-                            analytics cookies to help us improve it. We won't set optional cookies unless 
-                            you enable them.{" "}
-                            <a
-                                href="/privacy"
-                                className="underline hover:text-white transition-colors"
-                            >
-                                Learn more in our Privacy Policy
-                            </a>
-                            .
-                        </p>
+            {isMinimized ? (
+                <button
+                    onClick={() => setIsMinimized(false)}
+                    className="bg-gray-900 dark:bg-gray-950 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-800 transition-colors flex items-center gap-2 border border-gray-700"
+                    aria-label="Expand cookie settings"
+                >
+                    🍪 Cookie Settings
+                </button>
+            ) : (
+                <div className="bg-gray-900 dark:bg-gray-950 text-white p-4 rounded-lg shadow-2xl border border-gray-700">
+                    <div className="flex items-start justify-between mb-3">
+                        <h3 className="text-sm font-semibold">🍪 Cookies</h3>
+                        <button
+                            onClick={minimizeBanner}
+                            className="text-gray-400 hover:text-white -mt-1 -mr-1 p-1"
+                            aria-label="Minimize banner"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                    <p className="text-xs text-gray-300 mb-3 leading-relaxed">
+                        We use cookies for analytics.{" "}
+                        <a href="/privacy" className="underline hover:text-white">
+                            Learn more
+                        </a>
+                    </p>
+                    <div className="flex gap-2">
                         <button
                             onClick={declineCookies}
-                            className="px-4 py-2 rounded-lg border border-gray-600 dark:border-gray-700 hover:bg-gray-800 dark:hover:bg-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                            className="flex-1 px-3 py-1.5 text-xs rounded border border-gray-600 hover:bg-gray-800 transition-colors"
                         >
-                            Essential only
+                            Decline
                         </button>
                         <button
                             onClick={acceptCookies}
-                            className="px-4 py-2 rounded-lg bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                            className="flex-1 px-3 py-1.5 text-xs rounded bg-blue-600 hover:bg-blue-700 transition-colors"
                         >
-                            Accept all
+                            Accept
                         </button>
                     </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }
