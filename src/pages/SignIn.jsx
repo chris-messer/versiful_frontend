@@ -8,41 +8,81 @@ export default function SignIn() {
     const [form, setForm] = useState({ email: "", password: "" });
     const [mode, setMode] = useState("signup"); // 'signin' | 'signup'
     const [error, setError] = useState("");
+    const [fieldErrors, setFieldErrors] = useState({ email: "", password: "" });
+    const [touched, setTouched] = useState({ email: false, password: false });
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
+        // Clear errors when user starts typing
+        if (error) setError("");
+        if (fieldErrors[name]) {
+            setFieldErrors((prev) => ({ ...prev, [name]: "" }));
+        }
+    };
+
+    const handleBlur = (field) => {
+        setTouched((prev) => ({ ...prev, [field]: true }));
+        validateField(field);
+    };
+
+    const validateField = (field) => {
+        let errorMsg = "";
+        
+        if (field === "email" && !form.email) {
+            errorMsg = "Email address is required";
+        } else if (field === "password" && !form.password) {
+            errorMsg = "Password is required";
+        } else if (field === "password" && form.password && form.password.length < 6) {
+            errorMsg = "Password must be at least 6 characters";
+        }
+
+        setFieldErrors((prev) => ({ ...prev, [field]: errorMsg }));
+        return errorMsg === "";
+    };
+
+    const validateAllFields = () => {
+        const emailValid = validateField("email");
+        const passwordValid = validateField("password");
+        setTouched({ email: true, password: true });
+        return emailValid && passwordValid;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         
-        // Client-side validation
-        if (!form.email || !form.password) {
-            setError("Please enter both email and password.");
-            return;
-        }
-        
-        if (mode === "signup" && form.password.length < 6) {
-            setError("Password must be at least 6 characters long.");
+        // Validate all fields before submission
+        if (!validateAllFields()) {
+            // Focus on first error field
+            if (fieldErrors.email || !form.email) {
+                document.querySelector('input[name="email"]')?.focus();
+            } else if (fieldErrors.password || !form.password) {
+                document.querySelector('input[name="password"]')?.focus();
+            }
             return;
         }
         
         setLoading(true);
         try {
-            const endpoint =
-                mode === "signup"
-                    ? `https://api.${import.meta.env.VITE_DOMAIN}/auth/signup`
-                    : `https://api.${import.meta.env.VITE_DOMAIN}/auth/login`;
-
-            const resp = await fetch(endpoint, {
+            // Smart auto-detection: try login first, then signup if it fails
+            let resp = await fetch(`https://api.${import.meta.env.VITE_DOMAIN}/auth/login`, {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username: form.email, password: form.password }),
             });
+
+            // If login fails with 401 (user not found or wrong password), try signup
+            if (resp.status === 401 && mode === "signup") {
+                resp = await fetch(`https://api.${import.meta.env.VITE_DOMAIN}/auth/signup`, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username: form.email, password: form.password }),
+                });
+            }
 
             if (!resp.ok) {
                 // Try to get detailed error message from response
@@ -57,7 +97,9 @@ export default function SignIn() {
                 }
                 
                 if (resp.status === 409) {
-                    throw new Error("That email is already registered. Try signing in.");
+                    errorMessage = "An account with this email already exists. Try signing in instead.";
+                } else if (resp.status === 401 && mode === "signin") {
+                    errorMessage = "Invalid email or password. Please try again.";
                 }
                 throw new Error(errorMessage);
             }
@@ -109,43 +151,93 @@ export default function SignIn() {
                     </h1>
                     <p className="text-gray-700 dark:text-gray-300">
                         {mode === "signup"
-                            ? "Takes under a minute. You can also continue with Google."
-                            : "Use your email and password to continue."}
+                            ? "Enter your email and password to get started"
+                            : "Use your email and password to continue"}
                     </p>
                 </div>
 
                 <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
                     <form className="space-y-4" onSubmit={handleSubmit}>
                         <div>
-                            <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100">Email</label>
+                            <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                Email <span className="text-red-600">*</span>
+                            </label>
                             <input
                                 type="email"
                                 name="email"
                                 value={form.email}
                                 onChange={handleChange}
-                                className="mt-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                onBlur={() => handleBlur("email")}
+                                className={`mt-2 w-full rounded-lg border ${
+                                    touched.email && fieldErrors.email 
+                                        ? "border-red-500 bg-red-50 dark:bg-red-900/10" 
+                                        : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                                } text-gray-900 dark:text-white px-3 py-2 focus:outline-none focus:ring-2 ${
+                                    touched.email && fieldErrors.email 
+                                        ? "focus:ring-red-500" 
+                                        : "focus:ring-blue-500"
+                                }`}
                                 placeholder="you@example.com"
-                                required
+                                aria-invalid={touched.email && !!fieldErrors.email}
+                                aria-describedby={fieldErrors.email ? "email-error" : undefined}
                             />
+                            {touched.email && fieldErrors.email && (
+                                <p id="email-error" className="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                    </svg>
+                                    {fieldErrors.email}
+                                </p>
+                            )}
                         </div>
                         <div>
-                            <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100">Password</label>
+                            <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                Password <span className="text-red-600">*</span>
+                            </label>
                             <input
                                 type="password"
                                 name="password"
                                 value={form.password}
                                 onChange={handleChange}
-                                className="mt-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder={mode === "signup" ? "At least 6 characters" : "Your password"}
-                                required
-                                minLength={mode === "signup" ? 6 : undefined}
+                                onBlur={() => handleBlur("password")}
+                                className={`mt-2 w-full rounded-lg border ${
+                                    touched.password && fieldErrors.password 
+                                        ? "border-red-500 bg-red-50 dark:bg-red-900/10" 
+                                        : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                                } text-gray-900 dark:text-white px-3 py-2 focus:outline-none focus:ring-2 ${
+                                    touched.password && fieldErrors.password 
+                                        ? "focus:ring-red-500" 
+                                        : "focus:ring-blue-500"
+                                }`}
+                                placeholder="At least 6 characters"
+                                minLength={6}
+                                aria-invalid={touched.password && !!fieldErrors.password}
+                                aria-describedby={fieldErrors.password ? "password-error" : "password-hint"}
                             />
-                            {mode === "signup" && (
-                                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                            {touched.password && fieldErrors.password ? (
+                                <p id="password-error" className="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                    </svg>
+                                    {fieldErrors.password}
+                                </p>
+                            ) : (
+                                <p id="password-hint" className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                                     Password must be at least 6 characters long
                                 </p>
                             )}
                         </div>
+
+                        {mode === "signin" && (
+                            <div className="flex justify-end">
+                                <Link 
+                                    to="/forgot-password" 
+                                    className="text-sm text-blue-800 dark:text-blue-400 hover:underline"
+                                >
+                                    Forgot password?
+                                </Link>
+                            </div>
+                        )}
 
                         {error && <p className="text-sm text-red-600">{error}</p>}
 
@@ -178,28 +270,22 @@ export default function SignIn() {
                             Continue with Google
                         </button>
                     </form>
-                    <div className="text-sm text-gray-600 dark:text-gray-400 mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <div className="text-sm text-gray-600 dark:text-gray-400 mt-4 text-center">
                         <span>
                             {mode === "signup"
-                                ? "Already have an account?"
-                                : "New to Versiful?"}
+                                ? "Already have an account? "
+                                : "New to Versiful? "}
                         </span>
-                        <div className="flex flex-wrap gap-3">
-                            <button
-                                type="button"
-                                onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
-                                className="text-blue-800 dark:text-blue-400 font-semibold hover:underline underline-offset-2"
-                            >
-                                {mode === "signup" ? "Switch to Sign in" : "Create an account"}
-                            </button>
-                            <button
-                                type="button"
-                                onClick={handleGoogle}
-                                className="text-blue-800 dark:text-blue-400 font-semibold hover:underline underline-offset-2"
-                            >
-                                Continue with Google
-                            </button>
-                        </div>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setMode(mode === "signup" ? "signin" : "signup");
+                                setError("");
+                            }}
+                            className="text-blue-800 dark:text-blue-400 font-semibold hover:underline underline-offset-2"
+                        >
+                            {mode === "signup" ? "Sign in" : "Create an account"}
+                        </button>
                     </div>
                 </div>
             </div>

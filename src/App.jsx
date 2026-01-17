@@ -19,6 +19,7 @@ import TermsOfService from "./pages/TermsOfService";
 import SmsConsent from "./pages/SmsConsent";
 import OptInForm from "./pages/OptInForm";
 import TracebackCompliance from "./pages/TracebackCompliance";
+import ForgotPassword from "./pages/ForgotPassword";
 import { useEffect } from "react";
 import SignIn from "./pages/SignIn";
 
@@ -54,6 +55,7 @@ export default function App() {
                             <Route path="/welcome" element={<Welcome />} />
                             <Route path="/getting-started" element={<GettingStarted />} />
                             <Route path="/signin" element={<SignIn />} />
+                            <Route path="/forgot-password" element={<ForgotPassword />} />
                             <Route path="/privacy" element={<PrivacyPolicy />} />
                             <Route path="/terms" element={<TermsOfService />} />
                             <Route path="/sms-consent" element={<SmsConsent />} />
