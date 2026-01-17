@@ -14,7 +14,7 @@ const loggedInNavLinks = [
 ];
 
 export default function Navbar() {
-    const { isLoggedIn, logout } = useAuth();
+    const { isLoggedIn, logout, login } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
