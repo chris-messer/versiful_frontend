@@ -61,14 +61,24 @@ export const AuthProvider = ({ children }) => {
                 if (userData && posthog) {
                     // Use userId as distinct_id for consistent tracking
                     const userId = userData.userId;
+                    const currentDistinctId = posthog.get_distinct_id();
                     
                     console.log('🔍 PostHog Identify Debug:', {
                         hasPostHog: !!posthog,
                         hasUserData: !!userData,
                         userId: userId,
                         userEmail: userData.email,
-                        currentDistinctId: posthog.get_distinct_id()
+                        currentDistinctId: currentDistinctId
                     });
+                    
+                    // If user was anonymous before (UUID), link old events to new identity
+                    if (currentDistinctId !== userId && currentDistinctId.includes('-')) {
+                        console.log('🔗 Linking anonymous events to user via alias:', {
+                            anonymousId: currentDistinctId,
+                            userId: userId
+                        });
+                        posthog.alias(userId, currentDistinctId);
+                    }
                     
                     // Build person properties
                     const personProperties = {
