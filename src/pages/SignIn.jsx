@@ -18,6 +18,18 @@ export default function SignIn() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+        
+        // Client-side validation
+        if (!form.email || !form.password) {
+            setError("Please enter both email and password.");
+            return;
+        }
+        
+        if (mode === "signup" && form.password.length < 6) {
+            setError("Password must be at least 6 characters long.");
+            return;
+        }
+        
         setLoading(true);
         try {
             const endpoint =
@@ -33,10 +45,21 @@ export default function SignIn() {
             });
 
             if (!resp.ok) {
+                // Try to get detailed error message from response
+                let errorMessage = mode === "signup" ? "Could not create your account." : "Invalid email or password.";
+                try {
+                    const errorData = await resp.json();
+                    if (errorData.error) {
+                        errorMessage = errorData.error;
+                    }
+                } catch (e) {
+                    // If response is not JSON, use default message
+                }
+                
                 if (resp.status === 409) {
                     throw new Error("That email is already registered. Try signing in.");
                 }
-                throw new Error(mode === "signup" ? "Could not create your account." : "Invalid email or password.");
+                throw new Error(errorMessage);
             }
 
             const userCheckResponse = await fetch(`https://api.${import.meta.env.VITE_DOMAIN}/users`, {
@@ -113,9 +136,15 @@ export default function SignIn() {
                                 value={form.password}
                                 onChange={handleChange}
                                 className="mt-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Your password"
+                                placeholder={mode === "signup" ? "At least 6 characters" : "Your password"}
                                 required
+                                minLength={mode === "signup" ? 6 : undefined}
                             />
+                            {mode === "signup" && (
+                                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                    Password must be at least 6 characters long
+                                </p>
+                            )}
                         </div>
 
                         {error && <p className="text-sm text-red-600">{error}</p>}
