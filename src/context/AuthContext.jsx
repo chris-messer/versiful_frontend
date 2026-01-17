@@ -62,6 +62,14 @@ export const AuthProvider = ({ children }) => {
                     // Use userId as distinct_id for consistent tracking
                     const userId = userData.userId;
                     
+                    console.log('🔍 PostHog Identify Debug:', {
+                        hasPostHog: !!posthog,
+                        hasUserData: !!userData,
+                        userId: userId,
+                        userEmail: userData.email,
+                        currentDistinctId: posthog.get_distinct_id()
+                    });
+                    
                     // Build person properties
                     const personProperties = {
                         email: userData.email,
@@ -76,13 +84,23 @@ export const AuthProvider = ({ children }) => {
                     if (userData.bibleVersion) personProperties.bible_version = userData.bibleVersion;
                     if (userData.responseStyle) personProperties.response_style = userData.responseStyle;
                     
+                    console.log('📝 Calling posthog.identify with:', { userId, personProperties });
+                    
                     // Identify user in PostHog
                     posthog.identify(userId, personProperties);
+                    
+                    console.log('✅ PostHog identify called. New distinct_id:', posthog.get_distinct_id());
                     
                     // Mark internal users for filtering (sets additional properties)
                     if (userData.email) {
                         identifyInternalUser(posthog, userData.email);
                     }
+                } else {
+                    console.warn('⚠️ PostHog identify skipped:', {
+                        hasPostHog: !!posthog,
+                        hasUserData: !!userData,
+                        reason: !posthog ? 'PostHog not initialized' : 'No user data'
+                    });
                 }
             } else {
                     setIsLoggedIn(false);
