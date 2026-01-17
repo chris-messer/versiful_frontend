@@ -14,7 +14,7 @@ const loggedInNavLinks = [
 ];
 
 export default function Navbar() {
-    const { isLoggedIn, setIsLoggedIn, login } = useAuth();
+    const { isLoggedIn, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -45,17 +45,8 @@ export default function Navbar() {
     }, []);
 
     const handleLogout = async () => {
-        try {
-            await fetch(`https://api.${import.meta.env.VITE_DOMAIN}/auth/logout`, {
-                method: "POST",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-            });
-            setIsLoggedIn(false);
-            navigate("/");
-        } catch (error) {
-            console.error("Logout failed:", error);
-        }
+        await logout();
+        navigate("/");
     };
 
     const NavButtons = ({ isMobile = false }) =>
