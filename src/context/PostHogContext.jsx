@@ -22,10 +22,13 @@ export const PostHogProvider = ({ children }) => {
       capture_pageleave: true,
       // Set environment as a super property
       loaded: (posthog) => {
-        // Register environment
+        // Register environment as super property (included in all events)
         posthog.register({
           environment: config.environment,
+          domain: window.location.hostname,
         });
+        
+        console.log(`📊 PostHog initialized - Environment: ${config.environment}`);
         
         // Check if user marked themselves as internal
         const isInternal = localStorage.getItem('versiful_internal') === 'true';
@@ -64,9 +67,9 @@ export const PostHogProvider = ({ children }) => {
         
         setIsInitialized(true);
       },
-      // Only enable in production by default
-      // You can change this if you want to track dev/staging too
-      opt_out_capturing_by_default: config.environment !== 'prod',
+      // Track all environments (dev/staging/prod) with environment filter
+      // Filter in PostHog dashboard: environment = 'prod' to see only production
+      opt_out_capturing_by_default: false,
     });
 
     return () => {
