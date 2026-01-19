@@ -71,15 +71,6 @@ export const AuthProvider = ({ children }) => {
                         currentDistinctId: currentDistinctId
                     });
                     
-                    // If user was anonymous before (UUID), link old events to new identity
-                    if (currentDistinctId !== userId && currentDistinctId.includes('-')) {
-                        console.log('🔗 Linking anonymous events to user via alias:', {
-                            anonymousId: currentDistinctId,
-                            userId: userId
-                        });
-                        posthog.alias(userId, currentDistinctId);
-                    }
-                    
                     // Build person properties
                     const personProperties = {
                         email: userData.email,
@@ -94,12 +85,21 @@ export const AuthProvider = ({ children }) => {
                     if (userData.bibleVersion) personProperties.bible_version = userData.bibleVersion;
                     if (userData.responseStyle) personProperties.response_style = userData.responseStyle;
                     
+                    // IMPORTANT: Call identify() first to create the person profile
                     console.log('📝 Calling posthog.identify with:', { userId, personProperties });
-                    
-                    // Identify user in PostHog
                     posthog.identify(userId, personProperties);
-                    
                     console.log('✅ PostHog identify called. New distinct_id:', posthog.get_distinct_id());
+                    
+                    // THEN call alias() if needed to link anonymous events
+                    // Only alias if current ID is different AND looks like a UUID (anonymous)
+                    if (currentDistinctId !== userId && currentDistinctId.includes('-')) {
+                        console.log('🔗 Linking anonymous events to user via alias:', {
+                            anonymousId: currentDistinctId,
+                            userId: userId
+                        });
+                        // Alias links the old anonymous ID to the new identified ID
+                        posthog.alias(userId, currentDistinctId);
+                    }
                     
                     // Mark internal users for filtering (sets additional properties)
                     if (userData.email) {
