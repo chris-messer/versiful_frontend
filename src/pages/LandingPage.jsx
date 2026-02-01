@@ -155,7 +155,7 @@ export default function LandingPage() {
                     </div>
 
                     {/* DESKTOP: Two column layout */}
-                    <div className="hidden lg:grid lg:grid-cols-2 gap-12 items-start">
+                    <div className="hidden lg:grid lg:grid-cols-2 gap-12 items-center">
                         {/* LEFT SIDE - Copy & CTAs */}
                         <div className="space-y-6">
                             {/* YOUR HEADLINE */}
