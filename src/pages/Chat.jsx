@@ -508,7 +508,7 @@ export default function Chat() {
                                     }}
                                     placeholder={!isSubscribed && userMessageCount >= FREE_TRIAL_MESSAGE_LIMIT ? "Subscribe to continue chatting..." : "Message Versiful..."}
                                     className="flex-1 bg-transparent border-none focus:outline-none resize-none text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 px-2 py-2 max-h-[200px] text-sm md:text-[15px]"
-                                    disabled={isLoading || (!isSubscribed && userMessageCount >= FREE_TRIAL_MESSAGE_LIMIT)}
+                                    disabled={!isSubscribed && userMessageCount >= FREE_TRIAL_MESSAGE_LIMIT}
                                     rows={1}
                                     style={{ minHeight: '24px' }}
                                 />
