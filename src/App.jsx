@@ -4,6 +4,7 @@ import { PostHogProvider } from "./context/PostHogContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CookieConsent from "./components/CookieConsent";
+import MobileStickyCTA from "./components/MobileStickyCTA";
 import LandingPage from "./pages/LandingPage";
 import FeaturesPage from "./pages/FeaturesPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
@@ -21,7 +22,17 @@ import OptInForm from "./pages/OptInForm";
 import TracebackCompliance from "./pages/TracebackCompliance";
 import ForgotPassword from "./pages/ForgotPassword";
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import SignIn from "./pages/SignIn";
+
+function MobileStickyCTAWrapper() {
+    const location = useLocation();
+    // Only show on landing page
+    if (location.pathname === '/') {
+        return <MobileStickyCTA />;
+    }
+    return null;
+}
 
 export default function App() {
     useEffect(() => {
@@ -64,6 +75,7 @@ export default function App() {
                         </Routes>
                         <Footer />
                         <CookieConsent />
+                        <MobileStickyCTAWrapper />
                     </div>
                 </Router>
             </AuthProvider>

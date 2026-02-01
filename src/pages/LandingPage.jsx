@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { usePostHog } from "../context/PostHogContext";
 import Phone from "../components/landing/hero/Phone.jsx";
 import { useConfig } from "../hooks/useConfig";
 import SEO, { seoConfig } from "../components/SEO";
@@ -58,59 +59,184 @@ const reassurances = [
 
 export default function LandingPage() {
     const { login } = useAuth();
+    const { posthog } = usePostHog();
     const { config } = useConfig();
     
     // Use config phone number or fallback
     const phoneNumber = config?.phone?.sms || "833-681-1158";
 
+    const handleGetStarted = (location) => {
+        if (posthog) {
+            posthog.capture('landing_cta_clicked', {
+                cta_location: location,
+                cta_type: 'signup',
+                device: window.innerWidth < 768 ? 'mobile' : 'desktop'
+            });
+        }
+        login();
+    };
+
+    const handleTryText = (source) => {
+        if (posthog) {
+            posthog.capture('try_text_clicked', {
+                source: source,
+                device: window.innerWidth < 768 ? 'mobile' : 'desktop'
+            });
+        }
+    };
+
     return (
         <>
             <SEO {...seoConfig.home} />
             <div className="bg-gradient-to-b from-white via-blue-50/60 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 text-gray-900 dark:text-gray-100 -mt-16 md:-mt-20">
-            <section className="pt-20 pb-12 sm:pt-24 sm:pb-14">
-                <div className="container mx-auto max-w-6xl px-6 lg:px-10 grid lg:grid-cols-2 gap-12 items-center">
-                    <div className="space-y-6 text-left">
-                        <p className="text-sm font-semibold uppercase tracking-wide text-blue-800 dark:text-blue-400">
-                            Scripture guidance via text or web
-                        </p>
-                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white">
-                            Guidance from the Word, Right When You Need It
+            <section className="pt-20 pb-12 sm:pt-20 sm:pb-14 lg:bg-gradient-to-br lg:from-blue-50 lg:via-white lg:to-blue-50 dark:lg:from-gray-900 dark:lg:via-gray-950 dark:lg:to-gray-900">
+                <div className="container mx-auto max-w-6xl px-6 lg:px-10">
+                    {/* MOBILE: Single column centered layout */}
+                    <div className="lg:hidden max-w-2xl mx-auto">
+                        {/* YOUR HEADLINE */}
+                        <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-gray-900 dark:text-white text-center mb-8">
+                            Send a text.<br />
+                            Get back a Bible verse.<br />
+                            <span className="text-blue-600 dark:text-blue-400">No apps, no distractions.</span>
                         </h1>
-                        <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300 leading-relaxed max-w-2xl">
-                            Share what you're facing and receive a Bible passage with a gentle reflection—delivered by text or through our web chat.
-                        </p>
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                            <button
-                                onClick={login}
-                                className="inline-flex items-center justify-center rounded-xl bg-blue-900 px-5 py-3 text-white font-semibold shadow-lg shadow-blue-200 dark:shadow-blue-900/50 hover:bg-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2"
-                            >
-                                Get started
-                            </button>
-                        </div>
-                        <div className="flex flex-wrap gap-3 text-sm text-gray-700 dark:text-gray-300">
-                            <div className="flex items-center gap-2">
-                                <span className="h-2 w-2 rounded-full bg-green-500 dark:bg-green-400"></span>
-                                <span>No app to install—just text.</span>
+
+                        {/* PHONE COMPONENT - Shows the interface */}
+                        <div className="flex justify-center mb-8">
+                            <div className="w-full max-w-[320px] sm:max-w-[360px]">
+                                <Phone />
                             </div>
-                            <div className="flex items-center gap-2">
-                                <span className="h-2 w-2 rounded-full bg-green-500 dark:bg-green-400"></span>
-                                <span>Unlimited guidance with an account.</span>
+                        </div>
+
+                        {/* MOBILE-FIRST CTA BUTTONS */}
+                            <div className="space-y-3">
+                                {/* PRIMARY CTA - Large */}
+                                <button
+                                    onClick={() => handleGetStarted('hero')}
+                                    className="w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white 
+                                             py-4 px-8 rounded-xl text-lg sm:text-xl font-bold
+                                             shadow-2xl hover:shadow-blue-500/50 
+                                             transform hover:scale-105 transition-all duration-200
+                                             inline-flex items-center justify-center gap-2"
+                                >
+                                    <span>Start Free Trial</span>
+                                    <span className="text-2xl">→</span>
+                                </button>
+
+                            {/* SECONDARY CTA - Try without signup */}
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center gap-2">
+                                <span className="text-sm text-gray-600 dark:text-gray-400 text-center">or</span>
+                                <a
+                                    href={`sms:${phoneNumber}?body=Hi Versiful, today I am feeling...`}
+                                    onClick={() => handleTryText('hero')}
+                                    className="text-blue-600 dark:text-blue-400 font-bold hover:underline text-base text-center"
+                                >
+                                    📱 Try it free (no signup)
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* SOCIAL PROOF - Compact */}
+                        <div className="pt-8 mt-8 border-t border-gray-200 dark:border-gray-700">
+                            <div className="flex items-center justify-center gap-6 flex-wrap text-sm">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-2xl font-black text-blue-600 dark:text-blue-400">2,000+</span>
+                                    <span className="text-gray-600 dark:text-gray-400">messages sent</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-2xl font-black text-blue-600 dark:text-blue-400">4.9★</span>
+                                    <span className="text-gray-600 dark:text-gray-400">rating</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-2xl font-black text-green-600 dark:text-green-400">FREE</span>
+                                    <span className="text-gray-600 dark:text-gray-400">to try</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className="flex justify-center">
-                        <div className="w-full max-w-[320px] sm:max-w-[360px] md:max-w-[400px]">
-                            <Phone />
+
+                    {/* DESKTOP: Two column layout */}
+                    <div className="hidden lg:grid lg:grid-cols-2 gap-12 items-start">
+                        {/* LEFT SIDE - Copy & CTAs */}
+                        <div className="space-y-6">
+                            {/* YOUR HEADLINE */}
+                            <h1 className="text-4xl xl:text-5xl font-bold leading-tight text-gray-900 dark:text-white">
+                                Send a text.<br />
+                                Get back a Bible verse.<br />
+                                <span className="text-blue-600 dark:text-blue-400">No apps, no distractions.</span>
+                            </h1>
+
+                            {/* CTA BUTTONS */}
+                            <div className="space-y-3 pt-4">
+                                {/* PRIMARY CTA */}
+                                <button
+                                    onClick={() => handleGetStarted('hero')}
+                                    className="w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white 
+                                             py-4 px-8 rounded-xl text-xl font-bold
+                                             shadow-2xl hover:shadow-blue-500/50 
+                                             transform hover:scale-105 transition-all duration-200
+                                             inline-flex items-center justify-center gap-2"
+                                >
+                                    <span>Start Free Trial</span>
+                                    <span className="text-2xl">→</span>
+                                </button>
+
+                                {/* SECONDARY CTA */}
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm text-gray-600 dark:text-gray-400">or</span>
+                                    <a
+                                        href={`sms:${phoneNumber}?body=Hi Versiful, today I am feeling...`}
+                                        onClick={() => handleTryText('hero')}
+                                        className="text-blue-600 dark:text-blue-400 font-bold hover:underline text-base"
+                                    >
+                                        📱 Try it free (no signup)
+                                    </a>
+                                </div>
+                            </div>
+
+                            {/* SOCIAL PROOF */}
+                            <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
+                                <div className="flex items-center gap-6 flex-wrap text-sm">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-2xl font-black text-blue-600 dark:text-blue-400">2,000+</span>
+                                        <span className="text-gray-600 dark:text-gray-400">messages sent</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-2xl font-black text-blue-600 dark:text-blue-400">4.9★</span>
+                                        <span className="text-gray-600 dark:text-gray-400">rating</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-2xl font-black text-green-600 dark:text-green-400">FREE</span>
+                                        <span className="text-gray-600 dark:text-gray-400">to try</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* RIGHT SIDE - Phone Component */}
+                        <div className="flex justify-center lg:justify-end">
+                            <div className="w-full max-w-[360px] xl:max-w-[400px]">
+                                <Phone />
+                            </div>
                         </div>
                     </div>
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-6 px-6 leading-relaxed">
-                    Prefer to try first?{" "}
-                    <a href={`sms:${phoneNumber}`} className="font-semibold text-blue-700 dark:text-blue-400 hover:underline">
-                        Text {phoneNumber}
-                    </a>{" "}
-                    for a quick reply before you set up your account.
-                </p>
+
+                {/* TESTIMONIAL - Below hero, full width */}
+                <div className="container mx-auto max-w-6xl px-6 lg:px-10 mt-12">
+                    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-6 max-w-3xl mx-auto border border-blue-100 dark:border-blue-800">
+                        <div className="flex gap-4 items-start">
+                            <div className="text-3xl flex-shrink-0">💬</div>
+                            <div className="text-left">
+                                <p className="text-base italic text-gray-700 dark:text-gray-300 mb-2 leading-relaxed">
+                                    "I was struggling with anxiety and got a Bible verse that perfectly spoke to my situation. It really helped me find peace."
+                                </p>
+                                <p className="text-sm font-semibold text-gray-600 dark:text-gray-400">
+                                    — Sarah M., Florida
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <section className="bg-white dark:bg-gray-900 py-12 sm:py-14 shadow-inner">
@@ -209,14 +335,20 @@ export default function LandingPage() {
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
                         <button
-                            onClick={login}
+                            onClick={() => handleGetStarted('bottom_cta')}
                             className="inline-flex items-center justify-center rounded-xl bg-white dark:bg-gray-100 px-5 py-3 text-blue-900 dark:text-blue-950 font-semibold shadow-lg hover:bg-blue-50 dark:hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-900"
                         >
                             Get started
                         </button>
                     </div>
                     <p className="text-sm text-blue-100 dark:text-blue-200 text-center max-w-2xl mx-auto mt-4">
-                        Want to try first? <a href={`sms:${phoneNumber}`} className="font-semibold underline">Text {phoneNumber}</a> for a quick reply.
+                        Want to try first? <a 
+                            href={`sms:${phoneNumber}`} 
+                            onClick={() => handleTryText('bottom_cta')}
+                            className="font-semibold underline"
+                        >
+                            Text {phoneNumber}
+                        </a> for a quick reply.
                     </p>
                 </div>
             </section>

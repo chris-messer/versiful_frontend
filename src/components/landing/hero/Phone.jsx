@@ -33,7 +33,7 @@ export default function Phone() {
                                 </div>
                             </div>
                             <div className="chat-bubble text-white bg-blue-500 text-sm px-3 py-2 max-w-[80%]">
-                                What would jesus say about betrayal?
+                                I'm feeling overwhelmed with everything going on. Can you help?
                             </div>
                         </div>
                         <div className="chat chat-start">
@@ -44,13 +44,13 @@ export default function Phone() {
                             </div>
                             <div className="chat-bubble bg-gray-200 text-black text-sm px-4 py-3 leading-relaxed max-w-[85%]">
                                 <p className="m-0">
-                                    The Parable of the Unforgiving Servant (Matthew 18:21-35)
+                                    Matthew 11:28
+                                </p>
+                                <p className="m-0 mt-2">
+                                    "Come to me, all who are weary and burdened, and I will give you rest."
                                 </p>
                                 <p className="m-0 mt-3">
-                                    Jesus tells of a king who forgives a servant's enormous debt, but that servant refuses to forgive a smaller debt owed to him. The king punishes the unforgiving servant.
-                                </p>
-                                <p className="m-0 mt-3">
-                                    The lesson: Just as God forgives us, we should forgive others. Holding onto bitterness harms us, but mercy brings peace.
+                                    When life feels heavy, remember you don't have to carry it alone. This verse reminds us that we can bring our burdens to God and find peace. Take a moment to breathe and trust that you're not alone in this.
                                 </p>
                             </div>
                         </div>
