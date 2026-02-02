@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { bibleVersions } from "../../constants/bibleVersions";
 import { useAuth } from "../../context/AuthContext";
-import { usePostHog } from "../../context/PostHogContext";
 
 const WelcomeForm = () => {
     const [formData, setFormData] = useState({
@@ -28,7 +27,6 @@ const WelcomeForm = () => {
 
     const navigate = useNavigate();
     const { user } = useAuth();
-    const { posthog } = usePostHog();
 
     // Fetch user profile to check if email already exists
     useEffect(() => {
@@ -153,30 +151,6 @@ const WelcomeForm = () => {
 
             const data = await response.json();
             console.log("User updated successfully:", data);
-
-            // CRITICAL: Link previous SMS activity to user account
-            // If user texted before creating account, link those events to their userId
-            if (posthog && userData && userData.userId) {
-                const phoneDigitsOnly = digitsOnly; // Phone number without +1
-                
-                console.log('🔗 Linking phone number events to user:', {
-                    userId: userData.userId,
-                    phoneNumber: phoneDigitsOnly
-                });
-                
-                // Alias the phone number ID to the user ID
-                // This links all previous SMS events (which used phone as distinct_id)
-                // to the user's account (which uses userId as distinct_id)
-                posthog.alias(userData.userId, phoneDigitsOnly);
-                
-                console.log('✅ Phone number events linked to user account');
-            } else {
-                console.warn('⚠️ PostHog alias skipped for phone number:', {
-                    hasPostHog: !!posthog,
-                    hasUserData: !!userData,
-                    userId: userData?.userId
-                });
-            }
 
             navigate("/getting-started");
         } catch (error) {

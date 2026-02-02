@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { usePostHog } from "./PostHogContext";
-import { identifyInternalUser } from "../utils/posthogHelpers";
 
 const AuthContext = createContext();
 
@@ -56,62 +55,6 @@ export const AuthProvider = ({ children }) => {
                 const userData = await response.json();
                 setIsLoggedIn(true);
                 setUser(userData);
-                
-                // Identify user in PostHog for proper tracking
-                if (userData && posthog) {
-                    // Use userId as distinct_id for consistent tracking
-                    const userId = userData.userId;
-                    const currentDistinctId = posthog.get_distinct_id();
-                    
-                    console.log('🔍 PostHog Identify Debug:', {
-                        hasPostHog: !!posthog,
-                        hasUserData: !!userData,
-                        userId: userId,
-                        userEmail: userData.email,
-                        currentDistinctId: currentDistinctId
-                    });
-                    
-                    // Build person properties
-                    const personProperties = {
-                        email: userData.email,
-                        is_subscribed: userData.isSubscribed || false,
-                        plan: userData.plan || 'free',
-                    };
-                    
-                    // Add optional properties if available
-                    if (userData.phoneNumber) personProperties.phone_number = userData.phoneNumber;
-                    if (userData.firstName) personProperties.first_name = userData.firstName;
-                    if (userData.lastName) personProperties.last_name = userData.lastName;
-                    if (userData.bibleVersion) personProperties.bible_version = userData.bibleVersion;
-                    if (userData.responseStyle) personProperties.response_style = userData.responseStyle;
-                    
-                    // IMPORTANT: Call identify() first to create the person profile
-                    console.log('📝 Calling posthog.identify with:', { userId, personProperties });
-                    posthog.identify(userId, personProperties);
-                    console.log('✅ PostHog identify called. New distinct_id:', posthog.get_distinct_id());
-                    
-                    // THEN call alias() if needed to link anonymous events
-                    // Only alias if current ID is different AND looks like a UUID (anonymous)
-                    if (currentDistinctId !== userId && currentDistinctId.includes('-')) {
-                        console.log('🔗 Linking anonymous events to user via alias:', {
-                            anonymousId: currentDistinctId,
-                            userId: userId
-                        });
-                        // Alias links the old anonymous ID to the new identified ID
-                        posthog.alias(userId, currentDistinctId);
-                    }
-                    
-                    // Mark internal users for filtering (sets additional properties)
-                    if (userData.email) {
-                        identifyInternalUser(posthog, userData.email);
-                    }
-                } else {
-                    console.warn('⚠️ PostHog identify skipped:', {
-                        hasPostHog: !!posthog,
-                        hasUserData: !!userData,
-                        reason: !posthog ? 'PostHog not initialized' : 'No user data'
-                    });
-                }
             } else {
                     setIsLoggedIn(false);
                     setUser(null);

@@ -1,12 +1,9 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { usePostHog } from "../context/PostHogContext";
-import { identifyInternalUser } from "../utils/posthogHelpers";
 
 export default function SignIn() {
     const { setIsLoggedIn } = useAuth();
-    const { posthog } = usePostHog();
     const navigate = useNavigate();
     const [form, setForm] = useState({ email: "", password: "" });
     const [mode, setMode] = useState("signup"); // 'signin' | 'signup'
@@ -119,57 +116,6 @@ export default function SignIn() {
 
             const userData = await userCheckResponse.json();
             setIsLoggedIn(true);
-
-            // CRITICAL: Identify user in PostHog immediately after signup/login
-            // This prevents anonymous events after account creation
-            if (userData && posthog) {
-                const userId = userData.userId;
-                const currentDistinctId = posthog.get_distinct_id();
-                
-                console.log('🔍 PostHog Identify (SignIn):', {
-                    userId,
-                    userEmail: userData.email,
-                    currentDistinctId,
-                    mode
-                });
-                
-                // Build person properties
-                const personProperties = {
-                    email: userData.email,
-                    is_subscribed: userData.isSubscribed || false,
-                    plan: userData.plan || 'free',
-                };
-                
-                // Add optional properties if available
-                if (userData.phoneNumber) personProperties.phone_number = userData.phoneNumber;
-                if (userData.firstName) personProperties.first_name = userData.firstName;
-                if (userData.lastName) personProperties.last_name = userData.lastName;
-                if (userData.bibleVersion) personProperties.bible_version = userData.bibleVersion;
-                if (userData.responseStyle) personProperties.response_style = userData.responseStyle;
-                
-                // Identify user with their userId
-                console.log('📝 Calling posthog.identify (SignIn):', { userId, personProperties });
-                posthog.identify(userId, personProperties);
-                
-                // Link anonymous events if this was a new signup
-                if (currentDistinctId !== userId && currentDistinctId.includes('-')) {
-                    console.log('🔗 Linking anonymous events to user (SignIn):', {
-                        anonymousId: currentDistinctId,
-                        userId: userId
-                    });
-                    posthog.alias(userId, currentDistinctId);
-                }
-                
-                // Mark internal users for filtering
-                if (userData.email) {
-                    identifyInternalUser(posthog, userData.email);
-                }
-            } else {
-                console.warn('⚠️ PostHog identify skipped in SignIn:', {
-                    hasPostHog: !!posthog,
-                    hasUserData: !!userData,
-                });
-            }
 
             if (!userData.isRegistered) {
                 navigate("/welcome");
