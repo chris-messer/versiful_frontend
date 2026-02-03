@@ -160,14 +160,17 @@ const WelcomeForm = () => {
             if (posthog && userData && userData.userId) {
                 const fullPhoneNumber = `+1${digitsOnly}`;
                 
-                console.log('📱 Updating PostHog with phone number:', {
+                console.log('📱 Updating PostHog with phone number and email:', {
                     userId: userData.userId,
-                    phoneNumber: fullPhoneNumber
+                    phoneNumber: fullPhoneNumber,
+                    email: userData.email,
+                    hasEmail: !!userData.email
                 });
                 
                 // Build updated person properties
                 const personProperties = {
                     user_id: userData.userId,  // CRITICAL: Store DynamoDB userId for linking to database
+                    email: userData.email,  // Include email from userData
                     phone_number: fullPhoneNumber,
                     first_name: formData.firstName || undefined,
                     last_name: formData.lastName || undefined,
@@ -175,10 +178,12 @@ const WelcomeForm = () => {
                     registration_status: 'registered',
                 };
                 
+                console.log('📊 PostHog personProperties being sent:', personProperties);
+                
                 // Update PostHog person properties (no aliasing here - backend handles SMS history linking)
                 posthog.identify(userData.userId, personProperties);
                 
-                console.log('✅ PostHog updated with phone number');
+                console.log('✅ PostHog updated with phone number and email');
             } else {
                 console.warn('⚠️ PostHog update skipped:', {
                     hasPostHog: !!posthog,
