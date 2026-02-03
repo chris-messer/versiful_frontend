@@ -167,6 +167,7 @@ const WelcomeForm = () => {
                 
                 // Build updated person properties
                 const personProperties = {
+                    user_id: userData.userId,  // CRITICAL: Store DynamoDB userId for linking to database
                     phone_number: fullPhoneNumber,
                     first_name: formData.firstName || undefined,
                     last_name: formData.lastName || undefined,

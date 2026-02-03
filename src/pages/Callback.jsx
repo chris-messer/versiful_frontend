@@ -66,6 +66,7 @@ const Callback = () => {
                 
                 // Build person properties
                 const personProperties = {
+                    user_id: userId,  // CRITICAL: Store DynamoDB userId for linking to database
                     email: userData.email,
                     plan: userData.plan || 'free',
                     is_subscribed: userData.isSubscribed || false,

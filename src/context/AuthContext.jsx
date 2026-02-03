@@ -60,6 +60,7 @@ export const AuthProvider = ({ children }) => {
                 // Note: Don't alias here - aliasing happens at signup/phone-add time only
                 if (userData && posthog && userData.userId) {
                     const personProperties = {
+                        user_id: userData.userId,  // CRITICAL: Store DynamoDB userId for linking to database
                         email: userData.email,
                         plan: userData.plan || 'free',
                         is_subscribed: userData.isSubscribed || false,
