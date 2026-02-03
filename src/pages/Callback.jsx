@@ -1,10 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { usePostHog } from "../context/PostHogContext";
 
 const Callback = () => {
     const navigate = useNavigate();
     const { setIsLoggedIn } = useAuth();
+    const { posthog } = usePostHog();
     const [error, setError] = useState(null);
     const [isProcessing, setIsProcessing] = useState(true);
     const hasAttemptedAuth = useRef(false); // Prevent double execution in dev mode
@@ -50,6 +52,52 @@ const Callback = () => {
             }
 
             const userData = await userCheckResponse.json();
+
+            // Identify user in PostHog with userId and person properties
+            if (userData && posthog) {
+                const userId = userData.userId;
+                const anonymousId = posthog.get_distinct_id();
+                
+                console.log('🔍 PostHog Identify (Callback):', {
+                    userId,
+                    userEmail: userData.email,
+                    currentDistinctId: anonymousId
+                });
+                
+                // Build person properties
+                const personProperties = {
+                    email: userData.email,
+                    plan: userData.plan || 'free',
+                    is_subscribed: userData.isSubscribed || false,
+                    registration_status: 'registered',
+                    channel: 'web',
+                };
+                
+                // Add optional properties if available
+                if (userData.phoneNumber) personProperties.phone_number = userData.phoneNumber;
+                if (userData.firstName) personProperties.first_name = userData.firstName;
+                if (userData.lastName) personProperties.last_name = userData.lastName;
+                if (userData.bibleVersion) personProperties.bible_version = userData.bibleVersion;
+                if (userData.createdAt) personProperties.created_at = userData.createdAt;
+                
+                // Identify user with their userId (DynamoDB UUID)
+                console.log('📝 Calling posthog.identify (Callback)');
+                posthog.identify(userId, personProperties);
+                
+                // Link anonymous events (for new signups via OAuth)
+                if (anonymousId !== userId && anonymousId.includes('-')) {
+                    console.log('🔗 Linking anonymous web events to user (Callback):', {
+                        anonymousId,
+                        userId
+                    });
+                    posthog.alias(userId, anonymousId);
+                }
+            } else {
+                console.warn('⚠️ PostHog identify skipped in Callback:', {
+                    hasPostHog: !!posthog,
+                    hasUserData: !!userData
+                });
+            }
 
             // Navigate based on user state
             if (!userData.isRegistered) {

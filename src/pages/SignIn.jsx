@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { usePostHog } from "../context/PostHogContext";
 
 export default function SignIn() {
     const { setIsLoggedIn } = useAuth();
+    const { posthog } = usePostHog();
     const navigate = useNavigate();
     const [form, setForm] = useState({ email: "", password: "" });
     const [mode, setMode] = useState("signup"); // 'signin' | 'signup'
@@ -116,6 +118,54 @@ export default function SignIn() {
 
             const userData = await userCheckResponse.json();
             setIsLoggedIn(true);
+
+            // Identify user in PostHog with userId and person properties
+            if (userData && posthog) {
+                const userId = userData.userId;
+                const anonymousId = posthog.get_distinct_id();
+                
+                console.log('🔍 PostHog Identify (SignIn):', {
+                    userId,
+                    userEmail: userData.email,
+                    currentDistinctId: anonymousId,
+                    mode
+                });
+                
+                // Build person properties
+                const personProperties = {
+                    email: userData.email,
+                    plan: userData.plan || 'free',
+                    is_subscribed: userData.isSubscribed || false,
+                    registration_status: 'registered',
+                    channel: 'web',
+                };
+                
+                // Add optional properties if available
+                if (userData.phoneNumber) personProperties.phone_number = userData.phoneNumber;
+                if (userData.firstName) personProperties.first_name = userData.firstName;
+                if (userData.lastName) personProperties.last_name = userData.lastName;
+                if (userData.bibleVersion) personProperties.bible_version = userData.bibleVersion;
+                if (userData.createdAt) personProperties.created_at = userData.createdAt;
+                
+                // Identify user with their userId (DynamoDB UUID)
+                console.log('📝 Calling posthog.identify (SignIn)');
+                posthog.identify(userId, personProperties);
+                
+                // Link anonymous events if this was a signup (new account)
+                // Only alias if current distinct_id is different and looks like an anonymous UUID
+                if (anonymousId !== userId && anonymousId.includes('-')) {
+                    console.log('🔗 Linking anonymous web events to user (SignIn):', {
+                        anonymousId,
+                        userId
+                    });
+                    posthog.alias(userId, anonymousId);
+                }
+            } else {
+                console.warn('⚠️ PostHog identify skipped in SignIn:', {
+                    hasPostHog: !!posthog,
+                    hasUserData: !!userData
+                });
+            }
 
             if (!userData.isRegistered) {
                 navigate("/welcome");

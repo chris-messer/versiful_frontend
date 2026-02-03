@@ -55,6 +55,27 @@ export const AuthProvider = ({ children }) => {
                 const userData = await response.json();
                 setIsLoggedIn(true);
                 setUser(userData);
+                
+                // Update PostHog person properties for logged-in users
+                // Note: Don't alias here - aliasing happens at signup/phone-add time only
+                if (userData && posthog && userData.userId) {
+                    const personProperties = {
+                        email: userData.email,
+                        plan: userData.plan || 'free',
+                        is_subscribed: userData.isSubscribed || false,
+                        registration_status: 'registered',
+                        channel: 'web',
+                    };
+                    
+                    // Add optional properties if available
+                    if (userData.phoneNumber) personProperties.phone_number = userData.phoneNumber;
+                    if (userData.firstName) personProperties.first_name = userData.firstName;
+                    if (userData.lastName) personProperties.last_name = userData.lastName;
+                    if (userData.bibleVersion) personProperties.bible_version = userData.bibleVersion;
+                    
+                    // Update user properties (no alias - just keeping profile current)
+                    posthog.identify(userData.userId, personProperties);
+                }
             } else {
                     setIsLoggedIn(false);
                     setUser(null);

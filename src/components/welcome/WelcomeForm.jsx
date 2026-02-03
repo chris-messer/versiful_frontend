@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { bibleVersions } from "../../constants/bibleVersions";
 import { useAuth } from "../../context/AuthContext";
+import { usePostHog } from "../../context/PostHogContext";
 
 const WelcomeForm = () => {
     const [formData, setFormData] = useState({
@@ -27,6 +28,7 @@ const WelcomeForm = () => {
 
     const navigate = useNavigate();
     const { user } = useAuth();
+    const { posthog } = usePostHog();
 
     // Fetch user profile to check if email already exists
     useEffect(() => {
@@ -151,6 +153,53 @@ const WelcomeForm = () => {
 
             const data = await response.json();
             console.log("User updated successfully:", data);
+
+            // Update PostHog with phone number and other properties
+            // IMPORTANT: This also attempts to link any SMS history from before registration
+            if (posthog && userData && userData.userId) {
+                const phoneDigitsOnly = digitsOnly; // Phone number without +1 or formatting
+                const fullPhoneNumber = `+1${digitsOnly}`;
+                
+                console.log('📱 Updating PostHog with phone number:', {
+                    userId: userData.userId,
+                    phoneNumber: fullPhoneNumber
+                });
+                
+                // Build updated person properties
+                const personProperties = {
+                    phone_number: fullPhoneNumber,
+                    first_name: formData.firstName || undefined,
+                    last_name: formData.lastName || undefined,
+                    bible_version: formData.bibleVersion,
+                    registration_status: 'registered',
+                };
+                
+                // Update PostHog person properties
+                posthog.identify(userData.userId, personProperties);
+                
+                // CRITICAL: Link any SMS history from this phone number
+                // If user texted before creating account, their events used `anon_sms_{phoneDigits}` as distinct_id
+                // We need to alias that to their actual userId to merge the history
+                const anonSmsId = `anon_sms_${phoneDigitsOnly}`;
+                
+                console.log('🔗 Attempting to link SMS history:', {
+                    userId: userData.userId,
+                    anonSmsId: anonSmsId,
+                    phoneDigits: phoneDigitsOnly
+                });
+                
+                // Alias the anonymous SMS ID to the user's real ID
+                // This will merge events IF they exist (if not, it's a no-op)
+                posthog.alias(userData.userId, anonSmsId);
+                
+                console.log('✅ PostHog updated with phone number');
+            } else {
+                console.warn('⚠️ PostHog update skipped:', {
+                    hasPostHog: !!posthog,
+                    hasUserData: !!userData,
+                    userId: userData?.userId
+                });
+            }
 
             navigate("/getting-started");
         } catch (error) {
