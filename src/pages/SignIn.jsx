@@ -134,7 +134,7 @@ export default function SignIn() {
                 // Build person properties
                 const personProperties = {
                     user_id: userId,  // CRITICAL: Store DynamoDB userId for linking to database
-                    $email: userData.email,  // Use $email for PostHog standard property
+                    email: userData.email,  // Plain email as per PostHog docs
                     plan: userData.plan || 'free',
                     is_subscribed: userData.isSubscribed || false,
                     registration_status: 'registered',
@@ -151,6 +151,18 @@ export default function SignIn() {
                 // Identify user with their userId (DynamoDB UUID)
                 console.log('📝 Calling posthog.identify (SignIn)');
                 posthog.identify(userId, personProperties);
+                
+                // Explicitly set person properties using $set to ensure they persist
+                console.log('📝 Explicitly setting person properties with $set (SignIn)');
+                posthog.capture('$set', {
+                    $set: {
+                        email: userData.email,
+                        user_id: userId,
+                        plan: userData.plan || 'free',
+                        is_subscribed: userData.isSubscribed || false,
+                        registration_status: 'registered'
+                    }
+                });
                 
                 // Link anonymous events if this was a signup (new account)
                 // Only alias if current distinct_id is different and looks like an anonymous UUID

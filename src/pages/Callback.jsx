@@ -67,7 +67,7 @@ const Callback = () => {
                 // Build person properties
                 const personProperties = {
                     user_id: userId,  // CRITICAL: Store DynamoDB userId for linking to database
-                    $email: userData.email,  // Use $email for PostHog standard property
+                    email: userData.email,  // Plain email as per PostHog docs
                     plan: userData.plan || 'free',
                     is_subscribed: userData.isSubscribed || false,
                     registration_status: 'registered',
@@ -84,6 +84,18 @@ const Callback = () => {
                 // Identify user with their userId (DynamoDB UUID)
                 console.log('📝 Calling posthog.identify (Callback)');
                 posthog.identify(userId, personProperties);
+                
+                // Explicitly set person properties using $set to ensure they persist
+                console.log('📝 Explicitly setting person properties with $set (Callback)');
+                posthog.capture('$set', {
+                    $set: {
+                        email: userData.email,
+                        user_id: userId,
+                        plan: userData.plan || 'free',
+                        is_subscribed: userData.isSubscribed || false,
+                        registration_status: 'registered'
+                    }
+                });
                 
                 // Link anonymous events (for new signups via OAuth)
                 if (anonymousId !== userId && anonymousId.includes('-')) {
