@@ -18,6 +18,11 @@ const GettingStarted = () => {
         }
     }, [isLoggedIn, navigate]);
 
+    useEffect(() => {
+        // Scroll to top when component mounts
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 text-gray-900 dark:text-gray-100 pt-14 md:pt-18 px-4">
             <div className="max-w-4xl mx-auto py-12 space-y-12">
