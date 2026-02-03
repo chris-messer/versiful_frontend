@@ -155,9 +155,9 @@ const WelcomeForm = () => {
             console.log("User updated successfully:", data);
 
             // Update PostHog with phone number and other properties
-            // IMPORTANT: This also attempts to link any SMS history from before registration
+            // NOTE: SMS history linking is handled by the backend in users/helpers.py
+            // Backend reads posthogAnonymousId from DynamoDB and aliases it correctly
             if (posthog && userData && userData.userId) {
-                const phoneDigitsOnly = digitsOnly; // Phone number without +1 or formatting
                 const fullPhoneNumber = `+1${digitsOnly}`;
                 
                 console.log('📱 Updating PostHog with phone number:', {
@@ -174,23 +174,8 @@ const WelcomeForm = () => {
                     registration_status: 'registered',
                 };
                 
-                // Update PostHog person properties
+                // Update PostHog person properties (no aliasing here - backend handles SMS history linking)
                 posthog.identify(userData.userId, personProperties);
-                
-                // CRITICAL: Link any SMS history from this phone number
-                // If user texted before creating account, their events used `anon_sms_{phoneDigits}` as distinct_id
-                // We need to alias that to their actual userId to merge the history
-                const anonSmsId = `anon_sms_${phoneDigitsOnly}`;
-                
-                console.log('🔗 Attempting to link SMS history:', {
-                    userId: userData.userId,
-                    anonSmsId: anonSmsId,
-                    phoneDigits: phoneDigitsOnly
-                });
-                
-                // Alias the anonymous SMS ID to the user's real ID
-                // This will merge events IF they exist (if not, it's a no-op)
-                posthog.alias(userData.userId, anonSmsId);
                 
                 console.log('✅ PostHog updated with phone number');
             } else {
