@@ -134,7 +134,7 @@ export default function SignIn() {
                 // Build person properties
                 const personProperties = {
                     user_id: userId,  // CRITICAL: Store DynamoDB userId for linking to database
-                    email: userData.email,
+                    $email: userData.email,  // Use $email for PostHog standard property
                     plan: userData.plan || 'free',
                     is_subscribed: userData.isSubscribed || false,
                     registration_status: 'registered',
