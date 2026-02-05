@@ -109,29 +109,29 @@ export default function LandingPage() {
 
                         {/* MOBILE-FIRST CTA BUTTONS */}
                             <div className="space-y-3">
-                                {/* PRIMARY CTA - Large */}
-                                <button
-                                    onClick={() => handleGetStarted('hero')}
+                                {/* PRIMARY CTA - Try via SMS */}
+                                <a
+                                    href={`sms:${phoneNumber}?body=Hi Versiful, today I am feeling...`}
+                                    onClick={() => handleTryText('hero')}
                                     className="w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white 
                                              py-4 px-8 rounded-xl text-lg sm:text-xl font-bold
                                              shadow-2xl hover:shadow-blue-500/50 
                                              transform hover:scale-105 transition-all duration-200
                                              inline-flex items-center justify-center gap-2"
                                 >
-                                    <span>Start Free Trial</span>
-                                    <span className="text-2xl">→</span>
-                                </button>
+                                    <span>Try it free now</span>
+                                    <span className="text-2xl">💬</span>
+                                </a>
 
-                            {/* SECONDARY CTA - Try without signup */}
+                            {/* SECONDARY CTA - Sign up */}
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center gap-2">
                                 <span className="text-sm text-gray-600 dark:text-gray-400 text-center">or</span>
-                                <a
-                                    href={`sms:${phoneNumber}?body=Hi Versiful, today I am feeling...`}
-                                    onClick={() => handleTryText('hero')}
+                                <button
+                                    onClick={() => handleGetStarted('hero')}
                                     className="text-blue-600 dark:text-blue-400 font-bold hover:underline text-base text-center"
                                 >
-                                    📱 Try it free (no signup)
-                                </a>
+                                    Sign up for unlimited access
+                                </button>
                             </div>
                         </div>
 
@@ -179,18 +179,6 @@ export default function LandingPage() {
                                     <span>Start Free Trial</span>
                                     <span className="text-2xl">→</span>
                                 </button>
-
-                                {/* SECONDARY CTA */}
-                                <div className="flex items-center gap-2">
-                                    <span className="text-sm text-gray-600 dark:text-gray-400">or</span>
-                                    <a
-                                        href={`sms:${phoneNumber}?body=Hi Versiful, today I am feeling...`}
-                                        onClick={() => handleTryText('hero')}
-                                        className="text-blue-600 dark:text-blue-400 font-bold hover:underline text-base"
-                                    >
-                                        📱 Try it free (no signup)
-                                    </a>
-                                </div>
                             </div>
 
                             {/* SOCIAL PROOF */}

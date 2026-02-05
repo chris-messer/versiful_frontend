@@ -24,16 +24,8 @@ export default function Phone() {
                 <div className="artboard bg-white py-3 px-2 phone-1 flex flex-col" style={{ height: 'calc(100% - 96px)' }}>
                     <div className="flex-1 overflow-y-auto space-y-4">
                         <div className="chat chat-end">
-                            <div className="chat-image avatar">
-                                <div className="w-10 rounded-full">
-                                    <img
-                                        alt="Avatar"
-                                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                                    />
-                                </div>
-                            </div>
-                            <div className="chat-bubble text-white bg-blue-500 text-sm px-3 py-2 max-w-[80%]">
-                                I'm feeling overwhelmed with everything going on. Can you help?
+                            <div className="chat-bubble text-white bg-blue-500 text-sm px-3 py-2 max-w-[80%] ml-auto">
+                                My dad was just diagnosed with cancer. I don't know how to handle this
                             </div>
                         </div>
                         <div className="chat chat-start">
@@ -43,14 +35,14 @@ export default function Phone() {
                                 </div>
                             </div>
                             <div className="chat-bubble bg-gray-200 text-black text-sm px-4 py-3 leading-relaxed max-w-[85%]">
-                                <p className="m-0">
-                                    Matthew 11:28
+                                <p className="m-0 text-gray-700">
+                                    Isaiah 41:10
                                 </p>
-                                <p className="m-0 mt-2">
-                                    "Come to me, all who are weary and burdened, and I will give you rest."
+                                <p className="m-0 mt-2 text-gray-800">
+                                    "Fear not, for I am with you; be not dismayed, for I am your God; I will strengthen you, I will help you, I will uphold you."
                                 </p>
-                                <p className="m-0 mt-3">
-                                    When life feels heavy, remember you don't have to carry it alone. This verse reminds us that we can bring our burdens to God and find peace. Take a moment to breathe and trust that you're not alone in this.
+                                <p className="m-0 mt-3 text-gray-700">
+                                    This is heavy news. God's promise here is clear: He's with you, and He will strengthen both you and your dad through this. You don't have to figure it all out right now. Take it one day at a time.
                                 </p>
                             </div>
                         </div>
