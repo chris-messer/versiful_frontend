@@ -66,6 +66,7 @@ export default function LandingPage() {
     const phoneNumber = config?.phone?.sms || "833-681-1158";
 
     const handleGetStarted = (location) => {
+        // PostHog tracking
         if (posthog) {
             posthog.capture('landing_cta_clicked', {
                 cta_location: location,
@@ -73,14 +74,34 @@ export default function LandingPage() {
                 device: window.innerWidth < 768 ? 'mobile' : 'desktop'
             });
         }
+
+        // Meta Pixel - track signup initiation
+        if (window.fbq) {
+            window.fbq('track', 'InitiateCheckout', {
+                content_name: 'Start Subscription',
+                content_category: location
+            });
+        }
+
         login();
     };
 
     const handleTryText = (source) => {
+        // PostHog tracking
         if (posthog) {
             posthog.capture('try_text_clicked', {
                 source: source,
                 device: window.innerWidth < 768 ? 'mobile' : 'desktop'
+            });
+        }
+
+        // Meta Pixel conversion event - THIS is what Facebook will optimize for
+        if (window.fbq) {
+            window.fbq('trackCustom', 'TryFreeSMSClicked', {
+                content_name: 'Try Free SMS',
+                content_category: source,
+                value: 1.00,
+                currency: 'USD'
             });
         }
     };
