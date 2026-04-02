@@ -19,12 +19,14 @@ export default function Phone() {
                         />
                     </div>
                     {/* Centered Text */}
-                    <p className="text-xs text-gray-600">Versiful</p>
+                    <p className="text-xs text-gray-600" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif' }}>
+                        Versiful
+                    </p>
                 </div>
-                <div className="artboard bg-white py-3 px-2 phone-1 flex flex-col" style={{ height: 'calc(100% - 96px)' }}>
+                <div className="artboard bg-white py-3 px-2 phone-1 flex flex-col" style={{ height: 'calc(100% - 96px)', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif' }}>
                     <div className="flex-1 overflow-y-auto space-y-4">
                         <div className="chat chat-end">
-                            <div className="chat-bubble text-white bg-blue-500 text-sm px-3 py-2 max-w-[80%] ml-auto">
+                            <div className="chat-bubble text-white bg-blue-500 text-sm px-3 py-2 max-w-[80%] ml-auto" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif', fontSize: '15px', lineHeight: '1.35' }}>
                                 My dad was just diagnosed with cancer. I don't know how to handle this
                             </div>
                         </div>
@@ -34,14 +36,14 @@ export default function Phone() {
                                     <img alt="Logo" src="/logo.svg"/>
                                 </div>
                             </div>
-                            <div className="chat-bubble bg-gray-200 text-black text-sm px-4 py-3 leading-relaxed max-w-[85%]">
-                                <p className="m-0 text-gray-700">
+                            <div className="chat-bubble bg-gray-200 text-black text-sm px-4 py-3 leading-relaxed max-w-[85%]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif' }}>
+                                <p className="m-0 text-gray-700" style={{ fontSize: '15px', lineHeight: '1.35', fontWeight: '500' }}>
                                     Isaiah 41:10
                                 </p>
-                                <p className="m-0 mt-2 text-gray-800">
+                                <p className="m-0 mt-2 text-gray-800" style={{ fontSize: '15px', lineHeight: '1.35' }}>
                                     "Fear not, for I am with you; be not dismayed, for I am your God; I will strengthen you, I will help you, I will uphold you."
                                 </p>
-                                <p className="m-0 mt-3 text-gray-700">
+                                <p className="m-0 mt-3 text-gray-700" style={{ fontSize: '15px', lineHeight: '1.35' }}>
                                     This is heavy news. God's promise here is clear: He's with you, and He will strengthen both you and your dad through this. You don't have to figure it all out right now. Take it one day at a time.
                                 </p>
                             </div>
@@ -60,7 +62,9 @@ export default function Phone() {
 
                         {/* Message Input */}
                         <div className="flex-1 bg-[#E9E9EB] rounded-[18px] px-3 py-1.5 min-h-[32px] flex items-center">
-                            <span className="text-[14px] text-gray-400">SMS</span>
+                            <span className="text-[14px] text-gray-400" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif' }}>
+                                SMS
+                            </span>
                         </div>
 
                             {/* Microphone button */}

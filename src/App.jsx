@@ -21,7 +21,6 @@ import OptInForm from "./pages/OptInForm";
 import TracebackCompliance from "./pages/TracebackCompliance";
 import ForgotPassword from "./pages/ForgotPassword";
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import SignIn from "./pages/SignIn";
 
 export default function App() {
@@ -41,8 +40,8 @@ export default function App() {
         <PostHogProvider>
             <AuthProvider>
                 <Router>
-                    {/* Default background for light and dark mode */}
-                    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors text-gray-900 dark:text-gray-100 pt-16 md:pt-20">
+                    {/* Updated background with warm theme */}
+                    <div className="min-h-screen bg-cream dark:bg-charcoal transition-colors text-charcoal dark:text-cream pt-16 md:pt-20 font-body">
                         <Navbar />
                         <Routes>
                             <Route path="/" element={<LandingPage />} />

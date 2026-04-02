@@ -56,13 +56,18 @@ export default function Navbar() {
                     <>
                         <Link
                             to="/settings"
-                            className="px-4 py-2 rounded-xl border border-blue-900 text-blue-900 hover:bg-blue-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-2 focus:ring-offset-white w-full text-center"
+                            className="px-5 py-3 rounded-3xl border-2 border-terracotta/30 text-terracotta dark:text-terracotta-light
+                                     hover:bg-terracotta/10 dark:hover:bg-terracotta/20
+                                     transition-warm focus:outline-none focus:ring-2 focus:ring-terracotta
+                                     w-full text-center font-semibold font-display"
                         >
                             Account
                         </Link>
                         <button
                             onClick={handleLogout}
-                            className="px-4 py-2 rounded-xl text-white bg-red-600 hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-white w-full"
+                            className="px-5 py-3 rounded-3xl text-cream bg-brown hover:bg-brown-dark
+                                     transition-warm focus:outline-none focus:ring-2 focus:ring-brown
+                                     w-full font-semibold font-display"
                         >
                             Logout
                         </button>
@@ -71,7 +76,10 @@ export default function Navbar() {
                     <div ref={profileRef} className="relative">
                         <button
                             onClick={() => setIsProfileOpen(!isProfileOpen)}
-                            className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-900 text-white font-semibold hover:bg-blue-950 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-2"
+                            className="flex items-center justify-center w-11 h-11 rounded-full
+                                     bg-terracotta text-cream font-semibold
+                                     hover:bg-terracotta-dark hover:scale-105
+                                     transition-warm focus:outline-none focus:ring-2 focus:ring-terracotta shadow-warm"
                             aria-label="Profile menu"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,11 +87,15 @@ export default function Navbar() {
                             </svg>
                         </button>
                         {isProfileOpen && (
-                            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
+                            <div className="absolute right-0 mt-3 w-48 bg-cream dark:bg-charcoal-light
+                                          border-2 border-terracotta/20 rounded-3xl shadow-warm-lg py-2 z-50
+                                          animate-fade-in-up">
                                 <Link
                                     to="/settings"
                                     onClick={() => setIsProfileOpen(false)}
-                                    className="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                                    className="block px-5 py-3 text-charcoal dark:text-cream font-medium font-body
+                                             hover:bg-terracotta/10 dark:hover:bg-terracotta/20 transition-warm
+                                             rounded-2xl mx-2"
                                 >
                                     Account
                                 </Link>
@@ -92,7 +104,9 @@ export default function Navbar() {
                                         setIsProfileOpen(false);
                                         handleLogout();
                                     }}
-                                    className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
+                                    className="w-full text-left px-5 py-3 text-brown dark:text-brown-light font-medium font-body
+                                             hover:bg-brown/10 dark:hover:bg-brown/20 transition-warm
+                                             rounded-2xl mx-2"
                                 >
                                     Logout
                                 </button>
@@ -104,28 +118,43 @@ export default function Navbar() {
         ) : (
             <button
                 onClick={login}
-                className={`px-4 py-2 rounded-xl text-white bg-blue-900 hover:bg-blue-950 transition-colors shadow focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-2 focus:ring-offset-white ${isMobile ? "w-full" : ""}`}
+                className={`px-6 py-3 rounded-3xl text-cream bg-terracotta-gradient font-bold font-display
+                          hover:scale-105 active:scale-95 transition-warm shadow-warm
+                          focus:outline-none focus:ring-2 focus:ring-terracotta
+                          ${isMobile ? "w-full" : ""}`}
             >
                 Get started
             </button>
         );
 
     return (
-        <header className="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur border-b border-gray-100 shadow-sm">
-            <div className={`mx-auto px-4 sm:px-6 lg:px-8 ${isFullWidth ? 'max-w-full' : 'max-w-6xl'}`}>
-                <div className="flex h-14 sm:h-16 items-center justify-between">
+        <header className="fixed top-0 inset-x-0 z-50 glass border-b-2 border-terracotta/10 dark:border-terracotta/20">
+            <div className={`mx-auto px-4 sm:px-6 lg:px-8 ${isFullWidth ? 'max-w-full' : 'max-w-7xl'}`}>
+                <div className="flex h-16 sm:h-20 items-center justify-between">
                     <Link
                         to="/"
-                        className="flex items-center gap-2 rounded-xl px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2 focus:ring-offset-white"
+                        className="flex items-center gap-3 rounded-3xl px-3 py-2
+                                 hover:bg-terracotta/5 transition-warm
+                                 focus:outline-none focus:ring-2 focus:ring-terracotta"
                     >
-                        <img src="/logo.svg" alt="Versiful logo" className="h-9 w-9" />
-                        <span className="text-lg sm:text-xl font-semibold text-gray-900">Versiful</span>
+                        <img src="/logo.svg" alt="Versiful logo" className="h-10 w-10" />
+                        <span className="text-xl sm:text-2xl font-bold font-display text-charcoal dark:text-cream">
+                            Versiful
+                        </span>
                     </Link>
 
-                    <nav className="hidden lg:flex items-center gap-8 text-sm text-gray-700" aria-label="Primary navigation">
+                    <nav className="hidden lg:flex items-center gap-8 font-body font-medium text-brown dark:text-brown-light"
+                         aria-label="Primary navigation">
                         {(isLoggedIn ? loggedInNavLinks : navLinks).map((link) => (
-                            <Link key={link.to} to={link.to} className="hover:text-blue-800 transition-colors">
+                            <Link
+                                key={link.to}
+                                to={link.to}
+                                className="hover:text-terracotta dark:hover:text-terracotta-light
+                                         transition-warm relative group"
+                            >
                                 {link.label}
+                                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-terracotta
+                                               group-hover:w-full transition-all duration-300"></span>
                             </Link>
                         ))}
                     </nav>
@@ -138,12 +167,16 @@ export default function Navbar() {
                         <button
                             type="button"
                             onClick={() => setIsMenuOpen((prev) => !prev)}
-                            className="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white p-2 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2 focus:ring-offset-white"
+                            className="inline-flex items-center justify-center rounded-2xl
+                                     border-2 border-terracotta/20 bg-cream dark:bg-charcoal-light
+                                     p-2.5 text-charcoal dark:text-cream
+                                     hover:bg-terracotta/10 dark:hover:bg-terracotta/20
+                                     transition-warm focus:outline-none focus:ring-2 focus:ring-terracotta"
                             aria-expanded={isMenuOpen}
                             aria-controls="mobile-menu"
                         >
                             <span className="sr-only">Toggle navigation</span>
-                            <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                            <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
                             </svg>
                         </button>
@@ -153,21 +186,25 @@ export default function Navbar() {
                 {isMenuOpen && (
                     <div
                         id="mobile-menu"
-                        className="lg:hidden mt-2 rounded-2xl border border-gray-100 bg-white shadow-lg ring-1 ring-gray-100"
+                        className="lg:hidden mt-3 mb-4 rounded-4xl border-2 border-terracotta/20
+                                 bg-cream dark:bg-charcoal-light shadow-warm-lg
+                                 animate-fade-in-up overflow-hidden"
                     >
-                        <nav className="flex flex-col divide-y divide-gray-100" aria-label="Mobile navigation">
+                        <nav className="flex flex-col divide-y divide-terracotta/10" aria-label="Mobile navigation">
                             {(isLoggedIn ? loggedInNavLinks : navLinks).map((link) => (
                                 <Link
                                     key={link.to}
                                     to={link.to}
                                     onClick={() => setIsMenuOpen(false)}
-                                    className="px-4 py-3 text-gray-800 hover:bg-gray-50"
+                                    className="px-6 py-4 text-charcoal dark:text-cream font-medium font-body
+                                             hover:bg-terracotta/10 dark:hover:bg-terracotta/20
+                                             transition-warm"
                                 >
                                     {link.label}
                                 </Link>
                             ))}
                         </nav>
-                        <div className="px-4 py-4 flex flex-col gap-3">
+                        <div className="px-6 py-5 flex flex-col gap-3 bg-cream-dark dark:bg-charcoal">
                             <NavButtons isMobile />
                         </div>
                     </div>
