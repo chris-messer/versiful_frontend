@@ -26,6 +26,7 @@ export default {
         charcoal: {
           DEFAULT: '#3D3835',
           light: '#5A5451',
+          dark: '#2C2825',
         },
       },
       fontFamily: {

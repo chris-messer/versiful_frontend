@@ -191,17 +191,10 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--terracotta-dark);
 }
 
-/* Dark mode adjustments */
-.dark {
-  --warm-cream: #2C2825;
-  --warm-cream-dark: #1F1C1A;
-  --charcoal: #F5F1E8;
-  --charcoal-light: #D4CFC8;
-}
-
+/* Dark mode - keep colors consistent, use Tailwind dark: classes instead */
 .dark body {
-  background: var(--warm-cream);
-  color: var(--charcoal);
+  background: #2C2825;
+  color: #F5F1E8;
 }
 
 .dark .glass {
