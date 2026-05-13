@@ -40,6 +40,37 @@ const GettingStarted = () => {
                     </p>
                 </div>
 
+                {/* Upgrade Banner */}
+                <div className="bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-700 dark:to-blue-700 rounded-xl shadow-xl overflow-hidden">
+                    <div className="px-6 py-8 sm:px-8 sm:py-10">
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div className="text-center md:text-left space-y-2 flex-1">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full mb-2">
+                                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                    <span className="text-xs font-semibold text-white uppercase tracking-wide">Unlimited Access</span>
+                                </div>
+                                <h3 className="text-2xl sm:text-3xl font-bold text-white">Want Unlimited Guidance?</h3>
+                                <p className="text-white/90 text-base sm:text-lg">
+                                    Upgrade to Premium and get unlimited SMS messages, daily verses, and priority support—all for less than a coffee per week.
+                                </p>
+                            </div>
+                            <div className="flex-shrink-0">
+                                <Link
+                                    to="/subscription"
+                                    className="inline-flex items-center gap-2 px-6 py-3 bg-white text-purple-600 dark:text-purple-700 rounded-xl font-bold hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                                >
+                                    View Plans
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                    </svg>
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Primary CTA - Text Now */}
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-8 space-y-6">
                     <div className="space-y-3 text-center">
@@ -87,37 +118,6 @@ const GettingStarted = () => {
                                     "{example}"
                                 </div>
                             ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Upgrade Banner */}
-                <div className="bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-700 dark:to-blue-700 rounded-xl shadow-xl overflow-hidden">
-                    <div className="px-6 py-8 sm:px-8 sm:py-10">
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                            <div className="text-center md:text-left space-y-2 flex-1">
-                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full mb-2">
-                                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                    </svg>
-                                    <span className="text-xs font-semibold text-white uppercase tracking-wide">Unlimited Access</span>
-                                </div>
-                                <h3 className="text-2xl sm:text-3xl font-bold text-white">Want Unlimited Guidance?</h3>
-                                <p className="text-white/90 text-base sm:text-lg">
-                                    Upgrade to Premium and get unlimited SMS messages, daily verses, and priority support—all for less than a coffee per week.
-                                </p>
-                            </div>
-                            <div className="flex-shrink-0">
-                                <Link
-                                    to="/subscription"
-                                    className="inline-flex items-center gap-2 px-6 py-3 bg-white text-purple-600 dark:text-purple-700 rounded-xl font-bold hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
-                                >
-                                    View Plans
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                    </svg>
-                                </Link>
-                            </div>
                         </div>
                     </div>
                 </div>

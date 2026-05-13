@@ -13,6 +13,7 @@ export default function SignIn() {
     const [fieldErrors, setFieldErrors] = useState({ email: "", password: "" });
     const [touched, setTouched] = useState({ email: false, password: false });
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -257,26 +258,45 @@ export default function SignIn() {
                             <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100">
                                 Password <span className="text-red-600">*</span>
                             </label>
-                            <input
-                                type="password"
-                                name="password"
-                                value={form.password}
-                                onChange={handleChange}
-                                onBlur={() => handleBlur("password")}
-                                className={`mt-2 w-full rounded-lg border ${
-                                    touched.password && fieldErrors.password 
-                                        ? "border-red-500 bg-red-50 dark:bg-red-900/10" 
-                                        : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
-                                } text-gray-900 dark:text-white px-3 py-2 focus:outline-none focus:ring-2 ${
-                                    touched.password && fieldErrors.password 
-                                        ? "focus:ring-red-500" 
-                                        : "focus:ring-blue-500"
-                                }`}
-                                placeholder="At least 6 characters"
-                                minLength={6}
-                                aria-invalid={touched.password && !!fieldErrors.password}
-                                aria-describedby={fieldErrors.password ? "password-error" : "password-hint"}
-                            />
+                            <div className="relative mt-2">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    name="password"
+                                    value={form.password}
+                                    onChange={handleChange}
+                                    onBlur={() => handleBlur("password")}
+                                    className={`w-full rounded-lg border ${
+                                        touched.password && fieldErrors.password 
+                                            ? "border-red-500 bg-red-50 dark:bg-red-900/10" 
+                                            : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                                    } text-gray-900 dark:text-white px-3 py-2 pr-10 focus:outline-none focus:ring-2 ${
+                                        touched.password && fieldErrors.password 
+                                            ? "focus:ring-red-500" 
+                                            : "focus:ring-blue-500"
+                                    }`}
+                                    placeholder="At least 6 characters"
+                                    minLength={6}
+                                    aria-invalid={touched.password && !!fieldErrors.password}
+                                    aria-describedby={fieldErrors.password ? "password-error" : "password-hint"}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword((prev) => !prev)}
+                                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                >
+                                    {showPassword ? (
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L6.59 6.59m7.532 7.532l3.29 3.29M3 3l18 18" />
+                                        </svg>
+                                    ) : (
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    )}
+                                </button>
+                            </div>
                             {touched.password && fieldErrors.password ? (
                                 <p id="password-error" className="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
                                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
