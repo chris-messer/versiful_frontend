@@ -239,13 +239,13 @@ export default function Chat() {
     };
 
     return (
-        <div className="fixed inset-0 flex overflow-hidden bg-white dark:bg-gray-950 pt-14 sm:pt-16">
+        <div className="fixed inset-0 flex overflow-hidden bg-white dark:bg-gray-950 pt-16 sm:pt-20">
             {/* Sidebar - Can be toggled on all screen sizes */}
             <aside className={`
                 ${showSidebar ? 'translate-x-0' : '-translate-x-full'} 
                 fixed
                 inset-y-0 left-0
-                top-14 sm:top-16
+                top-16 sm:top-20
                 z-40
                 w-64
                 transition-transform duration-300 ease-in-out

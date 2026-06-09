@@ -357,7 +357,7 @@ export const mockGentlePrompts = [
 // Upcoming check-ins preview (§10.7) — transparency surface.
 export const mockUpcomingCheckins = [
     { id: "ci-1", when: "Tomorrow", context: "prayer_followup", preview: "How did your mom's surgery go?" },
-    { id: "ci-2", when: "If you go quiet a few days", context: "general", preview: "Been thinking of you — how's your heart?" },
+    { id: "ci-2", when: "If you go quiet a few days", context: "general", preview: "We've been thinking of you — how's your heart?" },
 ];
 
 // Seed chat messages for the mockup Chat (includes a save-able assistant reply
@@ -385,7 +385,7 @@ export const mockChatMessages = [
     },
     {
         role: "assistant",
-        content: "Done — I'll pause your daily verse for now. Text me anytime (or flip it back on in Settings) and I'll start sending it again. I'm still here whenever you want to talk.",
+        content: "Done — we'll pause your daily verse for now. Text anytime (or flip it back on in Settings) and we'll start sending it again. We're here whenever you want to talk.",
         timestamp: "2026-06-09T08:05:30",
         accountAction: { label: "Daily verse paused", icon: "🔕" },
     },

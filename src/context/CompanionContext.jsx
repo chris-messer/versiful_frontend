@@ -203,7 +203,7 @@ export function CompanionProvider({ children }) {
         window.setTimeout(() => {
             const reply = {
                 role: "assistant",
-                content: "I hear you. Let's bring that to God together — \"Cast all your anxiety on him because he cares for you.\" (1 Peter 5:7). What feels heaviest right now?",
+                content: "We hear you. Let's bring that to God together — \"Cast all your anxiety on him because he cares for you.\" (1 Peter 5:7). What feels heaviest right now?",
                 timestamp: new Date().toISOString(),
             };
             setChatMessages((prev) => [...prev, reply]);

@@ -1,6 +1,6 @@
 import { useAuth } from "../context/AuthContext";
 import { usePostHog } from "../context/PostHogContext";
-import Phone from "../components/landing/hero/Phone.jsx";
+import PhoneCarousel from "../components/landing/hero/PhoneCarousel.jsx";
 import { useConfig } from "../hooks/useConfig";
 import SEO, { seoConfig } from "../components/SEO";
 
@@ -129,24 +129,18 @@ export default function LandingPage() {
                             <div className="space-y-8 animate-fade-in-up">
                                 {/* Headline */}
                                 <h1 className="font-display text-5xl sm:text-6xl font-bold leading-tight text-charcoal dark:text-cream text-center">
-                                    A Bible companion
-                                    <br />
-                                    that{" "}
-                                    <span className="text-terracotta dark:text-terracotta-light">remembers you.</span>
+                                    Scripture that{" "}
+                                    <span className="text-terracotta dark:text-terracotta-light">meets you where you are.</span>
                                 </h1>
                                 <p className="text-lg text-brown dark:text-brown-light text-center leading-relaxed">
-                                    Text or chat about whatever you're facing. Versiful responds with Scripture, walks with you
-                                    through prayer and reading, and checks in when life gets hard.
+                                    Versiful is a Bible companion you can text or chat anytime. Share what you're walking through
+                                    and receive Scripture and a gentle word for your real life—with prayers prayed alongside you
+                                    and encouragement that finds you each morning.
                                 </p>
 
-                                {/* Phone mockup */}
-                                <div className="flex justify-center my-10">
-                                    <div className="w-full max-w-[320px] sm:max-w-[360px] relative">
-                                        <div className="absolute -inset-4 bg-gradient-to-br from-terracotta/20 to-sage/20 rounded-5xl blur-2xl"></div>
-                                        <div className="relative">
-                                            <Phone />
-                                        </div>
-                                    </div>
+                                {/* Phone carousel */}
+                                <div className="my-10">
+                                    <PhoneCarousel />
                                 </div>
 
                                 {/* CTA Buttons */}
@@ -212,14 +206,13 @@ export default function LandingPage() {
                             {/* Left side - copy */}
                             <div className="space-y-8 animate-fade-in-up">
                                 <h1 className="font-display text-5xl xl:text-6xl font-bold leading-tight text-charcoal dark:text-cream">
-                                    A Bible companion
-                                    <br />
-                                    that{" "}
-                                    <span className="text-terracotta dark:text-terracotta-light">remembers you.</span>
+                                    Scripture that{" "}
+                                    <span className="text-terracotta dark:text-terracotta-light">meets you where you are.</span>
                                 </h1>
                                 <p className="text-xl text-brown dark:text-brown-light leading-relaxed max-w-xl">
-                                    Text or chat about whatever you're facing. Versiful responds with Scripture, walks with you
-                                    through prayer and reading, and checks in when life gets hard.
+                                    Versiful is a Bible companion you can text or chat anytime. Share what you're walking through
+                                    and receive Scripture and a gentle word for your real life—with prayers prayed alongside you
+                                    and encouragement that finds you each morning.
                                 </p>
 
                                 {/* CTA buttons */}
@@ -270,14 +263,9 @@ export default function LandingPage() {
                                 </div>
                             </div>
 
-                            {/* Right side - phone */}
-                            <div className="flex justify-center lg:justify-end animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                                <div className="w-full max-w-[360px] xl:max-w-[420px] relative">
-                                    <div className="absolute -inset-6 bg-gradient-to-br from-terracotta/20 to-sage/20 rounded-5xl blur-3xl"></div>
-                                    <div className="relative">
-                                        <Phone />
-                                    </div>
-                                </div>
+                            {/* Right side - phone carousel */}
+                            <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                                <PhoneCarousel />
                             </div>
                         </div>
                     </div>
@@ -386,10 +374,11 @@ export default function LandingPage() {
                     <div className="container mx-auto max-w-6xl px-6 lg:px-10 space-y-12">
                         <div className="text-center space-y-4">
                             <h2 className="font-display text-4xl font-bold text-charcoal dark:text-cream">
-                                More than a verse. A companion.
+                                A companion for the whole journey
                             </h2>
                             <p className="font-body text-lg text-brown dark:text-brown-light leading-relaxed max-w-3xl mx-auto">
-                                Everything that turns a one-off text into a relationship that brings you back.
+                                Scripture, prayer, daily encouragement, and a quiet record of your walk—together in one place,
+                                growing with you.
                             </p>
                         </div>
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

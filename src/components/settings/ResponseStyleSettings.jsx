@@ -14,7 +14,7 @@ const lengthOptions = [
 ];
 
 const toneSample = {
-    warm: "Oh Chris, that sounds heavy. I'm right here with you—let's take it to God together.",
+    warm: "Oh Chris, that sounds heavy. We're right here with you—let's bring it to God together.",
     pastoral: "Take heart. Scripture reminds us the Lord is near to the brokenhearted (Psalm 34:18).",
     concise: "God is near. \"Cast all your anxiety on him because he cares for you.\" (1 Peter 5:7)",
 };
