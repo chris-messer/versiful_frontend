@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCompanion } from '../context/CompanionContext';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -20,14 +21,30 @@ export default function Chat() {
     const textareaRef = useRef(null);
     const { isLoggedIn, user } = useAuth();
     const navigate = useNavigate();
+    const companion = useCompanion();
 
-    // Check if user is subscribed
-    const isSubscribed = user?.isSubscribed || false;
-    
+    // Mock mode: when there's no real logged-in user, fall back to the local
+    // mock-data companion experience so the chat is browsable on localhost
+    // without login. No network calls happen in this mode.
+    const mockMode = !isLoggedIn;
+
+    // In mock mode the messages live in the companion context (so a saved
+    // reflection from a chat shows up on /journal). Otherwise use local state.
+    const displayMessages = mockMode ? companion.chatMessages : messages;
+
+    // Check if user is subscribed (mock user is subscribed).
+    const isSubscribed = mockMode ? true : (user?.isSubscribed || false);
+
     // Count user messages in current thread for free trial limit
-    const userMessageCount = messages.filter(msg => msg.role === 'user').length;
+    const userMessageCount = displayMessages.filter(msg => msg.role === 'user').length;
+
+    const [savedReflections, setSavedReflections] = useState({});
 
     useEffect(() => {
+        if (mockMode) {
+            setLoadingSessions(false);
+            return;
+        }
         if (!isLoggedIn) {
             navigate('/signin');
             return;
@@ -38,7 +55,7 @@ export default function Chat() {
         } else {
             setLoadingSessions(false);
         }
-    }, [isLoggedIn, isSubscribed, navigate]);
+    }, [isLoggedIn, isSubscribed, navigate, mockMode]);
 
     useEffect(() => {
         // Set initial sidebar state based on screen size
@@ -61,7 +78,7 @@ export default function Chat() {
 
     useEffect(() => {
         scrollToBottom();
-    }, [messages]);
+    }, [displayMessages]);
 
     useEffect(() => {
         // Auto-resize textarea
@@ -118,6 +135,13 @@ export default function Chat() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!input.trim() || isLoading) return;
+
+        // Mock mode: send through the local companion context (no network).
+        if (mockMode) {
+            companion.sendChatMessage(input.trim());
+            setInput('');
+            return;
+        }
 
         // Check free trial message limit for non-subscribed users
         if (!isSubscribed && userMessageCount >= FREE_TRIAL_MESSAGE_LIMIT) {
@@ -356,7 +380,7 @@ export default function Chat() {
 
                 {/* Messages Area */}
                 <main className="flex-1 overflow-y-auto min-h-0">
-                    {messages.length === 0 ? (
+                    {displayMessages.length === 0 ? (
                         <div className="h-full flex items-center justify-center p-4">
                             <div className="text-center max-w-2xl px-4">
                                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 mb-4">
@@ -374,7 +398,7 @@ export default function Chat() {
                         </div>
                     ) : (
                         <div className="max-w-3xl mx-auto px-3 md:px-4 py-4 md:py-8 w-full">
-                            {messages.map((msg, idx) => (
+                            {displayMessages.map((msg, idx) => (
                                 <div key={idx} className={`mb-6 md:mb-8 ${msg.role === 'assistant' ? 'ml-0' : 'ml-auto'}`}>
                                     <div className="flex gap-2 md:gap-4">
                                         {msg.role === 'assistant' && (
@@ -427,8 +451,30 @@ export default function Chat() {
                                                         </div>
                                                     )}
                                                 </div>
-                                                <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                                                    {formatTime(msg.timestamp)}
+                                                <div className="flex items-center gap-3 mt-1 flex-wrap">
+                                                    <div className="text-xs text-gray-400 dark:text-gray-500">
+                                                        {formatTime(msg.timestamp)}
+                                                    </div>
+                                                    {msg.role === 'assistant' && msg.accountAction && (
+                                                        <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-terracotta/10 text-terracotta dark:text-terracotta-light border border-terracotta/20">
+                                                            {msg.accountAction.icon} {msg.accountAction.label}
+                                                        </span>
+                                                    )}
+                                                    {msg.role === 'assistant' && (
+                                                        <button
+                                                            onClick={() => {
+                                                                companion.saveReflectionFromChat(msg.content);
+                                                                setSavedReflections((prev) => ({ ...prev, [idx]: true }));
+                                                            }}
+                                                            disabled={savedReflections[idx]}
+                                                            className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full
+                                                                border border-sage/40 text-sage-dark dark:text-sage-light hover:bg-sage/10 transition-colors
+                                                                disabled:opacity-70"
+                                                            title="Save this as a reflection in your journal"
+                                                        >
+                                                            {savedReflections[idx] ? '✓ Saved to journal' : '🤍 Save reflection'}
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>

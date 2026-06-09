@@ -1,225 +1,125 @@
-import { useEffect, useState } from "react";
-import SubscriptionManagement from "../components/settings/SubscriptionManagement";
-import PersonalizationSettings from "../components/settings/PersonalizationSettings";
-import AccountSettings from "../components/settings/AccountSettings";
+import { useState } from "react";
+import SEO from "../components/SEO";
+import { useCompanion } from "../context/CompanionContext";
+import { CompanionShell, PageHeader, Card, PrimaryButton, TextField } from "../components/companion/ui";
+import { bibleVersions } from "../constants/bibleVersions";
+import CommunicationPreferences from "../components/settings/CommunicationPreferences";
+import ResponseStyleSettings from "../components/settings/ResponseStyleSettings";
 
-const skeleton = {
-    subscription: { status: "...", nextBillingDate: "..." },
-    preferences: {
-        bibleVersion: "",
-    },
-    account: {
-        email: "",
-        phoneNumber: "",
-    },
-};
+// Settings (§12). Wired to the local CompanionContext (mock). "Save changes"
+// commits pending edits into context and reflects saved state — replacing the
+// old fake setTimeout handler.
+export default function Settings() {
+    const { user, preferences, updatePreferences } = useCompanion();
 
-export default function SettingsPage() {
-    const [settings, setSettings] = useState(null);
+    // Local pending state so "Save changes" is meaningful (unsaved vs saved).
+    const [draft, setDraft] = useState(preferences);
+    const [bibleVersion, setBibleVersion] = useState(user.bibleVersion);
+    const [savedAt, setSavedAt] = useState(null);
     const [isSaving, setIsSaving] = useState(false);
-    const [isPhoneSaving, setIsPhoneSaving] = useState(false);
-    const [subscriptionSuccess, setSubscriptionSuccess] = useState(false);
 
-    useEffect(() => {
-        // Check for subscription success from URL params
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('subscription') === 'success') {
-            setSubscriptionSuccess(true);
-            // Clean up URL
-            window.history.replaceState({}, '', window.location.pathname);
-        }
-    }, []);
+    const dirty = JSON.stringify(draft) !== JSON.stringify(preferences) || bibleVersion !== user.bibleVersion;
 
-    useEffect(() => {
-        const fetchSettings = async () => {
-            try {
-                const apiUrl = `https://api.${import.meta.env.VITE_DOMAIN}/users`;
-                const resp = await fetch(apiUrl, {
-                    method: "GET",
-                    credentials: "include",
-                    headers: { "Content-Type": "application/json" },
-                });
+    const patch = (changes) => { setDraft((d) => ({ ...d, ...changes })); setSavedAt(null); };
+    const patchStyle = (changes) => { setDraft((d) => ({ ...d, responseStyle: { ...d.responseStyle, ...changes } })); setSavedAt(null); };
 
-                if (!resp.ok) {
-                    throw new Error(`HTTP error ${resp.status}`);
-                }
-
-                const data = await resp.json();
-                
-                console.log("Raw user data from backend:", data);
-                console.log("isSubscribed:", data.isSubscribed);
-                console.log("plan:", data.plan);
-                console.log("currentPeriodEnd:", data.currentPeriodEnd);
-
-                // Convert currentPeriodEnd timestamp to readable date
-                let nextBillingDate = skeleton.subscription.nextBillingDate;
-                if (data.currentPeriodEnd) {
-                    const timestamp = parseInt(data.currentPeriodEnd);
-                    const date = new Date(timestamp * 1000); // Convert from Unix timestamp to milliseconds
-                    nextBillingDate = date.toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    });
-                    console.log("Formatted next billing date:", nextBillingDate);
-                }
-
-                const subscription = {
-                    status: data.isSubscribed ? "Active" : "Free",
-                    nextBillingDate: nextBillingDate,
-                    plan: data.plan
-                        ? data.plan.charAt(0).toUpperCase() + data.plan.slice(1)
-                        : data.isSubscribed
-                            ? "Premium"
-                            : "Free",
-                    isSubscribed: data.isSubscribed,
-                    plan_monthly_cap: data.plan_monthly_cap,
-                    cancelAtPeriodEnd: data.cancelAtPeriodEnd || false,
-                };
-                
-                console.log("Formatted subscription object:", subscription);
-
-                const preferences = {
-                    bibleVersion: data.bibleVersion || skeleton.preferences.bibleVersion,
-                };
-
-                const account = {
-                    email: data.email || "",
-                    phoneNumber: data.phoneNumber || "",
-                };
-
-                setSettings({ subscription, preferences, account });
-            } catch (err) {
-                console.error("Failed to load settings", err);
-                setSettings(skeleton);
-            }
-        };
-
-        fetchSettings();
-    }, []);
-
-    const handleSaveChanges = async () => {
+    const save = () => {
         setIsSaving(true);
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 1200)); // Simulate API delay
-        } finally {
+        // Local-only "persist" (no network). Reflect saved state immediately.
+        window.setTimeout(() => {
+            updatePreferences(draft);
+            user.bibleVersion = bibleVersion; // mock user object update
             setIsSaving(false);
-        }
+            setSavedAt(new Date());
+        }, 500);
     };
-
-    const handleUpdatePhoneNumber = async (phoneNumber) => {
-        const digits = (phoneNumber || "").replace(/\D/g, "");
-        if (digits.length !== 10) {
-            alert("Please enter a 10-digit US phone number.");
-            return;
-        }
-        const normalized = `+1${digits}`;
-        setIsPhoneSaving(true);
-        try {
-            const apiUrl = `https://api.${import.meta.env.VITE_DOMAIN}/users`;
-            const resp = await fetch(apiUrl, {
-                method: "PUT",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ phoneNumber: normalized }),
-            });
-            if (!resp.ok) {
-                throw new Error(`HTTP error ${resp.status}`);
-            }
-            setSettings((prev) =>
-                prev
-                    ? { ...prev, account: { ...prev.account, phoneNumber: normalized } }
-                    : prev
-            );
-        } catch (err) {
-            console.error("Failed to update phone", err);
-            alert("Could not update your phone number. Please try again.");
-        } finally {
-            setIsPhoneSaving(false);
-        }
-    };
-
-    const data = settings || skeleton;
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-white via-blue-50/40 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 text-gray-900 dark:text-gray-100 py-14 px-4">
-            <div className="max-w-5xl mx-auto space-y-8">
-                <div className="text-center space-y-2">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-blue-800 dark:text-blue-400">Your account</p>
-                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Manage your account</h1>
-                    <p className="text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-                        Update your plan, preferences, and contact info. Changes save instantly.
-                    </p>
-                </div>
+        <>
+            <SEO title="Settings · Versiful" />
+            <CompanionShell>
+                <PageHeader
+                    eyebrow="Your account"
+                    title="Settings"
+                    subtitle="Manage your plan, how Versiful talks with you, and when it reaches out. Change these by text, too—chat and web stay in sync."
+                />
 
-                {subscriptionSuccess && (
-                    <div className="rounded-xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/30 text-green-900 dark:text-green-100 px-4 py-3">
-                        <div className="flex items-start justify-between">
+                <div className="grid lg:grid-cols-3 gap-6 items-start">
+                    <div className="lg:col-span-2 space-y-6">
+                        {/* Subscription summary */}
+                        <Card className="p-7">
+                            <div className="flex items-center justify-between gap-4 flex-wrap">
+                                <div>
+                                    <p className="text-sm font-semibold uppercase tracking-widest text-sage-dark dark:text-sage-light">Your plan</p>
+                                    <h2 className="font-display text-2xl font-bold text-charcoal dark:text-cream mt-1">Premium · Companion</h2>
+                                    <p className="text-brown dark:text-brown-light mt-1">$9.99/mo · renews Jul 2, 2026</p>
+                                </div>
+                                <span className="px-4 py-2 rounded-full bg-sage/15 text-sage-dark dark:text-sage-light font-display font-bold">Active</span>
+                            </div>
+                            <ul className="mt-4 grid sm:grid-cols-2 gap-2 text-sm text-brown dark:text-brown-light">
+                                {["Unlimited guidance", "Memory across conversations", "Personalized daily verse", "Prayer journal + check-ins", "All reading plans", "My Walk + full history"].map((f) => (
+                                    <li key={f} className="flex items-center gap-2"><span className="text-terracotta">✓</span>{f}</li>
+                                ))}
+                            </ul>
+                        </Card>
+
+                        {/* Personalization: Bible version */}
+                        <Card className="p-7 space-y-4">
+                            <h2 className="font-display text-2xl font-bold text-charcoal dark:text-cream">Personalization</h2>
+                            <label className="block space-y-1.5">
+                                <span className="block font-display font-semibold text-sm text-charcoal dark:text-cream">Preferred Bible version</span>
+                                <select
+                                    value={bibleVersion}
+                                    onChange={(e) => { setBibleVersion(e.target.value); setSavedAt(null); }}
+                                    className="w-full rounded-3xl border-2 border-terracotta/20 bg-cream-dark dark:bg-charcoal px-4 py-3 text-charcoal dark:text-cream font-body focus:outline-none focus:border-terracotta/60 transition-warm"
+                                >
+                                    {bibleVersions.map((group, gi) => (
+                                        <optgroup key={gi} label={group.label}>
+                                            {group.versions.map((v, vi) => <option key={vi} value={v}>{v}</option>)}
+                                        </optgroup>
+                                    ))}
+                                </select>
+                            </label>
+                        </Card>
+
+                        <ResponseStyleSettings responseStyle={draft.responseStyle} onChange={patchStyle} />
+
+                        <CommunicationPreferences preferences={draft} onChange={patch} />
+
+                        {/* Save bar */}
+                        <Card className="p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sticky bottom-4 z-20">
                             <div>
-                                <p className="font-semibold">🎉 Subscription Activated!</p>
-                                <p className="text-sm mt-1">
-                                    Welcome to Premium! You now have unlimited messages. Your subscription details will appear below.
+                                <p className="font-display font-bold text-charcoal dark:text-cream">
+                                    {dirty ? "You have unsaved changes" : savedAt ? "All changes saved" : "Save your updates"}
+                                </p>
+                                <p className="text-sm text-brown dark:text-brown-light">
+                                    {savedAt ? `Saved at ${savedAt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}` : "Your preferences update here."}
                                 </p>
                             </div>
-                            <button
-                                onClick={() => setSubscriptionSuccess(false)}
-                                className="text-green-900 dark:text-green-100 hover:text-green-950 dark:hover:text-white"
-                            >
-                                ✕
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">{/* Rest of the content */}
-                    <div className="lg:col-span-2 space-y-6">
-                        <SubscriptionManagement subscription={data.subscription} loading={!settings} />
-                        <PersonalizationSettings
-                            preferences={data.preferences}
-                            setPreferences={(newPreferences) =>
-                                setSettings((prev) => ({ ...(prev || {}), preferences: newPreferences }))
-                            }
-                            loading={!settings}
-                        />
-                        <AccountSettings
-                            account={data.account}
-                            loading={!settings || isPhoneSaving}
-                            onSavePhone={handleUpdatePhoneNumber}
-                        />
-                        <div className="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <div>
-                                <p className="text-lg font-semibold text-gray-900 dark:text-white">Save your updates</p>
-                                <p className="text-sm text-gray-700 dark:text-gray-300">Changes to your plan and preferences save here.</p>
-                            </div>
-                            <button
-                                className={`rounded-xl px-4 py-3 font-semibold text-white bg-blue-900 dark:bg-blue-700 hover:bg-blue-950 dark:hover:bg-blue-800 transition ${
-                                    isSaving ? "opacity-80" : ""
-                                }`}
-                                onClick={handleSaveChanges}
-                                disabled={isSaving}
-                            >
-                                {isSaving ? "Saving..." : "Save changes"}
-                            </button>
-                        </div>
+                            <PrimaryButton onClick={save} disabled={!dirty || isSaving} className={!dirty && savedAt ? "opacity-60" : ""}>
+                                {isSaving ? "Saving…" : savedAt && !dirty ? "Saved ✓" : "Save changes"}
+                            </PrimaryButton>
+                        </Card>
                     </div>
 
-                    <aside className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-5 space-y-4">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Need a hand?</h3>
-                        <p className="text-sm text-gray-700 dark:text-gray-300">
-                            Email{" "}
-                            <a href="mailto:support@versiful.io" className="text-blue-800 dark:text-blue-400 font-semibold hover:underline">
-                                support@versiful.io
-                            </a>{" "}
-                            and we'll make these changes for you.
-                        </p>
-                        <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
-                            <p>• Change or cancel your plan anytime.</p>
-                            <p>• Your number stays private—used only to send guidance.</p>
-                            <p>• Preferences save automatically.</p>
-                        </div>
+                    {/* Account sidebar */}
+                    <aside className="space-y-6">
+                        <Card className="p-6 space-y-3">
+                            <h3 className="font-display text-lg font-bold text-charcoal dark:text-cream">Account</h3>
+                            <TextField label="Email" value={user.email} readOnly />
+                            <TextField label="Phone" value={user.phoneNumber} readOnly />
+                            <p className="text-xs text-brown dark:text-brown-light">Member since Nov 2025</p>
+                        </Card>
+                        <Card className="p-6">
+                            <h3 className="font-display text-lg font-bold text-charcoal dark:text-cream mb-2">Change by text</h3>
+                            <p className="text-sm text-brown dark:text-brown-light leading-relaxed">
+                                You can change any of these by chatting too—just say "turn off my morning verse" or "switch me to ESV."
+                                Versiful will confirm what changed and how to undo it.
+                            </p>
+                        </Card>
                     </aside>
                 </div>
-            </div>
-        </div>
+            </CompanionShell>
+        </>
     );
 }

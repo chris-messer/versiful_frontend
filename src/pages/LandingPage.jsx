@@ -6,62 +6,57 @@ import SEO, { seoConfig } from "../components/SEO";
 
 const steps = [
     {
-        title: "Send a text or message",
+        title: "Tell it what you're facing",
         description:
-            "Share what you're facing in a simple text message or through our web chat—no app to install.",
+            "Text or chat in your own words—no app to install. Share the worry, the loss, the question on your heart.",
         icon: "💬",
     },
     {
-        title: "Receive a verse & reflection",
+        title: "It responds, and remembers",
         description:
-            "We send back a short passage and a gentle note that speaks to your moment with clarity and care.",
+            "Scripture and a gentle word for right now—and it holds onto your story, so it never starts from zero.",
         icon: "📖",
     },
     {
-        title: "Save and revisit",
+        title: "It walks with you over time",
         description:
-            "Create an account for unlimited access, saved conversations, and a place to keep what helps you most.",
+            "Prayers prayed with, reading plans, a verse each morning, and a gentle check-in when life gets hard.",
         icon: "🤍",
     },
 ];
 
-const samplePrompts = [
-    "I'm worried about my family",
-    "How do I forgive someone who hurt me?",
-    "I feel alone and need reassurance",
-    "What does the Bible say about grief?",
-];
-
-const reassurances = [
+// Companion value sections (§13.2) — soften the "AI" framing toward
+// "remembers your story" while keeping the warm aesthetic.
+const companionValues = [
     {
-        title: "Text or web—your choice",
-        description: "Use SMS from any phone, or chat through our website. Both work great.",
-        icon: "📱",
+        title: "Remembers your story",
+        description: "Tell it once. Versiful remembers your dad's surgery, the worry you keep returning to, the prayers you've shared.",
+        icon: "🧠",
     },
     {
-        title: "Plain, gentle language",
-        description: "Responses stay simple and kind—no jargon, no heavy tech talk.",
-        icon: "💭",
+        title: "A verse every morning, made for you",
+        description: "Personalized daily encouragement that never repeats and speaks to what you're actually walking through.",
+        icon: "🌅",
     },
     {
-        title: "Scripture first",
-        description: "Each reply draws directly from the Bible with a brief, encouraging takeaway.",
-        icon: "✨",
+        title: "Your prayer list, prayed with",
+        description: "Add prayers by text. We follow up. Celebrate answered prayers together.",
+        icon: "🙏",
     },
     {
-        title: "Private and secure",
-        description: "Your messages are kept private. We never share what you send.",
-        icon: "🔒",
+        title: "Guided reading plans",
+        description: "7-day to 30-day journeys on anxiety, grief, marriage, hope, and more.",
+        icon: "📚",
     },
     {
-        title: "Unlimited with an account",
-        description: "Create an account to receive as much guidance as you need, any time.",
-        icon: "∞",
+        title: "Checks in on you",
+        description: "A gentle message after a hard day or a big moment you mentioned—never spammy, always optional.",
+        icon: "💞",
     },
     {
-        title: "Human-friendly help",
-        description: "Designed for all ages, especially those who prefer simple, clear steps.",
-        icon: "🤝",
+        title: "See your walk",
+        description: "Watch your spiritual journey take shape over time—prayers, reflections, themes, and milestones.",
+        icon: "🌱",
     },
 ];
 
@@ -134,15 +129,15 @@ export default function LandingPage() {
                             <div className="space-y-8 animate-fade-in-up">
                                 {/* Headline */}
                                 <h1 className="font-display text-5xl sm:text-6xl font-bold leading-tight text-charcoal dark:text-cream text-center">
-                                    Send a text.
+                                    A Bible companion
                                     <br />
-                                    Get back a{" "}
-                                    <span className="text-terracotta dark:text-terracotta-light">Bible verse.</span>
-                                    <br />
-                                    <span className="text-2xl sm:text-3xl font-medium text-brown dark:text-brown-light">
-                                        No apps, no distractions.
-                                    </span>
+                                    that{" "}
+                                    <span className="text-terracotta dark:text-terracotta-light">remembers you.</span>
                                 </h1>
+                                <p className="text-lg text-brown dark:text-brown-light text-center leading-relaxed">
+                                    Text or chat about whatever you're facing. Versiful responds with Scripture, walks with you
+                                    through prayer and reading, and checks in when life gets hard.
+                                </p>
 
                                 {/* Phone mockup */}
                                 <div className="flex justify-center my-10">
@@ -217,15 +212,15 @@ export default function LandingPage() {
                             {/* Left side - copy */}
                             <div className="space-y-8 animate-fade-in-up">
                                 <h1 className="font-display text-5xl xl:text-6xl font-bold leading-tight text-charcoal dark:text-cream">
-                                    Send a text.
+                                    A Bible companion
                                     <br />
-                                    Get back a{" "}
-                                    <span className="text-terracotta dark:text-terracotta-light">Bible verse.</span>
-                                    <br />
-                                    <span className="text-3xl xl:text-4xl font-medium text-brown dark:text-brown-light mt-4 block">
-                                        No apps, no distractions.
-                                    </span>
+                                    that{" "}
+                                    <span className="text-terracotta dark:text-terracotta-light">remembers you.</span>
                                 </h1>
+                                <p className="text-xl text-brown dark:text-brown-light leading-relaxed max-w-xl">
+                                    Text or chat about whatever you're facing. Versiful responds with Scripture, walks with you
+                                    through prayer and reading, and checks in when life gets hard.
+                                </p>
 
                                 {/* CTA buttons */}
                                 <div className="space-y-4 pt-4">
@@ -342,73 +337,63 @@ export default function LandingPage() {
                     </div>
                 </section>
 
-                {/* What you can text */}
+                {/* Remembers your story — feature example */}
                 <section className="relative py-16 sm:py-20">
-                    <div className="container mx-auto max-w-6xl px-6 lg:px-10 grid md:grid-cols-2 gap-12 items-start">
+                    <div className="container mx-auto max-w-6xl px-6 lg:px-10 grid md:grid-cols-2 gap-12 items-center">
                         <div className="space-y-6">
+                            <span className="inline-block px-4 py-1.5 rounded-full bg-terracotta/10 text-terracotta dark:text-terracotta-light text-sm font-bold uppercase tracking-wide">
+                                The difference
+                            </span>
                             <h2 className="font-display text-4xl font-bold text-charcoal dark:text-cream">
-                                What you can text or chat
+                                It remembers your story
                             </h2>
                             <p className="font-body text-lg text-brown dark:text-brown-light leading-relaxed">
-                                Use your own words via SMS or web chat. Share the situation, a feeling, or a question—Versiful will respond with
-                                Scripture and a brief reflection tailored to it.
+                                Most apps start every conversation from zero. Versiful holds onto what matters—your dad's surgery,
+                                the worry you keep returning to, the prayers you've shared—so it can walk with you, not just answer you.
                             </p>
-                            <div className="grid sm:grid-cols-2 gap-4">
-                                {samplePrompts.map((prompt, index) => (
-                                    <div
-                                        key={prompt}
-                                        className="rounded-3xl bg-cream-dark dark:bg-charcoal-light
-                                                 px-5 py-4 text-charcoal dark:text-cream
-                                                 shadow-sm border-2 border-sage/20
-                                                 hover:border-sage/40 hover:shadow-sage
-                                                 transition-warm font-body
-                                                 animate-fade-in-up"
-                                        style={{ animationDelay: `${index * 0.1}s` }}
-                                    >
-                                        "{prompt}"
-                                    </div>
-                                ))}
-                            </div>
+                            <p className="font-body text-brown dark:text-brown-light leading-relaxed">
+                                And you're always in control. See everything it remembers, and clear anything, anytime.
+                            </p>
                         </div>
                         <div className="rounded-4xl bg-sage/10 dark:bg-sage/5 p-8 border-2 border-sage/30 shadow-sage">
-                            <h3 className="font-display text-2xl font-bold text-charcoal dark:text-cream mb-6">
-                                What comes back
+                            <h3 className="font-display text-lg font-bold text-charcoal dark:text-cream mb-5">
+                                What Versiful remembers about you
                             </h3>
                             <ul className="space-y-4 font-body text-brown dark:text-brown-light">
                                 <li className="flex items-start gap-4">
-                                    <span className="mt-1.5 h-3 w-3 rounded-full bg-terracotta flex-shrink-0"></span>
-                                    <span>A Bible verse or parable that speaks directly to your message.</span>
+                                    <span className="text-xl flex-shrink-0">🌟</span>
+                                    <span>Your mom's surgery is this week—and it knows you're anxious about it.</span>
                                 </li>
                                 <li className="flex items-start gap-4">
-                                    <span className="mt-1.5 h-3 w-3 rounded-full bg-terracotta flex-shrink-0"></span>
-                                    <span>A short, gentle note to help you apply it right now.</span>
+                                    <span className="text-xl flex-shrink-0">🌧️</span>
+                                    <span>Anxiety about work keeps coming back, especially Sunday nights.</span>
                                 </li>
                                 <li className="flex items-start gap-4">
-                                    <span className="mt-1.5 h-3 w-3 rounded-full bg-terracotta flex-shrink-0"></span>
-                                    <span>Links to read more if you'd like to go deeper.</span>
+                                    <span className="text-xl flex-shrink-0">🙏</span>
+                                    <span>You're praying for a new job and patience with the kids.</span>
                                 </li>
                                 <li className="flex items-start gap-4">
-                                    <span className="mt-1.5 h-3 w-3 rounded-full bg-terracotta flex-shrink-0"></span>
-                                    <span>Follow-up prompts you can text back anytime.</span>
+                                    <span className="text-xl flex-shrink-0">📖</span>
+                                    <span>You're on day 3 of "Finding Peace in Anxiety."</span>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </section>
 
-                {/* Why people trust */}
+                {/* Companion value sections */}
                 <section className="relative bg-cream-dark dark:bg-charcoal py-16 sm:py-20">
                     <div className="container mx-auto max-w-6xl px-6 lg:px-10 space-y-12">
                         <div className="text-center space-y-4">
                             <h2 className="font-display text-4xl font-bold text-charcoal dark:text-cream">
-                                Why people trust Versiful
+                                More than a verse. A companion.
                             </h2>
                             <p className="font-body text-lg text-brown dark:text-brown-light leading-relaxed max-w-3xl mx-auto">
-                                Built for everyone who wants straightforward help grounded in Scripture.
+                                Everything that turns a one-off text into a relationship that brings you back.
                             </p>
                         </div>
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {reassurances.map((item, index) => (
+                            {companionValues.map((item, index) => (
                                 <div
                                     key={item.title}
                                     className="group rounded-4xl border-2 border-brown/20 bg-cream dark:bg-charcoal-light
@@ -428,6 +413,14 @@ export default function LandingPage() {
                                     </p>
                                 </div>
                             ))}
+                        </div>
+                        <div className="text-center">
+                            <a
+                                href="/walk"
+                                className="inline-flex items-center gap-2 font-display font-semibold text-terracotta dark:text-terracotta-light hover:underline text-lg"
+                            >
+                                Preview "My Walk" <span>→</span>
+                            </a>
                         </div>
                     </div>
                 </section>

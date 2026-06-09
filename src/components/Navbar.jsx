@@ -2,13 +2,25 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 
+// Companion mockup nav — surfaced for the UI preview so every new page is
+// directly reachable on localhost without logging in.
+const companionNavLinks = [
+    { to: "/walk", label: "My Walk" },
+    { to: "/prayers", label: "Prayers" },
+    { to: "/journal", label: "Journal" },
+    { to: "/plans", label: "Plans" },
+    { to: "/chat", label: "Chat" },
+    { to: "/settings", label: "Settings" },
+];
+
 const navLinks = [
+    ...companionNavLinks,
     { to: "/features", label: "Features" },
     { to: "/how-it-works", label: "How it works" },
 ];
 
 const loggedInNavLinks = [
-    { to: "/chat", label: "Chat" },
+    ...companionNavLinks,
     { to: "/features", label: "Features" },
     { to: "/how-it-works", label: "How it works" },
 ];
