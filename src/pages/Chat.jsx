@@ -21,19 +21,12 @@ export default function Chat() {
     const textareaRef = useRef(null);
     const { isLoggedIn, user } = useAuth();
     const navigate = useNavigate();
-    const companion = useCompanion();
+    const { saveReflectionFromChat } = useCompanion();
 
-    // Mock mode: when there's no real logged-in user, fall back to the local
-    // mock-data companion experience so the chat is browsable on localhost
-    // without login. No network calls happen in this mode.
-    const mockMode = !isLoggedIn;
+    const displayMessages = messages;
 
-    // In mock mode the messages live in the companion context (so a saved
-    // reflection from a chat shows up on /journal). Otherwise use local state.
-    const displayMessages = mockMode ? companion.chatMessages : messages;
-
-    // Check if user is subscribed (mock user is subscribed).
-    const isSubscribed = mockMode ? true : (user?.isSubscribed || false);
+    // Check if user is subscribed.
+    const isSubscribed = user?.isSubscribed || false;
 
     // Count user messages in current thread for free trial limit
     const userMessageCount = displayMessages.filter(msg => msg.role === 'user').length;
@@ -41,10 +34,6 @@ export default function Chat() {
     const [savedReflections, setSavedReflections] = useState({});
 
     useEffect(() => {
-        if (mockMode) {
-            setLoadingSessions(false);
-            return;
-        }
         if (!isLoggedIn) {
             navigate('/signin');
             return;
@@ -55,7 +44,7 @@ export default function Chat() {
         } else {
             setLoadingSessions(false);
         }
-    }, [isLoggedIn, isSubscribed, navigate, mockMode]);
+    }, [isLoggedIn, isSubscribed, navigate]);
 
     useEffect(() => {
         // Set initial sidebar state based on screen size
@@ -135,13 +124,6 @@ export default function Chat() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!input.trim() || isLoading) return;
-
-        // Mock mode: send through the local companion context (no network).
-        if (mockMode) {
-            companion.sendChatMessage(input.trim());
-            setInput('');
-            return;
-        }
 
         // Check free trial message limit for non-subscribed users
         if (!isSubscribed && userMessageCount >= FREE_TRIAL_MESSAGE_LIMIT) {
@@ -462,9 +444,9 @@ export default function Chat() {
                                                     )}
                                                     {msg.role === 'assistant' && (
                                                         <button
-                                                            onClick={() => {
-                                                                companion.saveReflectionFromChat(msg.content);
-                                                                setSavedReflections((prev) => ({ ...prev, [idx]: true }));
+                                                            onClick={async () => {
+                                                                const ok = await saveReflectionFromChat(msg.content);
+                                                                if (ok) setSavedReflections((prev) => ({ ...prev, [idx]: true }));
                                                             }}
                                                             disabled={savedReflections[idx]}
                                                             className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full

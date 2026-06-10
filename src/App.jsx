@@ -24,7 +24,7 @@ import TracebackCompliance from "./pages/TracebackCompliance";
 import ForgotPassword from "./pages/ForgotPassword";
 import { useEffect } from "react";
 import SignIn from "./pages/SignIn";
-// Companion mockup pages (frontend-only, mock data)
+// Companion pages (wired to the real dev companion APIs via CompanionContext)
 import MyWalk from "./pages/MyWalk";
 import Prayers from "./pages/Prayers";
 import Journal from "./pages/Journal";
@@ -65,7 +65,7 @@ function AppLayout() {
                 <Route path="/sms-consent" element={<SmsConsent />} />
                 <Route path="/opt-in-form" element={<OptInForm />} />
                 <Route path="/traceback-compliance" element={<TracebackCompliance />} />
-                {/* Companion mockup routes (frontend-only, mock data) */}
+                {/* Companion routes (live dev APIs, cookie-authenticated) */}
                 <Route path="/walk" element={<MyWalk />} />
                 <Route path="/prayers" element={<Prayers />} />
                 <Route path="/journal" element={<Journal />} />

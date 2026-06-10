@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { Card, relativeDate } from "../companion/ui";
 
-export default function ReflectionSummary({ reflections }) {
-    const recent = reflections.slice(0, 3);
+// Driven by /walk/summary `reflections`: { count, recent: [{content, mood, createdAt}] }.
+export default function ReflectionSummary({ summary }) {
+    const count = summary?.count || 0;
+    const recent = summary?.recent || [];
     return (
         <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
@@ -10,7 +12,7 @@ export default function ReflectionSummary({ reflections }) {
                 <Link to="/journal" className="text-sm font-semibold text-terracotta dark:text-terracotta-light hover:underline">Open journal →</Link>
             </div>
             <p className="text-brown dark:text-brown-light mb-4">
-                <span className="font-display text-3xl font-black text-terracotta dark:text-terracotta-light">{reflections.length}</span> takeaways saved
+                <span className="font-display text-3xl font-black text-terracotta dark:text-terracotta-light">{count}</span> takeaways saved
             </p>
             <div className="space-y-3">
                 {recent.map((r) => (

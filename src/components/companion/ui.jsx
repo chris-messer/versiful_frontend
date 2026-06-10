@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useCompanion } from "../../context/CompanionContext";
 
 // Shared warm-styled building blocks for the Companion mockup pages. These reuse
@@ -209,6 +210,90 @@ export function StatTile({ value, label, accent = "terracotta", icon }) {
             {icon && <div className="text-2xl mb-1">{icon}</div>}
             <div className={`font-display text-3xl font-black ${accentText}`}>{value}</div>
             <div className="text-sm text-brown dark:text-brown-light mt-1">{label}</div>
+        </Card>
+    );
+}
+
+export function LoadingState({ label = "Loading…", className = "" }) {
+    return (
+        <div className={`flex flex-col items-center justify-center py-16 text-brown dark:text-brown-light ${className}`}>
+            <span className="inline-block w-9 h-9 rounded-full border-[3px] border-terracotta/20 border-t-terracotta animate-spin mb-3" />
+            <p className="font-display text-sm">{label}</p>
+        </div>
+    );
+}
+
+export function EmptyState({ icon = "🤍", title, hint, action }) {
+    return (
+        <div className="text-center py-14 text-brown dark:text-brown-light">
+            <div className="text-4xl mb-3">{icon}</div>
+            {title && <p className="font-display text-lg text-charcoal dark:text-cream">{title}</p>}
+            {hint && <p className="text-sm mt-1 max-w-md mx-auto leading-relaxed">{hint}</p>}
+            {action && <div className="mt-5">{action}</div>}
+        </div>
+    );
+}
+
+// Premium upsell — shown when an endpoint returns 402 (subscription_required /
+// limit_reached). Links to the real subscription flow.
+export function UpgradeCard({ title = "A premium feature", message, className = "" }) {
+    return (
+        <Card className={`p-7 text-center border-terracotta/30 bg-terracotta/5 ${className}`}>
+            <div className="text-4xl mb-3">✨</div>
+            <h3 className="font-display text-2xl font-bold text-charcoal dark:text-cream">{title}</h3>
+            {message && <p className="text-brown dark:text-brown-light mt-2 max-w-md mx-auto leading-relaxed">{message}</p>}
+            <Link
+                to="/subscription"
+                className="mt-5 inline-flex items-center justify-center gap-2 bg-terracotta-gradient text-cream py-3 px-6
+                    rounded-3xl font-bold font-display shadow-warm hover:shadow-warm-lg transform hover:scale-105
+                    active:scale-95 transition-warm border-2 border-terracotta-dark/20"
+            >
+                Upgrade to Premium
+            </Link>
+        </Card>
+    );
+}
+
+// Interprets an ApiError into the right UI: 401 -> sign-in, 402 -> upgrade,
+// 503/500 -> temporarily unavailable, otherwise a generic retryable error.
+export function ErrorState({ error, onRetry, upgradeTitle, upgradeMessage }) {
+    if (!error) return null;
+    if (error.isSubscriptionRequired) {
+        return <UpgradeCard title={upgradeTitle || "A premium feature"} message={upgradeMessage || error.message} />;
+    }
+    if (error.isUnauthorized) {
+        return (
+            <Card className="p-7 text-center">
+                <div className="text-4xl mb-3">🔑</div>
+                <h3 className="font-display text-2xl font-bold text-charcoal dark:text-cream">Please sign in</h3>
+                <p className="text-brown dark:text-brown-light mt-2">Sign in to see this part of your walk.</p>
+                <Link to="/signin" className="mt-5 inline-block text-terracotta dark:text-terracotta-light font-semibold hover:underline">
+                    Go to sign in →
+                </Link>
+            </Card>
+        );
+    }
+    const unavailable = error.isServiceUnavailable;
+    return (
+        <Card className="p-7 text-center">
+            <div className="text-4xl mb-3">{unavailable ? "🛠️" : "⚠️"}</div>
+            <h3 className="font-display text-xl font-bold text-charcoal dark:text-cream">
+                {unavailable ? "Temporarily unavailable" : "Something went wrong"}
+            </h3>
+            <p className="text-brown dark:text-brown-light mt-2 max-w-md mx-auto leading-relaxed">
+                {unavailable
+                    ? "This feature is briefly unavailable. Please try again in a moment."
+                    : error.message || "We couldn't load this right now."}
+            </p>
+            {onRetry && (
+                <button
+                    onClick={onRetry}
+                    className="mt-5 inline-flex items-center gap-2 py-2.5 px-5 rounded-3xl font-semibold font-display
+                        border-2 border-terracotta/30 text-terracotta dark:text-terracotta-light hover:bg-terracotta/10 transition-warm"
+                >
+                    Try again
+                </button>
+            )}
         </Card>
     );
 }

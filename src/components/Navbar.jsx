@@ -10,9 +10,10 @@ const marketingLinks = [
     { to: "/features", label: "Features" },
 ];
 
-// App IA: companion sections, only surfaced when "in the app".
+// App IA: companion sections, surfaced for authenticated users (and the
+// logged-out demo preview). These map 1:1 to the existing companion screens.
 const appLinks = [
-    { to: "/walk", label: "My Walk" },
+    { to: "/walk", label: "Today" },
     { to: "/prayers", label: "Prayers" },
     { to: "/journal", label: "Journal" },
     { to: "/plans", label: "Plans" },
@@ -20,7 +21,8 @@ const appLinks = [
     { to: "/settings", label: "Settings" },
 ];
 
-// Routes that count as being "in the app" (mock-subscribed context).
+// Routes that count as being "in the app" (mock-subscribed context). These let
+// logged-out visitors still browse the companion preview via the demo entry.
 const appRoutePrefixes = ["/walk", "/prayers", "/journal", "/plans", "/chat", "/settings"];
 
 function matchesAppRoute(pathname) {
@@ -30,15 +32,24 @@ function matchesAppRoute(pathname) {
 export default function Navbar() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { login } = useAuth();
-    const { user } = useCompanion();
+    const { login, logout, isLoggedIn, user: authUser } = useAuth();
+    const { user: mockUser } = useCompanion();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
 
-    const isAppContext = matchesAppRoute(location.pathname);
+    // The companion nav is surfaced whenever the visitor is authenticated, OR
+    // when a logged-out visitor is previewing a companion screen (demo entry).
+    // Marketing visitors on marketing routes keep the acquisition-focused nav.
+    const isAppRoute = matchesAppRoute(location.pathname);
+    const isAppContext = isLoggedIn || isAppRoute;
+    const isPreview = !isLoggedIn && isAppRoute; // demo browsing, not a real session
     const isFullWidth = location.pathname === "/chat";
     const links = isAppContext ? appLinks : marketingLinks;
+
+    // Header identity: prefer the real signed-in user, fall back to the mock
+    // companion profile that powers the (still mock-data) preview screens.
+    const profile = authUser || mockUser;
 
     useEffect(() => {
         document.body.style.overflow = isMenuOpen ? "hidden" : "";
@@ -94,29 +105,46 @@ export default function Navbar() {
         </div>
     );
 
+    const handleSignOut = () => {
+        setIsMenuOpen(false);
+        setIsProfileOpen(false);
+        logout();
+        navigate("/");
+    };
+
     const AppActions = ({ isMobile = false }) => {
         if (isMobile) {
             return (
                 <div className="flex flex-col gap-3 w-full">
                     <div className="flex items-center gap-3 px-1 pb-1">
                         <span className="flex items-center justify-center w-11 h-11 rounded-full bg-terracotta text-cream font-bold font-display shadow-warm">
-                            {(user?.firstName || "C").charAt(0)}
+                            {(profile?.firstName || "C").charAt(0)}
                         </span>
                         <div>
                             <p className="font-display font-bold text-charcoal dark:text-cream leading-tight">
-                                {user?.firstName || "Chris"}
+                                {profile?.firstName || "Chris"}
                             </p>
-                            <p className="text-sm text-brown dark:text-brown-light">{user?.email || "you@versiful.com"}</p>
+                            <p className="text-sm text-brown dark:text-brown-light">{profile?.email || "you@versiful.com"}</p>
                         </div>
                     </div>
-                    <Link
-                        to="/"
-                        onClick={() => setIsMenuOpen(false)}
-                        className="px-5 py-3 rounded-3xl text-cream bg-brown hover:bg-brown-dark transition-warm
-                            focus:outline-none focus:ring-2 focus:ring-brown w-full text-center font-semibold font-display"
-                    >
-                        Back to site
-                    </Link>
+                    {isLoggedIn ? (
+                        <button
+                            onClick={handleSignOut}
+                            className="px-5 py-3 rounded-3xl text-cream bg-brown hover:bg-brown-dark transition-warm
+                                focus:outline-none focus:ring-2 focus:ring-brown w-full text-center font-semibold font-display"
+                        >
+                            Sign out
+                        </button>
+                    ) : (
+                        <Link
+                            to="/"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="px-5 py-3 rounded-3xl text-cream bg-brown hover:bg-brown-dark transition-warm
+                                focus:outline-none focus:ring-2 focus:ring-brown w-full text-center font-semibold font-display"
+                        >
+                            Back to site
+                        </Link>
+                    )}
                 </div>
             );
         }
@@ -131,10 +159,10 @@ export default function Navbar() {
                     aria-expanded={isProfileOpen}
                 >
                     <span className="flex items-center justify-center w-9 h-9 rounded-full bg-terracotta text-cream font-bold font-display shadow-warm">
-                        {(user?.firstName || "C").charAt(0)}
+                        {(profile?.firstName || "C").charAt(0)}
                     </span>
                     <span className="hidden xl:inline font-display font-semibold text-charcoal dark:text-cream">
-                        {user?.firstName || "Chris"}
+                        {profile?.firstName || "Chris"}
                     </span>
                     <svg className="w-4 h-4 text-brown dark:text-brown-light" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -144,8 +172,8 @@ export default function Navbar() {
                     <div className="absolute right-0 mt-3 w-56 bg-cream dark:bg-charcoal-light border-2 border-terracotta/20
                         rounded-3xl shadow-warm-lg py-2 z-50 animate-fade-in-up">
                         <div className="px-5 py-3 border-b-2 border-terracotta/10 mb-1">
-                            <p className="font-display font-bold text-charcoal dark:text-cream leading-tight">{user?.firstName || "Chris"}</p>
-                            <p className="text-sm text-brown dark:text-brown-light truncate">{user?.email || "you@versiful.com"}</p>
+                            <p className="font-display font-bold text-charcoal dark:text-cream leading-tight">{profile?.firstName || "Chris"}</p>
+                            <p className="text-sm text-brown dark:text-brown-light truncate">{profile?.email || "you@versiful.com"}</p>
                         </div>
                         <Link
                             to="/settings"
@@ -155,16 +183,26 @@ export default function Navbar() {
                         >
                             Settings
                         </Link>
-                        <button
-                            onClick={() => {
-                                setIsProfileOpen(false);
-                                navigate("/");
-                            }}
-                            className="w-full text-left px-5 py-3 mx-2 rounded-2xl text-brown dark:text-brown-light font-medium font-body
-                                hover:bg-brown/10 dark:hover:bg-brown/20 transition-warm"
-                        >
-                            Back to site
-                        </button>
+                        {isLoggedIn ? (
+                            <button
+                                onClick={handleSignOut}
+                                className="w-full text-left px-5 py-3 mx-2 rounded-2xl text-brown dark:text-brown-light font-medium font-body
+                                    hover:bg-brown/10 dark:hover:bg-brown/20 transition-warm"
+                            >
+                                Sign out
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => {
+                                    setIsProfileOpen(false);
+                                    navigate("/");
+                                }}
+                                className="w-full text-left px-5 py-3 mx-2 rounded-2xl text-brown dark:text-brown-light font-medium font-body
+                                    hover:bg-brown/10 dark:hover:bg-brown/20 transition-warm"
+                            >
+                                Back to site
+                            </button>
+                        )}
                     </div>
                 )}
             </div>
